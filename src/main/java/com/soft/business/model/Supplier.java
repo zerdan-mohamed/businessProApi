@@ -56,10 +56,10 @@ public class Supplier implements Serializable {
     private String contact;
 
     @Column(name = "CAPPED_BALANCE")
-    private int cappedBalance;
+    private double cappedBalance;
 
     @Column(name = "INITIAL_BALANCE")
-    private int initialBalance;
+    private double initialBalance;
 
     @Column(name = "PATENT")
     private String patent;

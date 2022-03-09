@@ -26,7 +26,7 @@ public class SupplierDto implements Serializable {
     private static final String CAPPED_BALANCE = "capped_balance";
     private static final String INITIAL_BALANCE = "initial_balance";
     private static final String PATENT = "patent";
-    private static final String ICE = "ICE";
+    private static final String ICE = "ice";
 
     @JsonProperty(SUPPLIER_UUID)
     private String uuid;
@@ -59,10 +59,10 @@ public class SupplierDto implements Serializable {
     private String contact;
 
     @JsonProperty(CAPPED_BALANCE)
-    private int cappedBalance;
+    private double cappedBalance;
 
     @JsonProperty(INITIAL_BALANCE)
-    private int initialBalance;
+    private double initialBalance;
 
     @JsonProperty(PATENT)
     private String patent;

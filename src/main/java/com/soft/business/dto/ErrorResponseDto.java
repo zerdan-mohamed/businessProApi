@@ -1,11 +1,20 @@
 package com.soft.business.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class ErrorResponseDto {
+import java.io.Serializable;
 
+@Getter @Setter
+public class ErrorResponseDto implements Serializable {
+
+    private static final String ERROR_CODE = "error_code";
+    private static final String ERROR_MESSAGE = "error_message";
+
+    @JsonProperty(ERROR_CODE)
     private String errorCode;
+    @JsonProperty(ERROR_MESSAGE)
     private String errorMessage;
 
     public ErrorResponseDto() {}

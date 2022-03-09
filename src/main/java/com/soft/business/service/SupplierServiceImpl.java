@@ -5,12 +5,14 @@ import com.soft.business.mapper.SupplierMapper;
 import com.soft.business.model.Supplier;
 import com.soft.business.repository.SupplierRepository;
 import com.soft.business.util.validator.SupplierValidator;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
-import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -18,7 +20,7 @@ public class SupplierServiceImpl implements SupplierService{
 
     private SupplierMapper supplierMapper;
     private SupplierRepository supplierRepository;
-    SupplierValidator supplierValidator;
+    private SupplierValidator supplierValidator;
 
     public SupplierServiceImpl(SupplierMapper supplierMapper,
                                SupplierRepository supplierRepository,
@@ -29,32 +31,37 @@ public class SupplierServiceImpl implements SupplierService{
     }
 
     @Override
-    public ResponseEntity<?> registerUser(SupplierDto supplierDto) {
+    public ResponseEntity<?> createSupplier(SupplierDto supplierDto) {
         supplierValidator.createSupplierValidator(supplierDto);
-        Supplier supplier = supplierMapper.makeSupplierFromDto(supplierDto);
+        Supplier supplier = supplierRepository.save(supplierMapper.makeSupplierFromDto(supplierDto));
+        return new ResponseEntity<>(supplierMapper.makeSupplierDtoFromSupplier(supplier), HttpStatus.CREATED);
+    }
 
-        supplierRepository.save(supplier);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/suppliers/{name}")
-                .buildAndExpand(supplier.getName()).toUri();
-
-        return ResponseEntity.created(location).body("User registered successfully");
+    @Override
+    public ResponseEntity<?> updateSupplier(String uuid, SupplierDto supplierDto) {
+        Optional<Supplier> oSupplier = this.supplierRepository.findByUuid(uuid);
+        return null;
     }
 
     @Override
     @Transactional
     public void deleteSupplierByUuid(String uuid) {
         long isDeleted = this.supplierRepository.deleteByUuid(uuid);
+        if(isDeleted == 0) throw new NoSuchElementException();
     }
 
     @Override
     public SupplierDto retrieveSupplierByUuid(String uuid) {
         Optional<Supplier> oSupplier = this.supplierRepository.findByUuid(uuid);
-        if(!oSupplier.isEmpty()) {
-            Supplier supplier = oSupplier.get();
-            return this.supplierMapper.makeSupplierDtoFromSupplier(supplier);
-        }
-        return null;
+        Supplier supplier = oSupplier.get();
+        return this.supplierMapper.makeSupplierDtoFromSupplier(supplier);
+    }
+
+    @Override
+    public List<SupplierDto> getAllSuppliersByOrganisationId(String orgUuid) {
+        List<Supplier> suppliers = this.supplierRepository.findAll();
+        List<SupplierDto> supplierDtos = new ArrayList<>();
+        suppliers.forEach(supplier -> supplierDtos.add(this.supplierMapper.makeSupplierDtoFromSupplier(supplier)));
+        return supplierDtos;
     }
 }

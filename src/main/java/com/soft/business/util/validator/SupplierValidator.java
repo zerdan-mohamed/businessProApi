@@ -11,8 +11,8 @@ public class SupplierValidator {
 
     public void createSupplierValidator(SupplierDto supplierDto) {
         if(StringUtils.isEmpty(supplierDto.getName())) {
-            throw new EmptyInputException(ApiErrorCodesConstantes.SUPPLIER_EMPTY_NAME_CODE,
-                    ApiErrorCodesConstantes.SUPPLIER_EMPTY_NAME_MESSAGE);
+            throw new EmptyInputException(ApiErrorCodesConstantes.SUPPLIER_EMPTY_NAME_EXCEPTION_CODE,
+                    ApiErrorCodesConstantes.SUPPLIER_EMPTY_NAME_EXCEPTION_MESSAGE);
         }
     }
 }
