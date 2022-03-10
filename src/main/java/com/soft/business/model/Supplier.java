@@ -3,9 +3,7 @@ package com.soft.business.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -56,10 +54,12 @@ public class Supplier implements Serializable {
     private String contact;
 
     @Column(name = "CAPPED_BALANCE")
-    private double cappedBalance;
+    @PositiveOrZero
+    private Double cappedBalance;
 
     @Column(name = "INITIAL_BALANCE")
-    private double initialBalance;
+    @PositiveOrZero
+    private Double initialBalance;
 
     @Column(name = "PATENT")
     private String patent;

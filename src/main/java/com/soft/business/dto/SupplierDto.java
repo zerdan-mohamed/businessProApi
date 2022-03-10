@@ -59,10 +59,10 @@ public class SupplierDto implements Serializable {
     private String contact;
 
     @JsonProperty(CAPPED_BALANCE)
-    private double cappedBalance;
+    private Double cappedBalance;
 
     @JsonProperty(INITIAL_BALANCE)
-    private double initialBalance;
+    private Double initialBalance;
 
     @JsonProperty(PATENT)
     private String patent;

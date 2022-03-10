@@ -40,7 +40,12 @@ public class SupplierServiceImpl implements SupplierService{
     @Override
     public ResponseEntity<?> updateSupplier(String uuid, SupplierDto supplierDto) {
         Optional<Supplier> oSupplier = this.supplierRepository.findByUuid(uuid);
-        return null;
+        if(oSupplier.isEmpty()) throw new NoSuchElementException();
+
+        Supplier supplier = supplierMapper.updateSupplierMapper(supplierDto, oSupplier.get());
+        Supplier savedSupplier = supplierRepository.save(supplier);
+
+        return new ResponseEntity<>(supplierMapper.makeSupplierDtoFromSupplier(savedSupplier), HttpStatus.OK);
     }
 
     @Override

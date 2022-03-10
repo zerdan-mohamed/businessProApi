@@ -1,8 +1,5 @@
 package com.soft.business.util;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class StringUtils {
 
     public static boolean isEmpty(String value) {

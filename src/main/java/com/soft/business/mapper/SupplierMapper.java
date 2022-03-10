@@ -51,4 +51,55 @@ public class SupplierMapper {
 
         return supplierDto;
     }
+
+    public Supplier updateSupplierMapper(SupplierDto supplierDto, Supplier dbSupplier) {
+        Supplier supplier = new Supplier();
+
+        if(null != supplierDto.getName()) supplier.setName(supplierDto.getName());
+        else supplier.setName(dbSupplier.getName());
+
+        if(null != supplierDto.getAddress()) supplier.setAddress(supplierDto.getAddress());
+        else supplier.setAddress(dbSupplier.getAddress());
+
+        if(null != supplierDto.getIce()) supplier.setIce(supplierDto.getIce());
+        else supplier.setIce(dbSupplier.getIce());
+
+        if(null != supplierDto.getContact()) supplier.setContact(supplierDto.getContact());
+        else supplier.setContact(dbSupplier.getContact());
+
+        if(null != supplierDto.getCity()) supplier.setCity(supplierDto.getCity());
+        else supplier.setCity(dbSupplier.getCity());
+
+        if(null != supplierDto.getEmail()) supplier.setEmail(supplierDto.getEmail());
+        else supplier.setEmail(dbSupplier.getEmail());
+
+        if(null != supplierDto.getPhoneNumber()) supplier.setPhoneNumber(supplierDto.getPhoneNumber());
+        else supplier.setPhoneNumber(dbSupplier.getPhoneNumber());
+
+        if(null != supplierDto.getMobileNumber()) supplier.setMobileNumber(supplierDto.getMobileNumber());
+        else supplier.setMobileNumber(dbSupplier.getMobileNumber());
+
+        if(null != supplierDto.getFaxNumber()) supplier.setFaxNumber(supplierDto.getFaxNumber());
+        else supplier.setFaxNumber(dbSupplier.getFaxNumber());
+
+        if(null != supplierDto.getPatent()) supplier.setPatent(supplierDto.getPatent());
+        else supplier.setPatent(dbSupplier.getPatent());
+
+        if(null != supplierDto.getWebsite()) supplier.setWebsite(supplierDto.getWebsite());
+        else supplier.setWebsite(dbSupplier.getWebsite());
+
+        if(null != supplierDto.getInitialBalance()) supplier.setInitialBalance(supplierDto.getInitialBalance());
+        else supplier.setInitialBalance(dbSupplier.getInitialBalance());
+
+        if(null != supplierDto.getCappedBalance()) supplier.setCappedBalance(supplierDto.getCappedBalance());
+        else supplier.setCappedBalance(dbSupplier.getCappedBalance());
+
+        supplier.setUuid(dbSupplier.getUuid());
+
+        supplier.setId(dbSupplier.getId());
+
+        supplier.setCreationDate(dbSupplier.getCreationDate());
+
+        return supplier;
+    }
 }

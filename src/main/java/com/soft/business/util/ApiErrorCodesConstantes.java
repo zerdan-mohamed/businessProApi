@@ -7,6 +7,7 @@ public interface ApiErrorCodesConstantes {
      */
     public static final String NO_SUCH_ELEMENT_EXCEPTION_CODE = "0001";
     public static final String NO_SUCH_ELEMENT_EXCEPTION_MESSAGE = "No value present";
+    public static final String CONSTRAINT_VIOLATION_EXCEPTION_CODE = "0002";
 
     /*
         Supplier error codes

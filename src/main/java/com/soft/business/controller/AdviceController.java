@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.util.NoSuchElementException;
 
 @ControllerAdvice
@@ -22,7 +23,19 @@ public class AdviceController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ErrorResponseDto> handleNoSuchElementException(NoSuchElementException noSuchElementException) {
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(ApiErrorCodesConstantes.NO_SUCH_ELEMENT_EXCEPTION_CODE, ApiErrorCodesConstantes.NO_SUCH_ELEMENT_EXCEPTION_MESSAGE);
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(ApiErrorCodesConstantes.NO_SUCH_ELEMENT_EXCEPTION_CODE,
+                ApiErrorCodesConstantes.NO_SUCH_ELEMENT_EXCEPTION_MESSAGE);
+
         return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponseDto> handleConstraintViolationException(ConstraintViolationException constraintViolationException) {
+
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(ApiErrorCodesConstantes.CONSTRAINT_VIOLATION_EXCEPTION_CODE,
+                constraintViolationException.getConstraintViolations().stream().iterator().next().getPropertyPath() +" - "+
+                constraintViolationException.getConstraintViolations().stream().iterator().next().getMessage());
+
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
     }
 }
