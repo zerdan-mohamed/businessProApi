@@ -34,7 +34,7 @@ public class SupplierServiceImpl implements SupplierService{
     public ResponseEntity<?> createSupplier(SupplierDto supplierDto) {
         supplierValidator.createSupplierValidator(supplierDto);
         Supplier supplier = supplierRepository.save(supplierMapper.makeSupplierFromDto(supplierDto));
-        return new ResponseEntity<>(supplierMapper.makeSupplierDtoFromSupplier(supplier), HttpStatus.CREATED);
+        return new ResponseEntity<>(supplierMapper.makeDtoFromSupplier(supplier), HttpStatus.CREATED);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class SupplierServiceImpl implements SupplierService{
         Supplier supplier = supplierMapper.updateSupplierMapper(supplierDto, oSupplier.get());
         Supplier savedSupplier = supplierRepository.save(supplier);
 
-        return new ResponseEntity<>(supplierMapper.makeSupplierDtoFromSupplier(savedSupplier), HttpStatus.OK);
+        return new ResponseEntity<>(supplierMapper.makeDtoFromSupplier(savedSupplier), HttpStatus.OK);
     }
 
     @Override
@@ -59,14 +59,14 @@ public class SupplierServiceImpl implements SupplierService{
     public SupplierDto retrieveSupplierByUuid(String uuid) {
         Optional<Supplier> oSupplier = this.supplierRepository.findByUuid(uuid);
         Supplier supplier = oSupplier.get();
-        return this.supplierMapper.makeSupplierDtoFromSupplier(supplier);
+        return this.supplierMapper.makeDtoFromSupplier(supplier);
     }
 
     @Override
     public List<SupplierDto> getAllSuppliersByOrganisationId(String orgUuid) {
         List<Supplier> suppliers = this.supplierRepository.findAll();
         List<SupplierDto> supplierDtos = new ArrayList<>();
-        suppliers.forEach(supplier -> supplierDtos.add(this.supplierMapper.makeSupplierDtoFromSupplier(supplier)));
+        suppliers.forEach(supplier -> supplierDtos.add(this.supplierMapper.makeDtoFromSupplier(supplier)));
         return supplierDtos;
     }
 }

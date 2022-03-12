@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/suppliers")
+@RequestMapping("/v1/suppliers")
 public class SupplierController {
 
     private SupplierService supplierService;

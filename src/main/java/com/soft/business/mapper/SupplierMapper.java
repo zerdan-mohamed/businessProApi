@@ -2,12 +2,12 @@ package com.soft.business.mapper;
 
 import com.soft.business.dto.SupplierDto;
 import com.soft.business.model.Supplier;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.UUID;
 
-@Component
+@Service
 public class SupplierMapper {
 
     public Supplier makeSupplierFromDto(SupplierDto supplierDto) {
@@ -31,7 +31,7 @@ public class SupplierMapper {
         return supplier;
     }
 
-    public SupplierDto makeSupplierDtoFromSupplier(Supplier supplier) {
+    public SupplierDto makeDtoFromSupplier(Supplier supplier) {
         SupplierDto supplierDto = new SupplierDto();
         supplierDto.setName(supplier.getName());
         supplierDto.setEmail(supplier.getEmail());
