@@ -6,7 +6,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - /home/ssm/Documents/docker/pro_business_db:/var/lib/mysql
+      - C:\Users\MOHAMED\Documents\docker\pro_business_db:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=0000
       - MYSQL_PASSWORD=0000

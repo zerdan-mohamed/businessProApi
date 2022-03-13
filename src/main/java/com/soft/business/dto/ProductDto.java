@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -40,34 +41,34 @@ public class ProductDto implements Serializable {
     private String measureUnite;
 
     @JsonProperty(PRODUCT_VAT_RATE)
-    private String vatRate;
+    private Short vatRate;
 
     @JsonProperty(PRODUCT_BUYING_PRICE)
-    private String buyingPrice;
+    private Long buyingPrice;
 
     @JsonProperty(PRODUCT_RESELLER_PRICE)
-    private String resellerPrice;
+    private Long resellerPrice;
 
     @JsonProperty(PRODUCT_PUBLIC_SALE_PRICE)
-    private String publicSalePrice;
+    private Long publicSalePrice;
 
     @JsonProperty(PRODUCT_CURRENT_STOCK)
-    private String currentStock;
+    private Integer currentStock;
 
     @JsonProperty(PRODUCT_INITIAL_STOCK)
-    private String initialStock;
+    private Integer initialStock;
 
     @JsonProperty(PRODUCT_INITIAL_STOCK_DATE)
-    private String initialStockDate;
+    private Date initialStockDate;
 
     @JsonProperty(PRODUCT_MINIMAL_STOCK)
-    private String minimalStock;
+    private Integer minimalStock;
 
     @JsonProperty(PRODUCT_MAXIMAL_STOCK)
-    private String maximalStock;
+    private Integer maximalStock;
 
     @JsonProperty(PRODUCT_CREATION_DATE)
-    private String creationDate;
+    private Date creationDate;
 
     @JsonProperty(ID_PRODUCT_FAMILY)
     private String idProductFamily;

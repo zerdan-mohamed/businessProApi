@@ -1,17 +1,13 @@
 package com.soft.business.controller;
 
 import com.soft.business.dto.ProductDto;
-import com.soft.business.model.Product;
 import com.soft.business.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -28,17 +24,12 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<?> findProducts(@RequestParam(required = false) String name) {
         try {
-            List<ProductDto> products;
+            List<ProductDto> productsDto = productService.findProducts();
 
-            if (name == null)
-                products = productService.findProducts();
-            else
-                products = productService.findProductsByName(name);
-
-            if (products.isEmpty())
+            if (productsDto.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-            return new ResponseEntity<>(products, HttpStatus.OK);
+            else
+                return new ResponseEntity<>(productsDto, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -46,10 +37,10 @@ public class ProductController {
 
     @GetMapping("/{uuid}")
     public ResponseEntity<?> getProductByUuid(@PathVariable("uuid") String uuid) {
-        Optional<ProductDto> product = productService.findProductByUuid(uuid);
+        ProductDto productDto = productService.findProductByUuid(uuid);
 
-        if (product.isPresent()) {
-            return new ResponseEntity<>(product.get(), HttpStatus.OK);
+        if (productDto != null) {
+            return new ResponseEntity<>(productDto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -65,8 +56,6 @@ public class ProductController {
     public ResponseEntity<?> createProduct(@Valid @RequestBody ProductDto productDto) {
         return productService.createProduct(productDto);
     }
-
-    // #########################################################
 
     @PatchMapping("/{uuid}")
     public ResponseEntity<?> updateProductByUuid(

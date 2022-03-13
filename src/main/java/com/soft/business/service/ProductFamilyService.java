@@ -1,14 +1,19 @@
 package com.soft.business.service;
 
-import com.soft.business.repository.ProductFamilyRepository;
-import org.springframework.stereotype.Service;
+import com.soft.business.dto.ProductFamilyDto;
+import org.springframework.http.ResponseEntity;
 
-@Service
-public class ProductFamilyService {
+import java.util.List;
 
-    ProductFamilyRepository productFamilyRepository;
+public interface ProductFamilyService {
 
-    public ProductFamilyService(ProductFamilyRepository productFamilyRepository) {
-        this.productFamilyRepository = productFamilyRepository;
-    }
+    List<ProductFamilyDto> findProductFamilies();
+
+    ProductFamilyDto findProductFamilyByUuid(String uuid);
+
+    void deleteProductFamilyByUuid(String uuid);
+
+    ResponseEntity<?> createProductFamily(ProductFamilyDto productFamilyDto);
+
+    ResponseEntity<?> updateProductFamilyByUuid(String uuid, ProductFamilyDto productFamilyDto);
 }

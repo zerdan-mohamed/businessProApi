@@ -11,7 +11,10 @@ import java.util.Optional;
 @Repository
 @CrossOrigin
 public interface ProductRepository extends CrudRepository<Product, Long> {
+
     List<Product> findByNameContaining(String name);
+
+    List<Product> findAll();
 
     Optional<Product> findByUuid(String uuid);
 

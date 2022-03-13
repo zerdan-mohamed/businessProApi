@@ -23,31 +23,30 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductValidator productValidator;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductServiceImpl(
+            ProductRepository productRepository,
+            ProductValidator productValidator,
+            ProductMapper productMapper
+    ) {
+       this.productRepository = productRepository;
+       this.productValidator = productValidator;
+       this.productMapper = productMapper;
     }
 
     @Override
     public List<ProductDto> findProducts() {
-        List<Product> products = new ArrayList<>();
-        productRepository.findAll().forEach(products::add);
+        List<Product> products = productRepository.findAll();
+        List<ProductDto> productsDto = new ArrayList<>();
+        products.forEach(product -> productsDto.add(productMapper.makeDtoFromProduct(product)));
 
-        return productMapper.productsToProductsDto(products);
+        return productsDto;
     }
 
     @Override
-    public List<ProductDto> findProductsByName(String name) {
-        List<Product> products = new ArrayList<>();
-        productRepository.findByNameContaining(name).forEach(products::add);
+    public ProductDto findProductByUuid(String uuid) {
+        Product product = productRepository.findByUuid(uuid).get();
 
-        return productMapper.productsToProductsDto(products);
-    }
-
-    @Override
-    public Optional<ProductDto> findProductByUuid(String uuid) {
-        Optional<Product> product = productRepository.findByUuid(uuid);
-
-        return productMapper.makeDtoFromOptionalProduct(product);
+        return productMapper.makeDtoFromProduct(product);
     }
 
     @Override
@@ -60,27 +59,24 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<?>  createProduct(ProductDto productDto) {
         try {
             productValidator.createProductValidator(productDto);
-            Product product = productRepository.save(productMapper.makeProductFromDto(productDto));
+            productRepository.save(productMapper.makeProductFromDto(productDto));
 
-            return new ResponseEntity<>(productMapper.makeDtoFromProduct(product), HttpStatus.CREATED);
+            return new ResponseEntity<>(productDto, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
-    // #####################################################################################
-
     @Override
     public ResponseEntity<?> updateProductByUuid(String uuid, ProductDto productDto) {
-        Optional<Product> optProduct = this.productRepository.findByUuid(uuid);
+        Optional<Product> product = this.productRepository.findByUuid(uuid);
 
-        if(optProduct.isEmpty()) throw new NoSuchElementException();
+        if(product.isEmpty()) throw new NoSuchElementException();
 
-        Product product = productMapper.makeProductFromDto(productDto);
+        Product updatedProduct = productMapper.updateProduct(productDto, product.get());
 
         return new ResponseEntity<>(
-                productMapper.makeDtoFromProduct(productRepository.save(product)),
+                productMapper.makeDtoFromProduct(productRepository.save(updatedProduct)),
                 HttpStatus.OK
         );
     }
