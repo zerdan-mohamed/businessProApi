@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
-public class SupplierServiceImpl implements SupplierService{
+public class SupplierServiceImpl implements SupplierService {
 
     private SupplierMapper supplierMapper;
     private SupplierRepository supplierRepository;
@@ -63,7 +63,7 @@ public class SupplierServiceImpl implements SupplierService{
     }
 
     @Override
-    public List<SupplierDto> getAllSuppliersByOrganisationId(String orgUuid) {
+    public List<SupplierDto> getAllSuppliersByOrganisationId() {
         List<Supplier> suppliers = this.supplierRepository.findAll();
         List<SupplierDto> supplierDtos = new ArrayList<>();
         suppliers.forEach(supplier -> supplierDtos.add(this.supplierMapper.makeDtoFromSupplier(supplier)));

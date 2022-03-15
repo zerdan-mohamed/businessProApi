@@ -15,5 +15,5 @@ public interface SupplierService {
 
     SupplierDto retrieveSupplierByUuid(String uuid);
 
-    List<SupplierDto> getAllSuppliersByOrganisationId(String orgUuid);
+    List<SupplierDto> getAllSuppliersByOrganisationId();
 }

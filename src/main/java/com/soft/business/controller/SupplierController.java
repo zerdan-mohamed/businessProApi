@@ -27,8 +27,7 @@ public class SupplierController {
 
     @GetMapping
     public ResponseEntity<?> retrieveAllSuppliers() {
-        String orgUuid = "";
-        List<SupplierDto> listOfAllSuppliers = this.supplierService.getAllSuppliersByOrganisationId(orgUuid);
+        List<SupplierDto> listOfAllSuppliers = this.supplierService.getAllSuppliersByOrganisationId();
         return new ResponseEntity<>(listOfAllSuppliers, HttpStatus.OK);
     }
 
