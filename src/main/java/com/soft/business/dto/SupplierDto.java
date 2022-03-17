@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Data
@@ -32,7 +31,6 @@ public class SupplierDto implements Serializable {
     @JsonProperty(SUPPLIER_UUID)
     private String uuid;
 
-    @NotBlank
     @JsonProperty(SUPPLIER_NAME)
     private String name;
 
