@@ -9,9 +9,9 @@ public interface ProductFamilyService {
 
     List<ProductFamilyDto> findProductFamilies();
 
-    ProductFamilyDto findProductFamilyByUuid(String uuid);
+    ResponseEntity<?> findProductFamilyByUuid(String uuid);
 
-    void deleteProductFamilyByUuid(String uuid);
+    ResponseEntity<?> deleteProductFamilyByUuid(String uuid);
 
     ResponseEntity<?> createProductFamily(ProductFamilyDto productFamilyDto);
 

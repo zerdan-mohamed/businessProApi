@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/v1/products")
 public class ProductController {
@@ -23,33 +22,22 @@ public class ProductController {
     // TODO: Refactor findProducts method to implement SPRING SPECIFICATION behavior
     @GetMapping
     public ResponseEntity<?> findProducts(@RequestParam(required = false) String name) {
-        try {
-            List<ProductDto> productsDto = productService.findProducts();
+        List<ProductDto> productsDto = productService.findProducts();
 
-            if (productsDto.isEmpty())
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            else
-                return new ResponseEntity<>(productsDto, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        if (productsDto.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        else
+            return new ResponseEntity<>(productsDto, HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<?> getProductByUuid(@PathVariable("uuid") String uuid) {
-        ProductDto productDto = productService.findProductByUuid(uuid);
-
-        if (productDto != null) {
-            return new ResponseEntity<>(productDto, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return productService.findProductByUuid(uuid);
     }
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<?> deleteProductByUuid(@PathVariable("uuid") String uuid) {
-        productService.deleteProductByUuid(uuid);
-        return ResponseEntity.ok().build();
+        return productService.deleteProductByUuid(uuid);
     }
 
     @PostMapping
@@ -59,9 +47,7 @@ public class ProductController {
 
     @PatchMapping("/{uuid}")
     public ResponseEntity<?> updateProductByUuid(
-            @PathVariable("uuid") String uuid,
-            @Valid @RequestBody ProductDto productDto) {
-
+            @PathVariable("uuid") String uuid, @Valid @RequestBody ProductDto productDto) {
         return productService.updateProductByUuid(uuid, productDto);
     }
 

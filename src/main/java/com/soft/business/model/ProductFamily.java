@@ -7,7 +7,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -28,6 +27,6 @@ public class ProductFamily implements Serializable {
     private  String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "productFamily", cascade = CascadeType.ALL , orphanRemoval = true)
+    @OneToMany(mappedBy = "productFamily", cascade = CascadeType.ALL)
     private List<Product> products;
 }

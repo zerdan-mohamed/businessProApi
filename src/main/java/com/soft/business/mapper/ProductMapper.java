@@ -2,20 +2,23 @@ package com.soft.business.mapper;
 
 import com.soft.business.dto.ProductDto;
 import com.soft.business.model.Product;
+import com.soft.business.model.ProductFamily;
+import com.soft.business.repository.ProductFamilyRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ProductMapper {
 
-    /**
-     * A lot of duplicated code
-     *
-     * @deprecated use {cloneProductFromDto(ProductDto productDto)} instead.
-     */
-    @Deprecated
+    private ProductFamilyRepository productFamilyRepository;
+
+    public ProductMapper(ProductFamilyRepository productFamilyRepository) {
+        this.productFamilyRepository = productFamilyRepository;
+    }
+
     public Product makeProductFromDto(ProductDto productDto) {
         Product product = new Product();
 
@@ -31,21 +34,20 @@ public class ProductMapper {
         product.setMinimalStock(productDto.getMinimalStock());
         product.setMaximalStock(productDto.getMaximalStock());
         product.setCreationDate(productDto.getCreationDate());
-        // product.setProductFamily(productDto.getIdProductFamily());
+
+        if (productDto.getIdProductFamily() != null) {
+            Optional<ProductFamily> productFamily =
+                    productFamilyRepository.findById(productDto.getIdProductFamily());
+            product.setProductFamily(productFamily.get());
+        }
 
         return product;
     }
 
-    /**
-     * A lot of duplicated code
-     *
-     * @deprecated use {cloneDtoFromProduct(Product product)} instead.
-     */
-    @Deprecated
     public ProductDto makeDtoFromProduct(Product product) {
         ProductDto productDto = new ProductDto();
 
-        productDto.setUuid(UUID.randomUUID().toString());
+        productDto.setUuid(product.getUuid());
         productDto.setName(product.getName());
         productDto.setMeasureUnite(product.getMeasureUnite());
         productDto.setVatRate(product.getVatRate());
@@ -58,18 +60,15 @@ public class ProductMapper {
         productDto.setMaximalStock(product.getMaximalStock());
         productDto.setCreationDate(product.getCreationDate());
 
-        // TODO: handle set id of productFamily
-        // productDto.setProductFamily(product.getIdProductFamily());
+        if (product.getProductFamily() != null) {
+            productDto.setIdProductFamily(product.getProductFamily().getIdProductFamily());
+        }
 
         return productDto;
     }
 
     public Product updateProduct(ProductDto productDto, Product productDb) {
-
         Product product = new Product();
-
-        if(productDto.getUuid() != null) product.setUuid(productDto.getName());
-        else product.setName(productDb.getName());
 
         if(productDto.getName() != null) product.setName(productDto.getName());
         else product.setName(productDb.getName());
@@ -104,8 +103,15 @@ public class ProductMapper {
         if(productDto.getMinimalStock() != null) product.setMinimalStock(productDto.getMinimalStock());
         else product.setMinimalStock(productDb.getMinimalStock());
 
-        if(productDto.getCreationDate() != null) product.setCreationDate(productDto.getCreationDate());
-        else product.setCreationDate(productDb.getCreationDate());
+        product.setUuid(productDb.getUuid());
+        product.setIdProduct(productDb.getIdProduct());
+
+        if (productDto.getIdProductFamily() != null) {
+            ProductFamily productFamily = productFamilyRepository.findById(productDto.getIdProductFamily()).get();
+            product.setProductFamily(productFamily);
+        } else if (productDb.getProductFamily() != null){
+            product.setProductFamily(productDb.getProductFamily());
+        }
 
         return product;
     }

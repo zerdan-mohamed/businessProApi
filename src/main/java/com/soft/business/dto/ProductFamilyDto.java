@@ -19,11 +19,9 @@ public class ProductFamilyDto implements Serializable {
     private static final String PRODUCT_FAMILY_NAME = "name";
     private static final String PRODUCTS = "products";
 
-    @NotBlank
     @JsonProperty(PRODUCT_FAMILY_UUID)
     private String uuid;
 
-    @NotBlank
     @JsonProperty(PRODUCT_FAMILY_NAME)
     private  String name;
 

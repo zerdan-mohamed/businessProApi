@@ -21,7 +21,7 @@ public class ProductFamilyMapper {
     public ProductFamilyDto makeDtoFromProductFamily(ProductFamily productFamily) {
         ProductFamilyDto productFamilyDto = new ProductFamilyDto();
 
-        productFamilyDto.setUuid(UUID.randomUUID().toString());
+        productFamilyDto.setUuid(productFamily.getUuid());
         productFamilyDto.setName(productFamily.getName());
 
         return productFamilyDto;
@@ -31,11 +31,11 @@ public class ProductFamilyMapper {
 
         ProductFamily productFamily = new ProductFamily();
 
-        if(productFamilyDto.getUuid() != null) productFamily.setUuid(productFamilyDto.getUuid());
-        else productFamily.setUuid(productFamilyDb.getUuid());
-
         if(productFamilyDto.getName() != null) productFamily.setName(productFamilyDto.getName());
         else productFamily.setName(productFamilyDb.getName());
+
+        productFamily.setUuid(productFamilyDb.getUuid());
+        productFamily.setIdProductFamily(productFamilyDb.getIdProductFamily());
 
         return productFamily;
     }

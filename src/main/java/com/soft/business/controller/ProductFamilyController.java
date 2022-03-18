@@ -31,25 +31,18 @@ public class ProductFamilyController {
             else
                 return new ResponseEntity<>(productFamiliesDto, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<?> getProductFamilyByUuid(@PathVariable("uuid") String uuid) {
-        ProductFamilyDto productFamilyDto = productFamilyService.findProductFamilyByUuid(uuid);
-
-        if (productFamilyDto != null) {
-            return new ResponseEntity<>(productFamilyDto, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return productFamilyService.findProductFamilyByUuid(uuid);
     }
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<?> deleteProductFamilyByUuid(@PathVariable("uuid") String uuid) {
-        productFamilyService.deleteProductFamilyByUuid(uuid);
-        return ResponseEntity.ok().build();
+        return productFamilyService.deleteProductFamilyByUuid(uuid);
     }
 
     @PostMapping

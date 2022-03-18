@@ -18,7 +18,6 @@ public class Product implements Serializable {
     private Long idProduct;
 
     @Column(name = "UUID")
-    @NotBlank
     private String uuid;
 
     @Column(name = "NAME")
@@ -59,7 +58,7 @@ public class Product implements Serializable {
     private Date creationDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idProductFamily")
+    @JoinColumn(name = "ID_PRODUCT_FAMILY")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private ProductFamily productFamily;
 

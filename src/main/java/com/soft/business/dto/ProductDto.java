@@ -29,11 +29,9 @@ public class ProductDto implements Serializable {
     private static final String PRODUCT_CREATION_DATE = "creationDate";
     private static final String ID_PRODUCT_FAMILY = "idProductFamily";
 
-    @NotBlank
     @JsonProperty(PRODUCT_UUID)
     private String uuid;
 
-    @NotBlank
     @JsonProperty(PRODUCT_NAME)
     private String name;
 
@@ -71,6 +69,6 @@ public class ProductDto implements Serializable {
     private Date creationDate;
 
     @JsonProperty(ID_PRODUCT_FAMILY)
-    private String idProductFamily;
+    private Long idProductFamily;
 
 }
