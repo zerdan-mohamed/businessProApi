@@ -11,7 +11,7 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/v1/productsFamilies")
+@RequestMapping("api/v1/productsFamilies")
 public class ProductFamilyController {
 
     private ProductFamilyService productFamilyService;
@@ -23,16 +23,8 @@ public class ProductFamilyController {
     // TODO: Refactor findProducts method to implement SPRING SPECIFICATION behavior
     @GetMapping
     public ResponseEntity<?> findProductFamilies(@RequestParam(required = false) String name) {
-        try {
             List<ProductFamilyDto> productFamiliesDto = productFamilyService.findProductFamilies();
-
-            if (productFamiliesDto.isEmpty())
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            else
-                return new ResponseEntity<>(productFamiliesDto, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            return new ResponseEntity<>(productFamiliesDto, HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
@@ -54,7 +46,6 @@ public class ProductFamilyController {
     public ResponseEntity<?> updateProductFamilyByUuid(
             @PathVariable("uuid") String uuid,
             @Valid @RequestBody ProductFamilyDto productFamilyDto) {
-
         return productFamilyService.updateProductFamilyByUuid(uuid, productFamilyDto);
     }
 

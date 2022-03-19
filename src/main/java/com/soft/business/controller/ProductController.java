@@ -7,10 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/products")
+@RequestMapping("api/v1/products")
 public class ProductController {
 
     ProductService productService;
@@ -23,11 +24,7 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<?> findProducts(@RequestParam(required = false) String name) {
         List<ProductDto> productsDto = productService.findProducts();
-
-        if (productsDto.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        else
-            return new ResponseEntity<>(productsDto, HttpStatus.OK);
+        return new ResponseEntity<>(productsDto, HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
@@ -41,7 +38,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createProduct(@Valid @RequestBody ProductDto productDto) {
+    public ResponseEntity<?> createProduct(@Valid @RequestBody ProductDto productDto) throws ParseException {
         return productService.createProduct(productDto);
     }
 

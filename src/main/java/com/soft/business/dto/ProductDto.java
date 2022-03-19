@@ -3,9 +3,9 @@ package com.soft.business.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.soft.business.model.ProductFamily;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,18 +16,18 @@ public class ProductDto implements Serializable {
 
     private static final String PRODUCT_UUID = "uuid";
     private static final String PRODUCT_NAME = "name";
-    private static final String PRODUCT_MEASURE_UNITE = "measureUnite";
-    private static final String PRODUCT_VAT_RATE = "vatRate";
-    private static final String PRODUCT_BUYING_PRICE = "buyingPrice";
-    private static final String PRODUCT_RESELLER_PRICE = "resellerPrice";
-    private static final String PRODUCT_PUBLIC_SALE_PRICE = "publicSalePrice";
-    private static final String PRODUCT_CURRENT_STOCK = "currentStock";
-    private static final String PRODUCT_INITIAL_STOCK = "initialStock";
-    private static final String PRODUCT_INITIAL_STOCK_DATE = "initialStockDate";
-    private static final String PRODUCT_MINIMAL_STOCK = "minimalStock";
-    private static final String PRODUCT_MAXIMAL_STOCK = "maximalStock";
-    private static final String PRODUCT_CREATION_DATE = "creationDate";
-    private static final String ID_PRODUCT_FAMILY = "idProductFamily";
+    private static final String PRODUCT_MEASURE_UNITE = "measure_unite";
+    private static final String PRODUCT_VAT_RATE = "vat_rate";
+    private static final String PRODUCT_BUYING_PRICE = "buying_price";
+    private static final String PRODUCT_RESELLER_PRICE = "reseller_price";
+    private static final String PRODUCT_PUBLIC_SALE_PRICE = "public_sale_price";
+    private static final String PRODUCT_CURRENT_STOCK = "current_stock";
+    private static final String PRODUCT_INITIAL_STOCK = "initial_stock";
+    private static final String PRODUCT_INITIAL_STOCK_DATE = "initial_stock_date";
+    private static final String PRODUCT_MINIMAL_STOCK = "minimal_stock";
+    private static final String PRODUCT_MAXIMAL_STOCK = "maximal_stock";
+    private static final String PRODUCT_CREATION_DATE = "creation_date";
+    private static final String PRODUCT_FAMILY = "product_family";
 
     @JsonProperty(PRODUCT_UUID)
     private String uuid;
@@ -39,16 +39,16 @@ public class ProductDto implements Serializable {
     private String measureUnite;
 
     @JsonProperty(PRODUCT_VAT_RATE)
-    private Short vatRate;
+    private Double vatRate;
 
     @JsonProperty(PRODUCT_BUYING_PRICE)
-    private Long buyingPrice;
+    private Double buyingPrice;
 
     @JsonProperty(PRODUCT_RESELLER_PRICE)
-    private Long resellerPrice;
+    private Double resellerPrice;
 
     @JsonProperty(PRODUCT_PUBLIC_SALE_PRICE)
-    private Long publicSalePrice;
+    private Double publicSalePrice;
 
     @JsonProperty(PRODUCT_CURRENT_STOCK)
     private Integer currentStock;
@@ -57,7 +57,7 @@ public class ProductDto implements Serializable {
     private Integer initialStock;
 
     @JsonProperty(PRODUCT_INITIAL_STOCK_DATE)
-    private Date initialStockDate;
+    private String initialStockDate;
 
     @JsonProperty(PRODUCT_MINIMAL_STOCK)
     private Integer minimalStock;
@@ -68,7 +68,6 @@ public class ProductDto implements Serializable {
     @JsonProperty(PRODUCT_CREATION_DATE)
     private Date creationDate;
 
-    @JsonProperty(ID_PRODUCT_FAMILY)
-    private Long idProductFamily;
-
+    @JsonProperty(PRODUCT_FAMILY)
+    private ProductFamily productFamily;
 }

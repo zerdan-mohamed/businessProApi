@@ -6,6 +6,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -25,19 +26,19 @@ public class Product implements Serializable {
     private String name;
 
     @Column(name = "MEASURE_UNITE")
-    private  String measureUnite;
+    private String measureUnite;
 
     @Column(name = "VAT_RATE")
-    private Short vatRate;
+    private Double vatRate;
 
     @Column(name = "BUYING_PRICE")
-    private Long buyingPrice;
+    private Double buyingPrice;
 
     @Column(name = "RESELLER_PRICE")
-    private Long resellerPrice;
+    private Double resellerPrice;
 
     @Column(name = "PUBLIC_SALE_PRICE")
-    private Long publicSalePrice;
+    private Double publicSalePrice;
 
     @Column(name = "CURRENT_STOCK")
     private Integer currentStock;
@@ -57,9 +58,7 @@ public class Product implements Serializable {
     @Column(name = "CREATION_DATE")
     private Date creationDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_PRODUCT_FAMILY")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne()
+    @JoinColumn(name = "ID_PRODUCT_FAMILY", nullable = true)
     private ProductFamily productFamily;
-
 }

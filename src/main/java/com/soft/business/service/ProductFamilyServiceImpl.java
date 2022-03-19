@@ -39,67 +39,47 @@ public class ProductFamilyServiceImpl implements ProductFamilyService {
     public List<ProductFamilyDto> findProductFamilies() {
         List<ProductFamily> productFamilies = productFamilyRepository.findAll();
         List<ProductFamilyDto> productFamiliesDto = new ArrayList<>();
-
         productFamilies.forEach(
                 product -> productFamiliesDto.add(productFamilyMapper.makeDtoFromProductFamily(product))
         );
-
         return productFamiliesDto;
     }
 
     @Override
     public ResponseEntity<?> findProductFamilyByUuid(String uuid) {
         Optional<ProductFamily>  optionalProductFamily = productFamilyRepository.findByUuid(uuid);
-
-        if(optionalProductFamily.isPresent()) {
-            ProductFamilyDto productFamilyDto =
+        ProductFamilyDto productFamilyDto =
                     productFamilyMapper.makeDtoFromProductFamily(optionalProductFamily.get());
-            return new ResponseEntity<>(productFamilyDto, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(productFamilyDto, HttpStatus.OK);
     }
 
     @Override
     @Transactional
     public ResponseEntity<?> deleteProductFamilyByUuid(String uuid) {
         long isDeleted = productFamilyRepository.deleteByUuid(uuid);
-
-        if(isDeleted != 0) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        if(isDeleted == 0) throw new NoSuchElementException();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<?> createProductFamily(ProductFamilyDto productFamilyDto) {
-        try {
-            productFamilyValidator.createProductFamilyValidator(productFamilyDto);
-            ProductFamily p = productFamilyMapper.makeProductFamilyFromDto(productFamilyDto);
-            productFamilyRepository.save(p);
-
-            return new ResponseEntity<>(productFamilyDto, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(productFamilyDto, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        productFamilyValidator.createProductFamilyValidator(productFamilyDto);
+        ProductFamily p = productFamilyMapper.makeProductFamilyFromDto(productFamilyDto);
+        ProductFamily productFamily = productFamilyRepository.save(p);
+        return new ResponseEntity<>(productFamilyMapper.makeDtoFromProductFamily(productFamily),
+                HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<?> updateProductFamilyByUuid(String uuid, ProductFamilyDto productFamilyDto) {
-        Optional<ProductFamily> productFamily = this.productFamilyRepository.findByUuid(uuid);
+        Optional<ProductFamily> oProductFamily = this.productFamilyRepository.findByUuid(uuid);
+        if(oProductFamily.isEmpty()) throw new NoSuchElementException();
+        ProductFamily updatedProductFamily =
+                    productFamilyMapper.updateProductFamily(productFamilyDto, oProductFamily.get());
+        ProductFamily savedProductFamily = productFamilyRepository.save(updatedProductFamily);
 
-        if (productFamily.isPresent()) {
-            ProductFamily updatedProductFamily =
-                    productFamilyMapper.updateProductFamily(productFamilyDto, productFamily.get());
-            ProductFamily savedProductFamily = productFamilyRepository.save(updatedProductFamily);
-
-            return new ResponseEntity<>(
-                    productFamilyMapper.makeDtoFromProductFamily(savedProductFamily),
-                    HttpStatus.OK
-            );
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(
+                productFamilyMapper.makeDtoFromProductFamily(savedProductFamily), HttpStatus.OK
+        );
     }
 }

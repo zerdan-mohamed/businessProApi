@@ -1,12 +1,11 @@
 package com.soft.business.exception;
 
-public class  EmptyInputException extends FunctionalException {
-
-    public EmptyInputException() {
+public class DateFormatException extends FunctionalException {
+    public DateFormatException() {
         super();
     }
 
-    public EmptyInputException(String errorCode,
+    public DateFormatException(String errorCode,
                                String errorMessage) {
         super(errorCode, errorMessage);
     }

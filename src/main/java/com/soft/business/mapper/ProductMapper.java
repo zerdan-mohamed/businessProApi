@@ -4,9 +4,12 @@ import com.soft.business.dto.ProductDto;
 import com.soft.business.model.Product;
 import com.soft.business.model.ProductFamily;
 import com.soft.business.repository.ProductFamilyRepository;
+import com.soft.business.util.Constantes;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,7 +22,7 @@ public class ProductMapper {
         this.productFamilyRepository = productFamilyRepository;
     }
 
-    public Product makeProductFromDto(ProductDto productDto) {
+    public Product makeProductFromDto(ProductDto productDto) throws ParseException {
         Product product = new Product();
 
         product.setUuid(UUID.randomUUID().toString());
@@ -33,12 +36,12 @@ public class ProductMapper {
         product.setInitialStock(productDto.getInitialStock());
         product.setMinimalStock(productDto.getMinimalStock());
         product.setMaximalStock(productDto.getMaximalStock());
-        product.setCreationDate(productDto.getCreationDate());
-
-        if (productDto.getIdProductFamily() != null) {
-            Optional<ProductFamily> productFamily =
-                    productFamilyRepository.findById(productDto.getIdProductFamily());
-            product.setProductFamily(productFamily.get());
+        product.setCreationDate(new Date());
+        product.setInitialStockDate(Constantes.dateFormatter.parse(productDto.getInitialStockDate()));
+        if(productDto.getProductFamily() != null && productDto.getProductFamily().getUuid() != null) {
+            Optional<ProductFamily> oProductFamily = productFamilyRepository.findByUuid(productDto.getProductFamily().getUuid());
+            ProductFamily productFamily = oProductFamily.get();
+            product.setProductFamily(productFamily);
         }
 
         return product;
@@ -59,10 +62,8 @@ public class ProductMapper {
         productDto.setMinimalStock(product.getMinimalStock());
         productDto.setMaximalStock(product.getMaximalStock());
         productDto.setCreationDate(product.getCreationDate());
-
-        if (product.getProductFamily() != null) {
-            productDto.setIdProductFamily(product.getProductFamily().getIdProductFamily());
-        }
+        productDto.setInitialStockDate(product.getInitialStockDate().toString());
+        if(product.getProductFamily() != null) productDto.setProductFamily(product.getProductFamily());
 
         return productDto;
     }
@@ -94,7 +95,7 @@ public class ProductMapper {
         if(productDto.getInitialStock() != null) product.setInitialStock(productDto.getInitialStock());
         else product.setInitialStock(productDb.getInitialStock());
 
-        if(productDto.getInitialStockDate() != null) product.setInitialStockDate(productDto.getInitialStockDate());
+        if(productDto.getInitialStockDate() != null) product.setInitialStockDate(new Date(Constantes.dateFormatter.format(productDto.getInitialStockDate())));
         else product.setInitialStockDate(productDb.getInitialStockDate());
 
         if(productDto.getMaximalStock() != null) product.setMaximalStock(productDto.getMaximalStock());
@@ -106,10 +107,10 @@ public class ProductMapper {
         product.setUuid(productDb.getUuid());
         product.setIdProduct(productDb.getIdProduct());
 
-        if (productDto.getIdProductFamily() != null) {
-            ProductFamily productFamily = productFamilyRepository.findById(productDto.getIdProductFamily()).get();
+        if (productDto.getProductFamily() != null && productDto.getProductFamily().getUuid() != null) {
+            ProductFamily productFamily = productFamilyRepository.findByUuid(productDto.getProductFamily().getUuid()).get();
             product.setProductFamily(productFamily);
-        } else if (productDb.getProductFamily() != null){
+        } else if (productDb.getProductFamily() != null && productDb.getProductFamily().getUuid() != null){
             product.setProductFamily(productDb.getProductFamily());
         }
 

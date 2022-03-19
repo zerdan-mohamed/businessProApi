@@ -3,6 +3,7 @@ package com.soft.business.service;
 import com.soft.business.dto.ProductDto;
 import org.springframework.http.ResponseEntity;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface ProductService {
@@ -13,7 +14,7 @@ public interface ProductService {
 
     ResponseEntity<?> deleteProductByUuid(String uuid);
 
-    ResponseEntity<?>  createProduct(ProductDto productDto);
+    ResponseEntity<?>  createProduct(ProductDto productDto) throws ParseException;
 
     ResponseEntity<?> updateProductByUuid(String uuid, ProductDto productDto);
 

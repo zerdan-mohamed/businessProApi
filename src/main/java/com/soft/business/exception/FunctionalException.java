@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class FunctionalException extends RuntimeException {
+public class FunctionalException extends RuntimeException{
     private String errorCode;
     private String errorMessage;
 
