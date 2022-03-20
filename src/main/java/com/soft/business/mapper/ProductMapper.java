@@ -1,6 +1,7 @@
 package com.soft.business.mapper;
 
 import com.soft.business.dto.ProductDto;
+import com.soft.business.dto.ProductFamilyDto;
 import com.soft.business.model.Product;
 import com.soft.business.model.ProductFamily;
 import com.soft.business.repository.ProductFamilyRepository;
@@ -74,8 +75,12 @@ public class ProductMapper {
         if (product.getInitialStockDate() != null)
             productDto.setInitialStockDate(product.getInitialStockDate().toString());
 
-        if (product.getProductFamily() != null)
-            productDto.setProductFamily(product.getProductFamily());
+        if (product.getProductFamily() != null) {
+            ProductFamilyDto productFamilyDto = new ProductFamilyDto();
+            productFamilyDto.setName(product.getProductFamily().getName());
+            productFamilyDto.setUuid(product.getProductFamily().getUuid());
+            productDto.setProductFamily(productFamilyDto);
+        }
 
         return productDto;
     }
@@ -127,7 +132,6 @@ public class ProductMapper {
                 ProductFamily productFamily = optionalProductFamily.get();
                 product.setProductFamily(productFamily);
             }
-
         } else if (productDb.getProductFamily() != null){
             product.setProductFamily(productDb.getProductFamily());
         }

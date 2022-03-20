@@ -60,13 +60,6 @@ public class ProductFamilyServiceImpl implements ProductFamilyService {
     @Override
     @Transactional
     public void deleteProductFamilyByUuid(String uuid) {
-        // TODO: Optional value should only be accessed after calling isPresent()
-        ProductFamily productFamily = productFamilyRepository.findByUuid(uuid).get();
-
-        List<Product> products = productRepository.findAllByProductFamily(productFamily);
-
-        for(Product product : products) product.setProductFamily(null);
-
         long isDeleted = productFamilyRepository.deleteByUuid(uuid);
         if(isDeleted == 0) throw new NoSuchElementException();
     }
