@@ -3,7 +3,6 @@ package com.soft.business.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.soft.business.model.ProductFamily;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -69,5 +68,5 @@ public class ProductDto implements Serializable {
     private Date creationDate;
 
     @JsonProperty(PRODUCT_FAMILY)
-    private ProductFamily productFamily;
+    private ProductFamilyDto productFamily;
 }
