@@ -14,10 +14,8 @@ import java.util.Set;
 @Table(name="PRODUCT_FAMILY")
 public class ProductFamily implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_PRODUCT_FAMILY")
-    @JsonIgnore
     private Long idProductFamily;
 
     @Column(name = "UUID")
@@ -30,5 +28,5 @@ public class ProductFamily implements Serializable {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productFamily")
-    private Set<Product> products = new HashSet<Product>();
+    private Set<Product> products = new HashSet<>();
 }

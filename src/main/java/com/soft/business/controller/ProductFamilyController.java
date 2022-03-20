@@ -20,33 +20,42 @@ public class ProductFamilyController {
         this.productFamilyService = productFamilyService;
     }
 
-    // TODO: Refactor findProducts method to implement SPRING SPECIFICATION behavior
     @GetMapping
-    public ResponseEntity<?> findProductFamilies(@RequestParam(required = false) String name) {
-            List<ProductFamilyDto> productFamiliesDto = productFamilyService.findProductFamilies();
-            return new ResponseEntity<>(productFamiliesDto, HttpStatus.OK);
+    public ResponseEntity<?> findProductFamilies() {
+            List<ProductFamilyDto> productFamilies = productFamilyService.findProductFamilies();
+
+            return new ResponseEntity<>(productFamilies, HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<?> getProductFamilyByUuid(@PathVariable("uuid") String uuid) {
-        return productFamilyService.findProductFamilyByUuid(uuid);
+        ProductFamilyDto productFamily = productFamilyService.findProductFamilyByUuid(uuid);
+
+        return new ResponseEntity<>(productFamily, HttpStatus.OK);
     }
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<?> deleteProductFamilyByUuid(@PathVariable("uuid") String uuid) {
-        return productFamilyService.deleteProductFamilyByUuid(uuid);
+        productFamilyService.deleteProductFamilyByUuid(uuid);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<?> createProductFamily(@Valid @RequestBody ProductFamilyDto productFamilyDto) {
-        return productFamilyService.createProductFamily(productFamilyDto);
+        productFamilyService.createProductFamily(productFamilyDto);
+
+        return new ResponseEntity<>(productFamilyDto, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{uuid}")
     public ResponseEntity<?> updateProductFamilyByUuid(
             @PathVariable("uuid") String uuid,
-            @Valid @RequestBody ProductFamilyDto productFamilyDto) {
-        return productFamilyService.updateProductFamilyByUuid(uuid, productFamilyDto);
+            @Valid @RequestBody ProductFamilyDto productFamilyDto
+    ) {
+        productFamilyService.updateProductFamilyByUuid(uuid, productFamilyDto);
+
+        return new ResponseEntity<>(productFamilyDto, HttpStatus.OK);
     }
 
 }

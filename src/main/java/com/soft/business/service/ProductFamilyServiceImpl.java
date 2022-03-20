@@ -5,9 +5,8 @@ import com.soft.business.mapper.ProductFamilyMapper;
 import com.soft.business.model.Product;
 import com.soft.business.model.ProductFamily;
 import com.soft.business.repository.ProductFamilyRepository;
+import com.soft.business.repository.ProductRepository;
 import com.soft.business.util.validator.ProductFamilyValidator;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
@@ -21,6 +20,8 @@ public class ProductFamilyServiceImpl implements ProductFamilyService {
 
     private ProductFamilyRepository productFamilyRepository;
 
+    private ProductRepository productRepository;
+
     private ProductFamilyMapper productFamilyMapper;
 
     private ProductFamilyValidator productFamilyValidator;
@@ -28,11 +29,13 @@ public class ProductFamilyServiceImpl implements ProductFamilyService {
     public ProductFamilyServiceImpl(
             ProductFamilyRepository productFamilyRepository,
             ProductFamilyMapper productFamilyMapper,
-            ProductFamilyValidator productFamilyValidator
+            ProductFamilyValidator productFamilyValidator,
+            ProductRepository productRepository
     ) {
         this.productFamilyRepository = productFamilyRepository;
         this.productFamilyMapper = productFamilyMapper;
         this.productFamilyValidator = productFamilyValidator;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -42,44 +45,49 @@ public class ProductFamilyServiceImpl implements ProductFamilyService {
         productFamilies.forEach(
                 product -> productFamiliesDto.add(productFamilyMapper.makeDtoFromProductFamily(product))
         );
+
         return productFamiliesDto;
     }
 
     @Override
-    public ResponseEntity<?> findProductFamilyByUuid(String uuid) {
-        Optional<ProductFamily>  optionalProductFamily = productFamilyRepository.findByUuid(uuid);
-        ProductFamilyDto productFamilyDto =
-                    productFamilyMapper.makeDtoFromProductFamily(optionalProductFamily.get());
-        return new ResponseEntity<>(productFamilyDto, HttpStatus.OK);
+    public ProductFamilyDto findProductFamilyByUuid(String uuid) {
+        Optional<ProductFamily>  productFamily = productFamilyRepository.findByUuid(uuid);
+
+        // TODO: Optional value should only be accessed after calling isPresent()
+        return productFamilyMapper.makeDtoFromProductFamily(productFamily.get());
     }
 
     @Override
     @Transactional
-    public ResponseEntity<?> deleteProductFamilyByUuid(String uuid) {
+    public void deleteProductFamilyByUuid(String uuid) {
+        // TODO: Optional value should only be accessed after calling isPresent()
+        ProductFamily productFamily = productFamilyRepository.findByUuid(uuid).get();
+
+        List<Product> products = productRepository.findAllByProductFamily(productFamily);
+
+        for(Product product : products) product.setProductFamily(null);
+
         long isDeleted = productFamilyRepository.deleteByUuid(uuid);
         if(isDeleted == 0) throw new NoSuchElementException();
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<?> createProductFamily(ProductFamilyDto productFamilyDto) {
+    public ProductFamilyDto createProductFamily(ProductFamilyDto productFamilyDto) {
         productFamilyValidator.createProductFamilyValidator(productFamilyDto);
-        ProductFamily p = productFamilyMapper.makeProductFamilyFromDto(productFamilyDto);
-        ProductFamily productFamily = productFamilyRepository.save(p);
-        return new ResponseEntity<>(productFamilyMapper.makeDtoFromProductFamily(productFamily),
-                HttpStatus.CREATED);
+        productFamilyRepository.save(productFamilyMapper.makeProductFamilyFromDto(productFamilyDto));
+
+        return productFamilyDto;
     }
 
     @Override
-    public ResponseEntity<?> updateProductFamilyByUuid(String uuid, ProductFamilyDto productFamilyDto) {
-        Optional<ProductFamily> oProductFamily = this.productFamilyRepository.findByUuid(uuid);
-        if(oProductFamily.isEmpty()) throw new NoSuchElementException();
-        ProductFamily updatedProductFamily =
-                    productFamilyMapper.updateProductFamily(productFamilyDto, oProductFamily.get());
-        ProductFamily savedProductFamily = productFamilyRepository.save(updatedProductFamily);
+    public ProductFamilyDto updateProductFamilyByUuid(String uuid, ProductFamilyDto productFamilyDto) {
+        Optional<ProductFamily> optionalProductFamily = this.productFamilyRepository.findByUuid(uuid);
 
-        return new ResponseEntity<>(
-                productFamilyMapper.makeDtoFromProductFamily(savedProductFamily), HttpStatus.OK
-        );
+        if (optionalProductFamily.isEmpty()) throw new NoSuchElementException();
+
+        ProductFamily productFamily = productFamilyMapper.updateProductFamily(productFamilyDto, optionalProductFamily.get());
+        productFamilyRepository.save(productFamily);
+
+        return productFamilyDto;
     }
 }

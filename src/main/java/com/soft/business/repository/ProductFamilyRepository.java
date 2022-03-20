@@ -1,6 +1,5 @@
 package com.soft.business.repository;
 
-import com.soft.business.model.Product;
 import com.soft.business.model.ProductFamily;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

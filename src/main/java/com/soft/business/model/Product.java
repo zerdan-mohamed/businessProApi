@@ -1,12 +1,9 @@
 package com.soft.business.model;
 
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,6 +16,7 @@ public class Product implements Serializable {
     private Long idProduct;
 
     @Column(name = "UUID")
+    @NotBlank
     private String uuid;
 
     @Column(name = "NAME")

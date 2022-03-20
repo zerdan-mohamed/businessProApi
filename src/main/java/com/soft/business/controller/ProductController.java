@@ -20,32 +20,39 @@ public class ProductController {
         this.productService = productService;
     }
 
-    // TODO: Refactor findProducts method to implement SPRING SPECIFICATION behavior
     @GetMapping
     public ResponseEntity<?> findProducts(@RequestParam(required = false) String name) {
         List<ProductDto> productsDto = productService.findProducts();
+
         return new ResponseEntity<>(productsDto, HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<?> getProductByUuid(@PathVariable("uuid") String uuid) {
-        return productService.findProductByUuid(uuid);
+        ProductDto product = productService.findProductByUuid(uuid);
+
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<?> deleteProductByUuid(@PathVariable("uuid") String uuid) {
-        return productService.deleteProductByUuid(uuid);
+        productService.deleteProductByUuid(uuid);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<?> createProduct(@Valid @RequestBody ProductDto productDto) throws ParseException {
-        return productService.createProduct(productDto);
+        productService.createProduct(productDto);
+
+        return new ResponseEntity<>(productDto, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{uuid}")
     public ResponseEntity<?> updateProductByUuid(
             @PathVariable("uuid") String uuid, @Valid @RequestBody ProductDto productDto) {
-        return productService.updateProductByUuid(uuid, productDto);
-    }
+        productService.updateProductByUuid(uuid, productDto);
 
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
+    }
 }

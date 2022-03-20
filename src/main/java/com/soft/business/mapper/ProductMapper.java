@@ -37,11 +37,19 @@ public class ProductMapper {
         product.setMinimalStock(productDto.getMinimalStock());
         product.setMaximalStock(productDto.getMaximalStock());
         product.setCreationDate(new Date());
-        product.setInitialStockDate(Constantes.dateFormatter.parse(productDto.getInitialStockDate()));
-        if(productDto.getProductFamily() != null && productDto.getProductFamily().getUuid() != null) {
-            Optional<ProductFamily> oProductFamily = productFamilyRepository.findByUuid(productDto.getProductFamily().getUuid());
-            ProductFamily productFamily = oProductFamily.get();
-            product.setProductFamily(productFamily);
+
+        if (productDto.getInitialStockDate() != null)
+            product.setInitialStockDate(
+                    Constantes.dateFormatter.parse(productDto.getInitialStockDate())
+            );
+
+        if (productDto.getProductFamily() != null) {
+            Optional<ProductFamily> optionalProductFamily = productFamilyRepository.findByUuid(
+                    productDto.getProductFamily().getUuid());
+            if (optionalProductFamily.isPresent()) {
+                ProductFamily productFamily = optionalProductFamily.get();
+                product.setProductFamily(productFamily);
+            }
         }
 
         return product;
@@ -62,8 +70,12 @@ public class ProductMapper {
         productDto.setMinimalStock(product.getMinimalStock());
         productDto.setMaximalStock(product.getMaximalStock());
         productDto.setCreationDate(product.getCreationDate());
-        productDto.setInitialStockDate(product.getInitialStockDate().toString());
-        if(product.getProductFamily() != null) productDto.setProductFamily(product.getProductFamily());
+
+        if (product.getInitialStockDate() != null)
+            productDto.setInitialStockDate(product.getInitialStockDate().toString());
+
+        if (product.getProductFamily() != null)
+            productDto.setProductFamily(product.getProductFamily());
 
         return productDto;
     }
@@ -95,6 +107,7 @@ public class ProductMapper {
         if(productDto.getInitialStock() != null) product.setInitialStock(productDto.getInitialStock());
         else product.setInitialStock(productDb.getInitialStock());
 
+        // TODO: Change deprecated Date object
         if(productDto.getInitialStockDate() != null) product.setInitialStockDate(new Date(Constantes.dateFormatter.format(productDto.getInitialStockDate())));
         else product.setInitialStockDate(productDb.getInitialStockDate());
 
@@ -107,10 +120,15 @@ public class ProductMapper {
         product.setUuid(productDb.getUuid());
         product.setIdProduct(productDb.getIdProduct());
 
-        if (productDto.getProductFamily() != null && productDto.getProductFamily().getUuid() != null) {
-            ProductFamily productFamily = productFamilyRepository.findByUuid(productDto.getProductFamily().getUuid()).get();
-            product.setProductFamily(productFamily);
-        } else if (productDb.getProductFamily() != null && productDb.getProductFamily().getUuid() != null){
+        if (productDto.getProductFamily() != null) {
+            Optional<ProductFamily> optionalProductFamily = productFamilyRepository.findByUuid(productDto.getProductFamily().getUuid());
+
+            if (optionalProductFamily.isPresent()) {
+                ProductFamily productFamily = optionalProductFamily.get();
+                product.setProductFamily(productFamily);
+            }
+
+        } else if (productDb.getProductFamily() != null){
             product.setProductFamily(productDb.getProductFamily());
         }
 
