@@ -20,25 +20,25 @@ public class SupplierController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<?> retrieveSupplierByUuid(@PathVariable("uuid") String uuid) {
-        SupplierDto supplierDto = this.supplierService.retrieveSupplierByUuid(uuid);
+    public ResponseEntity<?> findSupplierByUuid(@PathVariable("uuid") String uuid) {
+        SupplierDto supplierDto = this.supplierService.findSupplierByUuid(uuid);
         return ResponseEntity.ok(supplierDto);
     }
 
     @GetMapping
-    public ResponseEntity<?> retrieveAllSuppliers() {
-        List<SupplierDto> listOfAllSuppliers = this.supplierService.getAllSuppliersByOrganisationId();
+    public ResponseEntity<?> findAllSuppliers() {
+        List<SupplierDto> listOfAllSuppliers = this.supplierService.findAllSuppliers();
         return new ResponseEntity<>(listOfAllSuppliers, HttpStatus.OK);
     }
 
     @PostMapping()
     public ResponseEntity<?> createSupplier(@Valid @RequestBody SupplierDto supplierDto) {
-        return supplierService.createSupplier(supplierDto);
+        return new ResponseEntity<>(supplierService.createSupplier(supplierDto), HttpStatus.OK);
     }
 
     @PatchMapping("/{uuid}")
     public ResponseEntity<?> updateSupplier(@PathVariable("uuid") String uuid, @Valid @RequestBody SupplierDto supplierDto) {
-        return supplierService.updateSupplier(uuid, supplierDto);
+        return new ResponseEntity<>(supplierService.updateSupplier(uuid, supplierDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{uuid}")

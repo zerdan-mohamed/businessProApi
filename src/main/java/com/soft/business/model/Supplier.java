@@ -37,7 +37,7 @@ public class Supplier implements Serializable {
     private String faxNumber;
 
     @Column(name = "ADDRESS")
-    private String Address;
+    private String address;
 
     @Column(name = "EMAIL")
     @Email

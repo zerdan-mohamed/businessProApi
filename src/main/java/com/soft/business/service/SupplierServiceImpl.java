@@ -31,21 +31,20 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public ResponseEntity<?> createSupplier(SupplierDto supplierDto) {
+    public SupplierDto createSupplier(SupplierDto supplierDto) {
         supplierValidator.createSupplierValidator(supplierDto);
-        Supplier supplier = supplierRepository.save(supplierMapper.makeSupplierFromDto(supplierDto));
-        return new ResponseEntity<>(supplierMapper.makeDtoFromSupplier(supplier), HttpStatus.CREATED);
+        Supplier savedSupplier = supplierRepository.save(supplierMapper.makeSupplierFromDto(supplierDto));
+        return supplierMapper.makeDtoFromSupplier(savedSupplier);
     }
 
     @Override
-    public ResponseEntity<?> updateSupplier(String uuid, SupplierDto supplierDto) {
+    public SupplierDto updateSupplier(String uuid, SupplierDto supplierDto) {
         Optional<Supplier> oSupplier = this.supplierRepository.findByUuid(uuid);
         if(oSupplier.isEmpty()) throw new NoSuchElementException();
 
         Supplier supplier = supplierMapper.updateSupplierMapper(supplierDto, oSupplier.get());
         Supplier savedSupplier = supplierRepository.save(supplier);
-
-        return new ResponseEntity<>(supplierMapper.makeDtoFromSupplier(savedSupplier), HttpStatus.OK);
+        return supplierMapper.makeDtoFromSupplier(savedSupplier);
     }
 
     @Override
@@ -56,14 +55,14 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public SupplierDto retrieveSupplierByUuid(String uuid) {
+    public SupplierDto findSupplierByUuid(String uuid) {
         Optional<Supplier> oSupplier = this.supplierRepository.findByUuid(uuid);
         Supplier supplier = oSupplier.get();
         return this.supplierMapper.makeDtoFromSupplier(supplier);
     }
 
     @Override
-    public List<SupplierDto> getAllSuppliersByOrganisationId() {
+    public List<SupplierDto> findAllSuppliers() {
         List<Supplier> suppliers = this.supplierRepository.findAll();
         List<SupplierDto> supplierDtos = new ArrayList<>();
         suppliers.forEach(supplier -> supplierDtos.add(this.supplierMapper.makeDtoFromSupplier(supplier)));

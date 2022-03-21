@@ -6,13 +6,13 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface SupplierService {
-    ResponseEntity<?> createSupplier(SupplierDto supplierDto);
+    SupplierDto createSupplier(SupplierDto supplierDto);
 
-    ResponseEntity<?> updateSupplier(String uuid, SupplierDto supplierDto);
+    SupplierDto updateSupplier(String uuid, SupplierDto supplierDto);
 
     void deleteSupplierByUuid(String uuid);
 
-    SupplierDto retrieveSupplierByUuid(String uuid);
+    SupplierDto findSupplierByUuid(String uuid);
 
-    List<SupplierDto> getAllSuppliersByOrganisationId();
+    List<SupplierDto> findAllSuppliers();
 }

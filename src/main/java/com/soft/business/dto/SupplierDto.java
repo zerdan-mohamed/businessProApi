@@ -47,7 +47,7 @@ public class SupplierDto implements Serializable {
     private String faxNumber;
 
     @JsonProperty(SUPPLIER_ADDRESS)
-    private String Address;
+    private String address;
 
     @JsonProperty(SUPPLIER_EMAIL)
     private String email;
