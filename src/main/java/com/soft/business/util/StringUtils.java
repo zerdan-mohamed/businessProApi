@@ -1,5 +1,6 @@
 package com.soft.business.util;
 
+
 public class StringUtils {
 
     public static boolean isEmpty(String value) {

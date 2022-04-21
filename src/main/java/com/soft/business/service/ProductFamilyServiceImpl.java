@@ -2,7 +2,6 @@ package com.soft.business.service;
 
 import com.soft.business.dto.ProductFamilyDto;
 import com.soft.business.mapper.ProductFamilyMapper;
-import com.soft.business.model.Product;
 import com.soft.business.model.ProductFamily;
 import com.soft.business.repository.ProductFamilyRepository;
 import com.soft.business.repository.ProductRepository;
@@ -42,6 +41,7 @@ public class ProductFamilyServiceImpl implements ProductFamilyService {
     public List<ProductFamilyDto> findProductFamilies() {
         List<ProductFamily> productFamilies = productFamilyRepository.findAll();
         List<ProductFamilyDto> productFamiliesDto = new ArrayList<>();
+
         productFamilies.forEach(
                 product -> productFamiliesDto.add(productFamilyMapper.makeDtoFromProductFamily(product))
         );
@@ -66,7 +66,7 @@ public class ProductFamilyServiceImpl implements ProductFamilyService {
 
     @Override
     public ProductFamilyDto createProductFamily(ProductFamilyDto productFamilyDto) {
-        productFamilyValidator.createProductFamilyValidator(productFamilyDto);
+        productFamilyValidator.createProductFamilyValidator (productFamilyDto);
         productFamilyRepository.save(productFamilyMapper.makeProductFamilyFromDto(productFamilyDto));
 
         return productFamilyDto;
@@ -74,11 +74,11 @@ public class ProductFamilyServiceImpl implements ProductFamilyService {
 
     @Override
     public ProductFamilyDto updateProductFamilyByUuid(String uuid, ProductFamilyDto productFamilyDto) {
-        Optional<ProductFamily> optionalProductFamily = this.productFamilyRepository.findByUuid(uuid);
+        Optional<ProductFamily> productFamilyDb = this.productFamilyRepository.findByUuid(uuid);
 
-        if (optionalProductFamily.isEmpty()) throw new NoSuchElementException();
+        if (productFamilyDb.isEmpty()) throw new NoSuchElementException();
 
-        ProductFamily productFamily = productFamilyMapper.updateProductFamily(productFamilyDto, optionalProductFamily.get());
+        ProductFamily productFamily = productFamilyMapper.updateProductFamily(productFamilyDto, productFamilyDb.get());
         productFamilyRepository.save(productFamily);
 
         return productFamilyDto;

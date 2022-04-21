@@ -21,7 +21,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findProducts(@RequestParam(required = false) String name) {
+    public ResponseEntity<?> findProducts() {
         List<ProductDto> productsDto = productService.findProducts();
 
         return new ResponseEntity<>(productsDto, HttpStatus.OK);

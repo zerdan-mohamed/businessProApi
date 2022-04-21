@@ -1,11 +1,15 @@
 package com.soft.business.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity @Data
 @Table(name = "PRODUCT")
@@ -54,9 +58,14 @@ public class Product implements Serializable {
     private Integer maximalStock;
 
     @Column(name = "CREATION_DATE")
+    @NotNull
     private Date creationDate;
 
     @ManyToOne()
     @JoinColumn(name = "ID_PRODUCT_FAMILY", nullable = true)
     private ProductFamily productFamily;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    private Set<SupplierOrderItem> orderItems = new HashSet<>();
 }

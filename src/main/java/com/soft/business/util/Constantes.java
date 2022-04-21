@@ -1,7 +1,6 @@
 package com.soft.business.util;
 
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 public interface Constantes {
 

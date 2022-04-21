@@ -1,11 +1,14 @@
 package com.soft.business.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity @Data
 @Table(name = "SUPPLIER")
@@ -66,5 +69,9 @@ public class Supplier implements Serializable {
 
     @Column(name = "ICE")
     private String ice;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "supplier")
+    private Set<SupplierOrder> supplierOrders = new HashSet<>();
 
 }

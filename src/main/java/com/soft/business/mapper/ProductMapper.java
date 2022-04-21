@@ -113,7 +113,11 @@ public class ProductMapper {
         else product.setInitialStock(productDb.getInitialStock());
 
         // TODO: Change deprecated Date object
-        if(productDto.getInitialStockDate() != null) product.setInitialStockDate(new Date(Constantes.dateFormatter.format(productDto.getInitialStockDate())));
+        if(productDto.getInitialStockDate() != null) {
+            product.setInitialStockDate(
+                    new Date(Constantes.dateFormatter.format(productDto.getInitialStockDate()))
+            );
+        }
         else product.setInitialStockDate(productDb.getInitialStockDate());
 
         if(productDto.getMaximalStock() != null) product.setMaximalStock(productDto.getMaximalStock());
