@@ -24,8 +24,10 @@ public class ProductValidator {
             try {
                 Constantes.dateFormatter.parse(productDto.getInitialStockDate());
             } catch (ParseException e) {
-                throw new DateFormatException(ApiErrorCodesConstantes.DATE_VIOLATION_EXCEPTION_CODE,
-                                                ApiErrorCodesConstantes.DATE_VIOLATION_EXCEPTION_MESSAGE);
+                throw new DateFormatException(
+                        ApiErrorCodesConstantes.DATE_VIOLATION_EXCEPTION_CODE,
+                        ApiErrorCodesConstantes.DATE_VIOLATION_EXCEPTION_MESSAGE
+                );
             }
         }
     }

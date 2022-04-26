@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SupplierOrderItemValidator {
 
-    public void CreateSupplierOrderItemValidator(SupplierOrderItemDto supplierOrderItemDto) {
+    public void createSupplierOrderItemValidator(SupplierOrderItemDto supplierOrderItemDto) {
         if (StringUtils.isEmpty(supplierOrderItemDto.getProduct().getName())) {
             throw new EmptyInputException(
                     ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_EMPTY_PRODUCT_NAME_EXCEPTION_CODE,

@@ -4,6 +4,7 @@ import com.soft.business.dto.SupplierDto;
 import com.soft.business.dto.SupplierOrderDto;
 import com.soft.business.model.Supplier;
 import com.soft.business.model.SupplierOrder;
+import com.soft.business.model.SupplierOrderParams;
 import com.soft.business.repository.SupplierOrderParamsRepository;
 import com.soft.business.repository.SupplierOrderRepository;
 import com.soft.business.repository.SupplierRepository;
@@ -25,30 +26,18 @@ public class SupplierOrderMapper {
         this.supplierOrderRepository = supplierOrderRepository;
     }
 
-    public String generateOrderCode(String prefix) {
-        // TODO: reset code iteration when the next year started
-        // TODO: use id is not a solution, think to search another solution
-        // String prefix = "CF-"; String currentDate = "202203"; String suffix = "00001";
-        String generatedCode = "CF-20220400001";
+    public String generateOrderCode(Date creationDate, Integer supplierOrderNumber) {
 
-        String initialCodeSuffix = "0000001";
-        SupplierOrder lastSupplierOrder = supplierOrderRepository.findTopByOrderByCreationDateDesc();
+        // TODO: we need to change this var to get prefix of specific org
+        String prefix = supplierOrderParamsRepository.findOrderParams().get().getPrefix();
+        String orderYear = String.valueOf(creationDate.getYear());
 
-        if (lastSupplierOrder != null &&
-                lastSupplierOrder.getCreationDate().getYear() == LocalDate.now().getYear()) {
-            /*
-                ## generate orderCode sequential ##
-                 - split lastSupplierOrder.getOrderCode();
-                 - suffix[1] = suffix[1].next()
-                 - suffix[0].concat(suffix[1])
-            */
-        } else {
-            // setOrResetOrderCode with initialCodeSuffix
-        }
+        String generatedOrderCode = prefix + orderYear + "/" + supplierOrderNumber;
 
-        return generatedCode;
+        return generatedOrderCode;
     }
 
+    // post
     public SupplierOrder makeSupplierOrderFromDto(SupplierOrderDto supplierOrderDto) {
         SupplierOrder supplierOrder = new SupplierOrder();
 
@@ -57,9 +46,11 @@ public class SupplierOrderMapper {
         supplierOrder.setSupplierOrderStatus(supplierOrderDto.getSupplierOrderStatus());
         supplierOrder.setCreationDate(new Date());
 
-        supplierOrder.setSupplierOrderNumber(
-                supplierOrderParamsRepository.findOrderParams().get().getCounter()+1
-        );
+        SupplierOrderParams supplierOrderParams = supplierOrderParamsRepository.findOrderParams().get();
+        supplierOrder.setSupplierOrderNumber(supplierOrderParams.getCounter()+1);
+
+        supplierOrderParams.setCounter(supplierOrder.getSupplierOrderNumber());
+        supplierOrderParamsRepository.save(supplierOrderParams);
 
         if (supplierOrderDto.getSupplier() != null) {
             Optional<Supplier> supplier = supplierRepository.findByUuid(supplierOrderDto.getSupplier().getUuid());
@@ -70,16 +61,21 @@ public class SupplierOrderMapper {
         return supplierOrder;
     }
 
+
+    // get
     public SupplierOrderDto makeDtoFromSupplierOrder(SupplierOrder supplierOrder) {
         SupplierOrderDto supplierOrderDto = new SupplierOrderDto();
+
+        Date  creationDate = supplierOrder.getCreationDate();
+        Integer supplierOrderNumber = supplierOrder.getSupplierOrderNumber();
 
         supplierOrderDto.setUuid(supplierOrder.getUuid());
         supplierOrderDto.setComment(supplierOrder.getComment());
         supplierOrderDto.setSupplierOrderStatus(supplierOrder.getSupplierOrderStatus());
-        supplierOrderDto.setCreationDate(supplierOrder.getCreationDate().toString());
+        supplierOrderDto.setCreationDate(creationDate.toString());
 
         // TODO: refactor generateOrderCode function to match our request
-        supplierOrderDto.setSupplierOrderNumber(generateOrderCode("CF"));
+        supplierOrderDto.setSupplierOrderNumber(generateOrderCode(creationDate, supplierOrderNumber));
 
         if (supplierOrder.getSupplier() != null) {
             SupplierDto supplierDto = new SupplierDto();
@@ -105,14 +101,17 @@ public class SupplierOrderMapper {
         return supplierOrderDto;
     }
 
+    // post
     public SupplierOrder updateSupplierOrder(SupplierOrderDto supplierOrderDto, SupplierOrder supplierOrderDb) {
         SupplierOrder supplierOrder = new SupplierOrder();
-
-        supplierOrder.setSupplierOrderNumber(supplierOrderDb.getSupplierOrderNumber());
 
         supplierOrder.setIdSupplierOrder(supplierOrderDb.getIdSupplierOrder());
         supplierOrder.setUuid(supplierOrderDb.getUuid());
         supplierOrder.setCreationDate(supplierOrderDb.getCreationDate());
+        supplierOrder.setSupplierOrderNumber(supplierOrderDb.getSupplierOrderNumber());
+
+
+        // setSupplier
 
         if (supplierOrderDto.getSupplierOrderStatus() != null)
             supplierOrder.setSupplierOrderStatus(supplierOrderDto.getSupplierOrderStatus());
@@ -123,6 +122,13 @@ public class SupplierOrderMapper {
             supplierOrder.setComment(supplierOrderDto.getComment());
         else
             supplierOrder.setComment(supplierOrderDb.getComment());
+
+
+        if (supplierOrderDto.getSupplier() != null) {
+            Optional<Supplier> supplier = supplierRepository.findByUuid(supplierOrderDto.getSupplier().getUuid());
+
+            if (supplier.isPresent()) supplierOrder.setSupplier(supplier.get());
+        }
 
         return supplierOrder;
     }

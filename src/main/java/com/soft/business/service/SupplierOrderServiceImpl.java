@@ -38,7 +38,6 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
         List<SupplierOrder> supplierOrders = supplierOrderRepository.findAll();
         List<SupplierOrderDto> supplierOrdersDto = new ArrayList<>();
 
-        // think to generate orderCode
         supplierOrders.forEach(
                 supplierOrder -> supplierOrdersDto
                         .add(supplierOrderMapper.makeDtoFromSupplierOrder(supplierOrder))
@@ -65,9 +64,10 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
     }
 
     @Override
-    public SupplierOrderDto createSupplierOrder(SupplierOrderDto supplierOrderDto) throws ParseException {
+    public SupplierOrderDto createSupplierOrder(SupplierOrderDto supplierOrderDto) {
         supplierOrderValidator.createSupplierOrderValidator(supplierOrderDto);
-        supplierOrderRepository.save(supplierOrderMapper.makeSupplierOrderFromDto(supplierOrderDto));
+        supplierOrderRepository
+                .save(supplierOrderMapper.makeSupplierOrderFromDto(supplierOrderDto));
 
         return supplierOrderDto;
     }
@@ -76,7 +76,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
     public SupplierOrderDto updateSupplierOrder(String uuid, SupplierOrderDto supplierOrderDto) {
         Optional<SupplierOrder> supplierOrderDb = this.supplierOrderRepository.findByUuid(uuid);
 
-        if (supplierOrderDb.isPresent()) throw new NoSuchElementException();
+        if (supplierOrderDb.isEmpty()) throw new NoSuchElementException();
 
         SupplierOrder supplierOrder = supplierOrderMapper.updateSupplierOrder(supplierOrderDto, supplierOrderDb.get());
         supplierOrderRepository.save(supplierOrder);

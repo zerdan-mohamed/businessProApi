@@ -40,6 +40,12 @@ public class SupplierOrderItemMapper {
     }
 
 
+    public SupplierOrderItem updateSupplierOrderItem(SupplierOrderItemDto supplierOrderItemDto, SupplierOrderItem SupplierOrderItemDb) {
+
+        return null;
+    }
+
+
 
 
 }
