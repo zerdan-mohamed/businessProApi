@@ -1,46 +1,130 @@
 package com.soft.business.mapper;
 
 import com.soft.business.dto.ProductDto;
+import com.soft.business.dto.ProductFamilyDto;
+import com.soft.business.dto.SupplierOrderDto;
 import com.soft.business.dto.SupplierOrderItemDto;
-import com.soft.business.model.Product;
-import com.soft.business.model.SupplierOrderItem;
+import com.soft.business.model.*;
+import com.soft.business.repository.ProductRepository;
+import com.soft.business.repository.SupplierOrderItemRepository;
+import com.soft.business.repository.SupplierOrderParamsRepository;
+import com.soft.business.repository.SupplierOrderRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
+
+import static com.soft.business.util.StringUtils.generateOrderCode;
 
 @Service
 public class SupplierOrderItemMapper {
 
-    public SupplierOrderItem makeSupplierOrderItemFromDto(SupplierOrderItemDto supplierOrderItemDto) {
-        SupplierOrderItem supplierOrderItem = new SupplierOrderItem();
-
-        supplierOrderItem.setUuid(UUID.randomUUID().toString());
-        supplierOrderItem.setMeasureUnite(supplierOrderItemDto.getMeasureUnite());
-        supplierOrderItem.setQuantity(supplierOrderItemDto.getQuantity());
-        supplierOrderItem.setPriceHT(supplierOrderItemDto.getPriceHT());
-        supplierOrderItem.setVatRate(supplierOrderItem.getVatRate());
-        supplierOrderItem.setProduct(new Product());
-        supplierOrderItem.setDiscount(supplierOrderItemDto.getDiscount());
-
-        return supplierOrderItem;
-    }
+    private ProductRepository productRepository;
+    private SupplierOrderRepository supplierOrderRepository;
+    private SupplierOrderParamsRepository supplierOrderParamsRepository;
 
     public SupplierOrderItemDto makeDtoFromSupplierOrderItem(SupplierOrderItem supplierOrderItem) {
         SupplierOrderItemDto supplierOrderItemDto = new SupplierOrderItemDto();
 
         supplierOrderItemDto.setUuid(supplierOrderItem.getUuid());
-        supplierOrderItemDto.setMeasureUnite(supplierOrderItem.getMeasureUnite());
         supplierOrderItemDto.setQuantity(supplierOrderItem.getQuantity());
-        supplierOrderItemDto.setPriceHT(supplierOrderItem.getPriceHT());
+        supplierOrderItemDto.setMeasureUnite(supplierOrderItem.getMeasureUnite());
         supplierOrderItemDto.setVatRate(supplierOrderItem.getVatRate());
-        supplierOrderItemDto.setProduct(new ProductDto());
+        supplierOrderItemDto.setPriceHT(supplierOrderItem.getPriceHT());
         supplierOrderItemDto.setDiscount(supplierOrderItem.getDiscount());
+
+        if (supplierOrderItem.getProduct() != null) {
+            ProductDto productDto = new ProductDto();
+            productDto.setUuid(supplierOrderItem.getProduct().getUuid());
+            productDto.setName(supplierOrderItem.getProduct().getName());
+            productDto.setCreationDate(supplierOrderItem.getProduct().getCreationDate());
+
+            supplierOrderItemDto.setProduct(productDto);
+        }
+
+        if (supplierOrderItem.getSupplierOrder() != null) {
+            Date creationDate = supplierOrderItem.getSupplierOrder().getCreationDate();
+            Optional<SupplierOrderParams> supplierOrderParams = supplierOrderParamsRepository.findSupplierOrderParamsByUuid("orgUuid");
+            String prefix = supplierOrderParams.get().getPrefix();
+
+            String generateOrderCode = generateOrderCode(prefix, supplierOrderItem.getSupplierOrder());
+
+            SupplierOrderDto supplierOrderDto = new SupplierOrderDto();
+            supplierOrderDto.setUuid(supplierOrderItem.getSupplierOrder().getUuid());
+            supplierOrderDto.setCreationDate(creationDate.toString());
+            supplierOrderDto.setSupplierOrderNumber(generateOrderCode);
+
+            supplierOrderItemDto.setSupplierOrder(supplierOrderDto);
+        }
 
         return supplierOrderItemDto;
     }
 
+    public SupplierOrderItem makeSupplierOrderItemFromDto(SupplierOrderItemDto supplierOrderItemDto) {
+        SupplierOrderItem supplierOrderItem = new SupplierOrderItem();
 
-    public SupplierOrderItem updateSupplierOrderItem(SupplierOrderItemDto supplierOrderItemDto, SupplierOrderItem SupplierOrderItemDb) {
+        if (supplierOrderItemDto.getSupplierOrder() != null) {
+            Optional<SupplierOrder> optionalSupplierOrder
+                    = supplierOrderRepository.findByUuid(supplierOrderItemDto.getSupplierOrder().getUuid());
+
+            if (optionalSupplierOrder.isPresent()) supplierOrderItem.setSupplierOrder(optionalSupplierOrder.get());
+        }
+
+        supplierOrderItem.setUuid(UUID.randomUUID().toString());
+        supplierOrderItem.setQuantity(supplierOrderItemDto.getQuantity());
+        supplierOrderItem.setMeasureUnite(supplierOrderItemDto.getMeasureUnite());
+        supplierOrderItem.setPriceHT(supplierOrderItemDto.getPriceHT());
+        supplierOrderItem.setVatRate(supplierOrderItem.getVatRate());
+        supplierOrderItem.setDiscount(supplierOrderItemDto.getDiscount());
+
+        if (supplierOrderItemDto.getProduct() != null) {
+            Optional<Product> optionalProduct = productRepository.findByUuid(supplierOrderItemDto.getProduct().getUuid());
+
+            if (optionalProduct.isPresent()) supplierOrderItem.setProduct(optionalProduct.get());
+        }
+
+        return supplierOrderItem;
+    }
+
+    public SupplierOrderItem updateSupplierOrderItem(
+            SupplierOrderItemDto supplierOrderItemDto, SupplierOrderItem supplierOrderItemDb) {
+        SupplierOrderItem supplierOrderItem = new SupplierOrderItem();
+
+        supplierOrderItem.setIdSupplierOrderItem(supplierOrderItemDb.getIdSupplierOrderItem());
+        supplierOrderItem.setUuid(supplierOrderItemDb.getUuid());
+
+        if(supplierOrderItemDto.getQuantity() != null) supplierOrderItem.setQuantity(supplierOrderItemDto.getQuantity());
+        else supplierOrderItem.setQuantity(supplierOrderItemDb.getQuantity());
+
+        if(supplierOrderItemDto.getPriceHT() != null) supplierOrderItem.setPriceHT(supplierOrderItemDto.getPriceHT());
+        else supplierOrderItem.setPriceHT(supplierOrderItemDb.getPriceHT());
+
+        if(supplierOrderItemDto.getMeasureUnite() != null) supplierOrderItem.setMeasureUnite(supplierOrderItemDto.getMeasureUnite());
+        else supplierOrderItem.setMeasureUnite(supplierOrderItemDb.getMeasureUnite());
+
+        if(supplierOrderItemDto.getVatRate() != null) supplierOrderItem.setVatRate(supplierOrderItemDto.getVatRate());
+        else supplierOrderItem.setVatRate(supplierOrderItemDb.getVatRate());
+
+        if(supplierOrderItemDto.getDiscount() != null) supplierOrderItem.setDiscount(supplierOrderItemDto.getDiscount());
+        else supplierOrderItem.setDiscount(supplierOrderItemDb.getDiscount());
+
+        if (supplierOrderItemDto.getProduct() != null) {
+            Optional<Product> product = productRepository.findByUuid(supplierOrderItemDto.getProduct().getUuid());
+
+            if (product.isPresent()) supplierOrderItem.setProduct(product.get());
+        } else if (supplierOrderItemDb.getProduct() != null) {
+            supplierOrderItem.setProduct(supplierOrderItemDb.getProduct());
+        }
+
+        if (supplierOrderItemDto.getSupplierOrder() != null) {
+            Optional<SupplierOrder> supplierOrder =
+                    supplierOrderRepository.findByUuid(supplierOrderItemDto.getSupplierOrder().getUuid());
+
+            if (supplierOrder.isPresent()) supplierOrderItem.setSupplierOrder(supplierOrder.get());
+        } else if (supplierOrderItemDb.getSupplierOrder() != null) {
+            supplierOrderItem.setSupplierOrder(supplierOrderItemDb.getSupplierOrder());
+        }
 
         return null;
     }

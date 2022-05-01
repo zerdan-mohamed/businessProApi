@@ -26,11 +26,11 @@ public class ProductFamilyMapper {
     public ProductFamily updateProductFamily(ProductFamilyDto productFamilyDto, ProductFamily productFamilyDb) {
         ProductFamily productFamily = new ProductFamily();
 
+        productFamily.setIdProductFamily(productFamilyDb.getIdProductFamily());
+        productFamily.setUuid(productFamilyDb.getUuid());
+
         if(productFamilyDto.getName() != null) productFamily.setName(productFamilyDto.getName());
         else productFamily.setName(productFamilyDb.getName());
-
-        productFamily.setUuid(productFamilyDb.getUuid());
-        productFamily.setIdProductFamily(productFamilyDb.getIdProductFamily());
 
         return productFamily;
     }

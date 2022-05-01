@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface SupplierOrderParamsRepository extends CrudRepository<SupplierOrderParams, Long> {
 
     // TODO: we need to change this function to get orderParams of specific org
-    Optional<SupplierOrderParams> findOrderParams();
+    Optional<SupplierOrderParams> findSupplierOrderParamsByUuid(String uuid);
 }

@@ -8,12 +8,15 @@ import com.soft.business.model.SupplierOrderParams;
 import com.soft.business.repository.SupplierOrderParamsRepository;
 import com.soft.business.repository.SupplierOrderRepository;
 import com.soft.business.repository.SupplierRepository;
+import static com.soft.business.util.StringUtils.generateOrderCode;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
+
+
+
 @Service
 public class SupplierOrderMapper {
 
@@ -26,56 +29,22 @@ public class SupplierOrderMapper {
         this.supplierOrderRepository = supplierOrderRepository;
     }
 
-    public String generateOrderCode(Date creationDate, Integer supplierOrderNumber) {
-
-        // TODO: we need to change this var to get prefix of specific org
-        String prefix = supplierOrderParamsRepository.findOrderParams().get().getPrefix();
-        String orderYear = String.valueOf(creationDate.getYear());
-
-        String generatedOrderCode = prefix + orderYear + "/" + supplierOrderNumber;
-
-        return generatedOrderCode;
-    }
-
-    // post
-    public SupplierOrder makeSupplierOrderFromDto(SupplierOrderDto supplierOrderDto) {
-        SupplierOrder supplierOrder = new SupplierOrder();
-
-        supplierOrder.setUuid(UUID.randomUUID().toString());
-        supplierOrder.setComment(supplierOrderDto.getComment());
-        supplierOrder.setSupplierOrderStatus(supplierOrderDto.getSupplierOrderStatus());
-        supplierOrder.setCreationDate(new Date());
-
-        SupplierOrderParams supplierOrderParams = supplierOrderParamsRepository.findOrderParams().get();
-        supplierOrder.setSupplierOrderNumber(supplierOrderParams.getCounter()+1);
-
-        supplierOrderParams.setCounter(supplierOrder.getSupplierOrderNumber());
-        supplierOrderParamsRepository.save(supplierOrderParams);
-
-        if (supplierOrderDto.getSupplier() != null) {
-            Optional<Supplier> supplier = supplierRepository.findByUuid(supplierOrderDto.getSupplier().getUuid());
-
-            if (supplier.isPresent()) supplierOrder.setSupplier(supplier.get());
-        }
-
-        return supplierOrder;
-    }
-
-
-    // get
     public SupplierOrderDto makeDtoFromSupplierOrder(SupplierOrder supplierOrder) {
-        SupplierOrderDto supplierOrderDto = new SupplierOrderDto();
-
         Date  creationDate = supplierOrder.getCreationDate();
-        Integer supplierOrderNumber = supplierOrder.getSupplierOrderNumber();
+        SupplierOrderDto supplierOrderDto = new SupplierOrderDto();
 
         supplierOrderDto.setUuid(supplierOrder.getUuid());
         supplierOrderDto.setComment(supplierOrder.getComment());
         supplierOrderDto.setSupplierOrderStatus(supplierOrder.getSupplierOrderStatus());
         supplierOrderDto.setCreationDate(creationDate.toString());
 
-        // TODO: refactor generateOrderCode function to match our request
-        supplierOrderDto.setSupplierOrderNumber(generateOrderCode(creationDate, supplierOrderNumber));
+        // TODO: we need to change this var to get prefix of specific org
+        Optional<SupplierOrderParams> supplierOrderParams = supplierOrderParamsRepository.findSupplierOrderParamsByUuid("ordUuid");
+        String prefix = supplierOrderParams.get().getPrefix();
+
+        String generateOrderCode = generateOrderCode(prefix, supplierOrder);
+
+        supplierOrderDto.setSupplierOrderNumber(generateOrderCode);
 
         if (supplierOrder.getSupplier() != null) {
             SupplierDto supplierDto = new SupplierDto();
@@ -101,7 +70,30 @@ public class SupplierOrderMapper {
         return supplierOrderDto;
     }
 
-    // post
+    public SupplierOrder makeSupplierOrderFromDto(SupplierOrderDto supplierOrderDto) {
+        SupplierOrder supplierOrder = new SupplierOrder();
+
+        supplierOrder.setUuid(UUID.randomUUID().toString());
+        supplierOrder.setComment(supplierOrderDto.getComment());
+        supplierOrder.setSupplierOrderStatus(supplierOrderDto.getSupplierOrderStatus());
+        supplierOrder.setCreationDate(new Date());
+
+        // TODO: we need to change this function to get orderParams of specific org
+        SupplierOrderParams supplierOrderParams = supplierOrderParamsRepository.findSupplierOrderParamsByUuid("test").get();
+        supplierOrder.setSupplierOrderNumber(supplierOrderParams.getCounter()+1);
+
+        supplierOrderParams.setCounter(supplierOrder.getSupplierOrderNumber());
+        supplierOrderParamsRepository.save(supplierOrderParams);
+
+        if (supplierOrderDto.getSupplier() != null) {
+            Optional<Supplier> supplier = supplierRepository.findByUuid(supplierOrderDto.getSupplier().getUuid());
+
+            if (supplier.isPresent()) supplierOrder.setSupplier(supplier.get());
+        }
+
+        return supplierOrder;
+    }
+
     public SupplierOrder updateSupplierOrder(SupplierOrderDto supplierOrderDto, SupplierOrder supplierOrderDb) {
         SupplierOrder supplierOrder = new SupplierOrder();
 
@@ -109,9 +101,6 @@ public class SupplierOrderMapper {
         supplierOrder.setUuid(supplierOrderDb.getUuid());
         supplierOrder.setCreationDate(supplierOrderDb.getCreationDate());
         supplierOrder.setSupplierOrderNumber(supplierOrderDb.getSupplierOrderNumber());
-
-
-        // setSupplier
 
         if (supplierOrderDto.getSupplierOrderStatus() != null)
             supplierOrder.setSupplierOrderStatus(supplierOrderDto.getSupplierOrderStatus());
@@ -123,11 +112,12 @@ public class SupplierOrderMapper {
         else
             supplierOrder.setComment(supplierOrderDb.getComment());
 
-
         if (supplierOrderDto.getSupplier() != null) {
             Optional<Supplier> supplier = supplierRepository.findByUuid(supplierOrderDto.getSupplier().getUuid());
 
             if (supplier.isPresent()) supplierOrder.setSupplier(supplier.get());
+        } else if (supplierOrderDb.getSupplier() != null) {
+            supplierOrder.setSupplier(supplierOrder.getSupplier());
         }
 
         return supplierOrder;

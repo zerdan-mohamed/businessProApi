@@ -1,5 +1,6 @@
 package com.soft.business.repository;
 
+import com.soft.business.model.SupplierOrder;
 import com.soft.business.model.SupplierOrderItem;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -12,5 +13,7 @@ public interface SupplierOrderItemRepository extends CrudRepository<SupplierOrde
     long deleteByUuid(String uuid);
     Optional<SupplierOrderItem> findByUuid(String uuid);
     List<SupplierOrderItem> findAll();
+
+    List<SupplierOrderItem> findBySupplierOrder(SupplierOrder supplierOrder);
 
 }

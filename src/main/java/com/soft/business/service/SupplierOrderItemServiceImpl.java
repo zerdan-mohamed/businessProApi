@@ -1,20 +1,27 @@
 package com.soft.business.service;
 
+import com.soft.business.dto.SupplierOrderDto;
 import com.soft.business.dto.SupplierOrderItemDto;
 import com.soft.business.mapper.SupplierOrderItemMapper;
+import com.soft.business.model.SupplierOrder;
 import com.soft.business.model.SupplierOrderItem;
+import com.soft.business.model.SupplierOrderStatus;
 import com.soft.business.repository.SupplierOrderItemRepository;
+import com.soft.business.repository.SupplierOrderRepository;
 import com.soft.business.util.validator.SupplierOrderItemValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
 
     private SupplierOrderItemRepository supplierOrderItemRepository;
+
+    private SupplierOrderRepository supplierOrderRepository;
 
     private SupplierOrderItemValidator supplierOrderItemValidator;
 
@@ -30,9 +37,12 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
     }
 
     @Override
-    public List<SupplierOrderItemDto> findSupplierOrderItems() {
-        List<SupplierOrderItem> supplierOrderItems = supplierOrderItemRepository.findAll();
+    public List<SupplierOrderItemDto> findSupplierOrderItems(String supplierOrderUuid) {
+
         List<SupplierOrderItemDto> supplierOrderItemsDto = new ArrayList<>();
+
+        Optional<SupplierOrder> supplierOrder = supplierOrderRepository.findByUuid(supplierOrderUuid);
+        List<SupplierOrderItem> supplierOrderItems = supplierOrderItemRepository.findBySupplierOrder(supplierOrder.get());
 
         supplierOrderItems.forEach(
                 supplierOrderItem -> supplierOrderItemsDto
@@ -51,21 +61,29 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
 
     @Override
     public void deleteSupplierOrderItemByUuid(String uuid) {
-        // TODO: check delete logic in relation with order status
+        SupplierOrderItemDto supplierOrderItem = findSupplierOrderItemByUuid(uuid);
+
+        if (!supplierOrderItem.getSupplierOrder()
+                .getSupplierOrderStatus().equals(SupplierOrderStatus.PAID)) {
+
+            long isDeleted = supplierOrderItemRepository.deleteByUuid(uuid);
+            if(isDeleted == 0) throw new NoSuchElementException();
+        }
     }
 
     @Override
     public SupplierOrderItemDto createSupplierOrderItem(SupplierOrderItemDto supplierOrderItemDto) {
         supplierOrderItemValidator.createSupplierOrderItemValidator(supplierOrderItemDto);
-        supplierOrderItemRepository
-                .save(supplierOrderItemMapper.makeSupplierOrderItemFromDto(supplierOrderItemDto));
+
+        supplierOrderItemRepository.save(
+                supplierOrderItemMapper.makeSupplierOrderItemFromDto(supplierOrderItemDto)
+        );
 
         return supplierOrderItemDto;
     }
 
     @Override
-    public SupplierOrderItemDto updateSupplierOrderItem(
-            String uuid, SupplierOrderItemDto supplierOrderItemDto) {
+    public SupplierOrderItemDto updateSupplierOrderItem(String uuid, SupplierOrderItemDto supplierOrderItemDto) {
 
         Optional<SupplierOrderItem> supplierOrderItemDb = this.supplierOrderItemRepository.findByUuid(uuid);
 

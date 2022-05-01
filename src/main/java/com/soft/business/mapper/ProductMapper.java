@@ -88,6 +88,9 @@ public class ProductMapper {
     public Product updateProduct(ProductDto productDto, Product productDb) {
         Product product = new Product();
 
+        product.setIdProduct(productDb.getIdProduct());
+        product.setUuid(productDb.getUuid());
+
         if(productDto.getName() != null) product.setName(productDto.getName());
         else product.setName(productDb.getName());
 
@@ -126,16 +129,11 @@ public class ProductMapper {
         if(productDto.getMinimalStock() != null) product.setMinimalStock(productDto.getMinimalStock());
         else product.setMinimalStock(productDb.getMinimalStock());
 
-        product.setUuid(productDb.getUuid());
-        product.setIdProduct(productDb.getIdProduct());
-
         if (productDto.getProductFamily() != null) {
-            Optional<ProductFamily> optionalProductFamily = productFamilyRepository.findByUuid(productDto.getProductFamily().getUuid());
+            Optional<ProductFamily> productFamily = productFamilyRepository.findByUuid(productDto.getProductFamily().getUuid());
 
-            if (optionalProductFamily.isPresent()) {
-                ProductFamily productFamily = optionalProductFamily.get();
-                product.setProductFamily(productFamily);
-            }
+            if (productFamily.isPresent())
+                product.setProductFamily(productFamily.get());
         } else if (productDb.getProductFamily() != null){
             product.setProductFamily(productDb.getProductFamily());
         }

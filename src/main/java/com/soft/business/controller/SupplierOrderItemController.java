@@ -21,36 +21,41 @@ public class SupplierOrderItemController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findSupplierOrders() {
-        List<SupplierOrderItemDto> supplierOrderItems = supplierOrderItemService.findSupplierOrderItems();
+    public ResponseEntity<?> findSupplierOrderItems(@PathVariable("uuid") String supplierOrderUuid) {
+        List<SupplierOrderItemDto> supplierOrderItems = supplierOrderItemService.findSupplierOrderItems(supplierOrderUuid);
 
         return new ResponseEntity<>(supplierOrderItems, HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<?> getSupplierOrderByUuid(@PathVariable("uuid") String uuid) {
+    public ResponseEntity<?> getSupplierOrderItemByUuid(@PathVariable("uuid") String uuid) {
         SupplierOrderItemDto supplierOrderItem = supplierOrderItemService.findSupplierOrderItemByUuid(uuid);
 
         return new ResponseEntity<>(supplierOrderItem, HttpStatus.OK);
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<?> deleteSupplierOrderByUuid(@PathVariable("uuid") String uuid) {
+    public ResponseEntity<?> deleteSupplierOrderItemByUuid(@PathVariable("uuid") String uuid) {
         supplierOrderItemService.deleteSupplierOrderItemByUuid(uuid);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
+    // TODO:  add supplierOrderUuid param
     @PostMapping
-    public ResponseEntity<?> createSupplierOrder(@Valid @RequestBody SupplierOrderItemDto supplierOrderItemDto) throws ParseException {
+    public ResponseEntity<?> createSupplierOrderItem(
+            @Valid @RequestBody SupplierOrderItemDto supplierOrderItemDto) throws ParseException {
+
         supplierOrderItemService.createSupplierOrderItem(supplierOrderItemDto);
 
         return new ResponseEntity<>(supplierOrderItemDto, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{uuid}")
-    public ResponseEntity<?> updateSupplierOrderByUuid(
+    public ResponseEntity<?> updateSupplierOrderItemByUuid(
             @PathVariable("uuid") String uuid, @Valid @RequestBody SupplierOrderItemDto supplierOrderItemDto) {
+
         supplierOrderItemService.updateSupplierOrderItem(uuid, supplierOrderItemDto);
 
         return new ResponseEntity<>(supplierOrderItemDto, HttpStatus.OK);

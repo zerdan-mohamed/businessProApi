@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface SupplierOrderItemService {
 
-    List<SupplierOrderItemDto> findSupplierOrderItems();
+    List<SupplierOrderItemDto> findSupplierOrderItems(String supplierOrderUuid);
 
     SupplierOrderItemDto findSupplierOrderItemByUuid(String uuid);
 

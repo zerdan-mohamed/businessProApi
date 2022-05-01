@@ -22,6 +22,8 @@ public interface ApiErrorCodesConstantes {
     public static final String SUPPLIER_ORDER_EMPTY_ORDER_CODE_EXCEPTION_MESSAGE = "ORDER CODE field is mandatory";
     public static final String SUPPLIER_ORDER_ITEM_EMPTY_PRODUCT_NAME_EXCEPTION_CODE = "3001";
     public static final String SUPPLIER_ORDER_ITEM_EMPTY_PRODUCT_NAME_EXCEPTION_MESSAGE = "ORDER ITEM NAME field is mandatory";
+    public static final String SUPPLIER_ORDER_ITEM_EMPTY_ORDER_NUMBER_EXCEPTION_CODE = "3002";
+    public static final String SUPPLIER_ORDER_ITEM_EMPTY_ORDER_NUMBER_EXCEPTION_MESSAGE = "ORDER ITEM NAME field is mandatory";
 
 
 
