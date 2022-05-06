@@ -71,6 +71,10 @@ public class Supplier implements Serializable {
     private String ice;
 
     @JsonIgnore
+    @Column(name = "ORG_ID", updatable = false, insertable = false)
+    private int orgId;
+
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "supplier")
     private Set<SupplierOrder> supplierOrders = new HashSet<>();
 

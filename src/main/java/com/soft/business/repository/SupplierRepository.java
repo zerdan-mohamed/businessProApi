@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface SupplierRepository extends CrudRepository<Supplier, Long> {
     long deleteByUuid(String uuid);
     Optional<Supplier> findByUuid(String uuid);
-    List<Supplier> findAll();
+    List<Supplier> findByOrgId(int orgId);
 }
