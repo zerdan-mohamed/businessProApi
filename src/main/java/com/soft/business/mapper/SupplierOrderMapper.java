@@ -85,8 +85,9 @@ public class SupplierOrderMapper {
         supplierOrderParams.setCounter(supplierOrder.getSupplierOrderNumber());
         supplierOrderParamsRepository.save(supplierOrderParams);
 
+        // TODO: Use findByUuidAndOrgId instead of findByUuid
         if (supplierOrderDto.getSupplier() != null) {
-            Optional<Supplier> supplier = supplierRepository.findByUuid(supplierOrderDto.getSupplier().getUuid());
+           Optional<Supplier> supplier = supplierRepository.findByUuid(supplierOrderDto.getSupplier().getUuid());
 
             if (supplier.isPresent()) supplierOrder.setSupplier(supplier.get());
         }

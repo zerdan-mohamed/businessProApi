@@ -4,9 +4,9 @@ import com.soft.business.dto.SupplierDto;
 import com.soft.business.service.SupplierService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.List;
 
@@ -20,33 +20,41 @@ public class SupplierController {
         this.supplierService = supplierService;
     }
 
-    @GetMapping("/{orgUuid}/{uuid}")
-    public ResponseEntity<?> findSupplierByUuid(@PathVariable("orgUuid") String orgUuid,
+    @GetMapping("/{uuid}")
+    @PreAuthorize("hasAuthority('FUNC_SUPPLIER_RETRIEVE')")
+    public ResponseEntity<?> findSupplierByUuid(Authentication authentication,
                                                 @PathVariable("uuid") String uuid) {
-        SupplierDto supplierDto = this.supplierService.findSupplierByUuid(uuid);
+        SupplierDto supplierDto = this.supplierService.findSupplierByUuid(authentication, uuid);
         return ResponseEntity.ok(supplierDto);
     }
 
     @GetMapping()
+    @PreAuthorize("hasAuthority('FUNC_SUPPLIER_RETRIEVE')")
     public ResponseEntity<?> findAllSuppliers(Authentication authentication) {
         List<SupplierDto> suppliers = this.supplierService.findAllSuppliers(authentication);
         return new ResponseEntity<>(suppliers, HttpStatus.OK);
     }
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('FUNC_SUPPLIER_CREATE')")
     public ResponseEntity<?> createSupplier(@Valid @RequestBody SupplierDto supplierDto,
                                             Authentication authentication) {
-        return new ResponseEntity<>(supplierService.createSupplier(supplierDto, authentication), HttpStatus.OK);
+        return new ResponseEntity<>(supplierService.createSupplier(authentication, supplierDto), HttpStatus.OK);
     }
 
     @PatchMapping("/{uuid}")
-    public ResponseEntity<?> updateSupplier(@PathVariable("uuid") String uuid, @Valid @RequestBody SupplierDto supplierDto) {
-        return new ResponseEntity<>(supplierService.updateSupplier(uuid, supplierDto), HttpStatus.OK);
+    @PreAuthorize("hasAuthority('FUNC_SUPPLIER_UPDATE')")
+    public ResponseEntity<?> updateSupplier(Authentication authentication,
+                                            @PathVariable("uuid") String uuid,
+                                            @Valid @RequestBody SupplierDto supplierDto) {
+        return new ResponseEntity<>(supplierService.updateSupplier(authentication, uuid, supplierDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<?> deleteSupplierByUuid(@PathVariable("uuid") String uuid) {
-        supplierService.deleteSupplierByUuid(uuid);
+    @PreAuthorize("hasAuthority('FUNC_SUPPLIER_DELETE')")
+    public ResponseEntity<?> deleteSupplierByUuid(Authentication authentication,
+                                                    @PathVariable("uuid") String uuid) {
+        supplierService.deleteSupplierByUuid(authentication, uuid);
         return ResponseEntity.ok().build();
     }
 

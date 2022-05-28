@@ -71,4 +71,8 @@ public class JwtTokenProvider {
         }
         return false;
     }
+
+    public Claims getAllClaimsFromToken(String token) {
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+    }
 }

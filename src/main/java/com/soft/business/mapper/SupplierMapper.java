@@ -10,7 +10,7 @@ import java.util.UUID;
 @Service
 public class SupplierMapper {
 
-    public Supplier makeSupplierFromDto(SupplierDto supplierDto) {
+    public Supplier makeSupplierFromDto(int orgId, SupplierDto supplierDto) {
         Supplier supplier = new Supplier();
         supplier.setName(supplierDto.getName());
         supplier.setEmail(supplierDto.getEmail());
@@ -27,6 +27,7 @@ public class SupplierMapper {
         supplier.setInitialBalance(supplierDto.getInitialBalance());
         supplier.setPatent(supplierDto.getPatent());
         supplier.setIce(supplierDto.getIce());
+        supplier.setOrgId(orgId);
 
         return supplier;
     }

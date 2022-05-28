@@ -9,7 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface SupplierRepository extends CrudRepository<Supplier, Long> {
-    long deleteByUuid(String uuid);
-    Optional<Supplier> findByUuid(String uuid);
+    long deleteByUuidAndOrgId(String uuid, int orgId);
+    Optional<Supplier> findByUuidAndOrgId(String uuid, int orgId);
+    @Deprecated Optional<Supplier> findByUuid(String uuid);
     List<Supplier> findByOrgId(int orgId);
 }

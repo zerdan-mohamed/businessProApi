@@ -70,8 +70,7 @@ public class Supplier implements Serializable {
     @Column(name = "ICE")
     private String ice;
 
-    @JsonIgnore
-    @Column(name = "ORG_ID", updatable = false, insertable = false)
+    @Column(name = "ORG_ID", updatable = false, insertable = true)
     private int orgId;
 
     @JsonIgnore

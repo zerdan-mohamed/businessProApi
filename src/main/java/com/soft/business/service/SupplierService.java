@@ -7,13 +7,13 @@ import org.springframework.security.core.Authentication;
 import java.util.List;
 
 public interface SupplierService {
-    SupplierDto createSupplier(SupplierDto supplierDto, Authentication authentication);
+    SupplierDto createSupplier(Authentication authentication, SupplierDto supplierDto);
 
-    SupplierDto updateSupplier(String uuid, SupplierDto supplierDto);
+    SupplierDto updateSupplier(Authentication authentication, String uuid, SupplierDto supplierDto);
 
-    void deleteSupplierByUuid(String uuid);
+    void deleteSupplierByUuid(Authentication authentication, String uuid);
 
-    SupplierDto findSupplierByUuid(String uuid);
+    SupplierDto findSupplierByUuid(Authentication authentication, String uuid);
 
     List<SupplierDto> findAllSuppliers(Authentication authentication);
 }
