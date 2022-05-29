@@ -23,10 +23,11 @@ public class ProductMapper {
         this.productFamilyRepository = productFamilyRepository;
     }
 
-    public Product makeProductFromDto(ProductDto productDto) throws ParseException {
+    public Product makeProductFromDto(int orgid, ProductDto productDto) throws ParseException {
         Product product = new Product();
 
         product.setUuid(UUID.randomUUID().toString());
+        product.setOrgId(orgid);
         product.setName(productDto.getName());
         product.setMeasureUnite(productDto.getMeasureUnite());
         product.setVatRate(productDto.getVatRate());
@@ -45,8 +46,8 @@ public class ProductMapper {
             );
 
         if (productDto.getProductFamily() != null) {
-            Optional<ProductFamily> optionalProductFamily = productFamilyRepository.findByUuid(
-                    productDto.getProductFamily().getUuid());
+            Optional<ProductFamily> optionalProductFamily = productFamilyRepository.findByUuidAndOrgId(
+                    productDto.getProductFamily().getUuid(), 1);
             if (optionalProductFamily.isPresent()) {
                 ProductFamily productFamily = optionalProductFamily.get();
                 product.setProductFamily(productFamily);
@@ -130,7 +131,7 @@ public class ProductMapper {
         else product.setMinimalStock(productDb.getMinimalStock());
 
         if (productDto.getProductFamily() != null) {
-            Optional<ProductFamily> productFamily = productFamilyRepository.findByUuid(productDto.getProductFamily().getUuid());
+            Optional<ProductFamily> productFamily = productFamilyRepository.findByUuidAndOrgId(productDto.getProductFamily().getUuid(), 1);
 
             if (productFamily.isPresent())
                 product.setProductFamily(productFamily.get());
@@ -149,7 +150,6 @@ public class ProductMapper {
         return product;
     }
 
-    // TODO: this function will be optimize the code from deprecated function makeDtoFromProduct()
     public ProductDto cloneDtoFromProduct (Product product) {
         ProductDto productDto = new ProductDto();
         BeanUtils.copyProperties(product, productDto, "idProduct");

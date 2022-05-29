@@ -4,6 +4,7 @@ import com.soft.business.dto.ProductDto;
 import com.soft.business.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,37 +22,46 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findProducts() {
-        List<ProductDto> productsDto = productService.findProducts();
+    public ResponseEntity<?> findProducts(Authentication authentication) {
+        List<ProductDto> productsDto = productService.findProducts(authentication);
 
         return new ResponseEntity<>(productsDto, HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<?> getProductByUuid(@PathVariable("uuid") String uuid) {
-        ProductDto product = productService.findProductByUuid(uuid);
+    public ResponseEntity<?> getProductByUuid(
+            Authentication authentication, @PathVariable("uuid") String uuid
+    ) {
+        ProductDto product = productService.findProductByUuid(authentication, uuid);
 
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<?> deleteProductByUuid(@PathVariable("uuid") String uuid) {
-        productService.deleteProductByUuid(uuid);
+    public ResponseEntity<?> deleteProductByUuid(
+            Authentication authentication, @PathVariable("uuid") String uuid
+    ) {
+        productService.deleteProductByUuid(authentication, uuid);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> createProduct(@Valid @RequestBody ProductDto productDto) throws ParseException {
-        productService.createProduct(productDto);
+    public ResponseEntity<?> createProduct(
+            Authentication authentication, @Valid @RequestBody ProductDto productDto
+    ) throws ParseException {
+        productService.createProduct(authentication, productDto);
 
         return new ResponseEntity<>(productDto, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{uuid}")
     public ResponseEntity<?> updateProductByUuid(
-            @PathVariable("uuid") String uuid, @Valid @RequestBody ProductDto productDto) {
-        productService.updateProductByUuid(uuid, productDto);
+            Authentication authentication,
+            @PathVariable("uuid") String uuid,
+            @Valid @RequestBody ProductDto productDto) {
+
+        productService.updateProductByUuid(authentication, uuid, productDto);
 
         return new ResponseEntity<>(productDto, HttpStatus.OK);
     }

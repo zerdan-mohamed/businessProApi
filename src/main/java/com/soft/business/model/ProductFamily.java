@@ -27,6 +27,10 @@ public class ProductFamily implements Serializable {
     private  String name;
 
     @JsonIgnore
+    @Column(name = "ORG_ID", updatable = false, insertable = true)
+    private int orgId;
+
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productFamily")
     private Set<Product> products = new HashSet<>();
 }

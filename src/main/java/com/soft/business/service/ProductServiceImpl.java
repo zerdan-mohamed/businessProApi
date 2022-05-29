@@ -4,7 +4,9 @@ import com.soft.business.dto.ProductDto;
 import com.soft.business.mapper.ProductMapper;
 import com.soft.business.model.Product;
 import com.soft.business.repository.ProductRepository;
+import com.soft.business.service.organization.OrganizationServiceImpl;
 import com.soft.business.util.validator.ProductValidator;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,9 +36,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> findProducts() {
-        List<Product> products = productRepository.findAll();
+    public List<ProductDto> findProducts(Authentication authentication) {
+        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        List<Product> products = productRepository.findByOrgId(orgId);
         List<ProductDto> productsDto = new ArrayList<>();
+
         products.forEach(
                 product -> productsDto.add(productMapper.makeDtoFromProduct(product))
         );
@@ -45,31 +49,36 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto findProductByUuid(String uuid) {
-        Optional<Product> product = productRepository.findByUuid(uuid);
+    public ProductDto findProductByUuid(Authentication authentication, String uuid) {
+        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        Optional<Product> product = productRepository.findByUuidAndOrgId(uuid, orgId);
 
-        // TODO: Optional value should only be accessed after calling isPresent()
         return productMapper.makeDtoFromProduct(product.get());
     }
 
     @Override
     @Transactional
-    public void deleteProductByUuid(String uuid) {
-        long isDeleted = productRepository.deleteByUuid(uuid);
+    public void deleteProductByUuid(Authentication authentication, String uuid) {
+        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        long isDeleted = productRepository.deleteByUuidAndOrgId(uuid, orgId);
         if(isDeleted == 0) throw new NoSuchElementException();
     }
 
     @Override
-    public ProductDto createProduct(ProductDto productDto) throws ParseException {
+    public ProductDto createProduct(
+            Authentication authentication, ProductDto productDto) throws ParseException {
+        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
         productValidator.createProductValidator(productDto);
-        productRepository.save(productMapper.makeProductFromDto(productDto));
+        productRepository.save(productMapper.makeProductFromDto(orgId, productDto));
 
         return productDto;
     }
 
     @Override
-    public ProductDto updateProductByUuid(String uuid, ProductDto productDto) {
-        Optional<Product> optionalProduct = this.productRepository.findByUuid(uuid);
+    public ProductDto updateProductByUuid(
+            Authentication authentication, String uuid, ProductDto productDto) {
+        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        Optional<Product> optionalProduct = this.productRepository.findByUuidAndOrgId(uuid, orgId);
 
         if (optionalProduct.isEmpty()) throw new NoSuchElementException();
 

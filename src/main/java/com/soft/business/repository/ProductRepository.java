@@ -10,11 +10,11 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Long> {
 
-    Optional<Product> findByUuid(String uuid);
+    Optional<Product> findByUuidAndOrgId(String uuid, int orgId);
 
-    long deleteByUuid(String uuid);
+    long deleteByUuidAndOrgId(String uuid, int orgId);
 
-    List<Product> findAll();
+    List<Product> findByOrgId(int orgId);
 
-    List<Product> findAllByProductFamily(ProductFamily productFamily);
+    List<Product> findAllByProductFamilyAndOrgId(ProductFamily productFamily, int orgId);
 }

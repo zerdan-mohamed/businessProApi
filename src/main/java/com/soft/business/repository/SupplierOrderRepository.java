@@ -8,10 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface SupplierOrderRepository extends CrudRepository<SupplierOrder, Long> {
-    long deleteByUuid(String uuid);
-    Optional<SupplierOrder> findByUuid(String uuid);
-    List<SupplierOrder> findAll();
-    SupplierOrder findTopByOrderByCreationDateDesc();
 
-    SupplierOrder findTopByOrderByIdSupplierOrderDesc();
+    Optional<SupplierOrder> findByUuidAndOrgId(String uuid, int orgId);
+
+    List<SupplierOrder> findByOrgId(int orgId);
+
 }

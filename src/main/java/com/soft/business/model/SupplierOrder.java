@@ -39,6 +39,10 @@ public class SupplierOrder implements Serializable {
     @NotBlank
     private Integer supplierOrderNumber;
 
+    @JsonIgnore
+    @Column(name = "ORG_ID", updatable = false, insertable = true)
+    private int orgId;
+
     @ManyToOne
     @JoinColumn(name = "ID_SUPPLIER", nullable = true)
     private Supplier supplier;

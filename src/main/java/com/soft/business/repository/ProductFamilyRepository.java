@@ -9,11 +9,11 @@ import java.util.Optional;
 @Repository
 public interface ProductFamilyRepository extends JpaRepository<ProductFamily, Long> {
 
-    Optional<ProductFamily> findByUuid(String uuid);
+    Optional<ProductFamily> findByUuidAndOrgId(String uuid, int orgId);
 
-    long deleteByUuid(String uuid);
+    long deleteByUuidAndOrgId(String uuid, int orgId);
 
-    List<ProductFamily> findAll();
+    List<ProductFamily> findByOrgId(int orgId);
 
 }
 

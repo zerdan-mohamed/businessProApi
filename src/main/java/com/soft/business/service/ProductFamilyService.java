@@ -1,18 +1,19 @@
 package com.soft.business.service;
 
 import com.soft.business.dto.ProductFamilyDto;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
 public interface ProductFamilyService {
 
-    List<ProductFamilyDto> findProductFamilies();
+    List<ProductFamilyDto> findProductFamilies(Authentication authentication);
 
-    ProductFamilyDto findProductFamilyByUuid(String uuid);
+    ProductFamilyDto findProductFamilyByUuid(Authentication authentication, String uuid);
 
-    void deleteProductFamilyByUuid(String uuid);
+    void deleteProductFamilyByUuid(Authentication authentication, String uuid);
 
-    ProductFamilyDto createProductFamily(ProductFamilyDto productFamilyDto);
+    ProductFamilyDto createProductFamily(Authentication authentication, ProductFamilyDto productFamilyDto);
 
-    ProductFamilyDto updateProductFamilyByUuid(String uuid, ProductFamilyDto productFamilyDto);
+    ProductFamilyDto updateProductFamilyByUuid(Authentication authentication, String uuid, ProductFamilyDto productFamilyDto);
 }

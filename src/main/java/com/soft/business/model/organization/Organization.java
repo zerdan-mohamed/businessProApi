@@ -1,6 +1,5 @@
 package com.soft.business.model.organization;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

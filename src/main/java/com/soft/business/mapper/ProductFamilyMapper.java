@@ -9,10 +9,11 @@ import java.util.UUID;
 @Service
 public class ProductFamilyMapper {
 
-    public ProductFamily makeProductFamilyFromDto(ProductFamilyDto productFamilyDto) {
+    public ProductFamily makeProductFamilyFromDto(int orgId, ProductFamilyDto productFamilyDto) {
         ProductFamily productFamily = new ProductFamily();
         productFamily.setUuid(UUID.randomUUID().toString());
         productFamily.setName(productFamilyDto.getName());
+        productFamily.setOrgId(orgId);
         return productFamily;
     }
 

@@ -1,5 +1,6 @@
 package com.soft.business.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -33,6 +34,10 @@ public class SupplierOrderItem implements Serializable {
 
     @Column(name = "DISCOUNT")
     private Double discount;
+
+    @JsonIgnore
+    @Column(name = "ORG_ID", updatable = false, insertable = true)
+    private int orgId;
 
     @ManyToOne
     @NotBlank

@@ -16,6 +16,7 @@ public class AuthService {
 
     @Autowired
     AuthenticationManager authenticationManager;
+
     @Autowired
     JwtTokenProvider tokenProvider;
 

@@ -61,6 +61,10 @@ public class Product implements Serializable {
     @NotNull
     private Date creationDate;
 
+    @JsonIgnore
+    @Column(name = "ORG_ID", updatable = false, insertable = true)
+    private int orgId;
+
     @ManyToOne()
     @JoinColumn(name = "ID_PRODUCT_FAMILY", nullable = true)
     private ProductFamily productFamily;

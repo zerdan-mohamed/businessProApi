@@ -1,6 +1,5 @@
 package com.soft.business.util.validator;
 
-import com.soft.business.dto.SupplierOrderDto;
 import com.soft.business.dto.SupplierOrderItemDto;
 import com.soft.business.exception.EmptyInputException;
 import com.soft.business.util.ApiErrorCodesConstantes;

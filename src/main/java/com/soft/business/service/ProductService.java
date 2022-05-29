@@ -1,20 +1,21 @@
 package com.soft.business.service;
 
 import com.soft.business.dto.ProductDto;
+import org.springframework.security.core.Authentication;
 
 import java.text.ParseException;
 import java.util.List;
 
 public interface ProductService {
 
-    List<ProductDto> findProducts();
+    List<ProductDto> findProducts(Authentication authentication);
 
-    ProductDto findProductByUuid(String uuid);
+    ProductDto findProductByUuid(Authentication authentication, String uuid);
 
-    void deleteProductByUuid(String uuid);
+    void deleteProductByUuid(Authentication authentication, String uuid);
 
-    ProductDto  createProduct(ProductDto productDto) throws ParseException;
+    ProductDto  createProduct(Authentication authentication, ProductDto productDto) throws ParseException;
 
-    ProductDto updateProductByUuid(String uuid, ProductDto productDto);
+    ProductDto updateProductByUuid(Authentication authentication, String uuid, ProductDto productDto);
 
 }

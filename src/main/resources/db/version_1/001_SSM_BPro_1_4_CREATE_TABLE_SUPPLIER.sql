@@ -1,7 +1,6 @@
 USE pro_business_db;
 
 -- pro_business_db.SUPPLIER definition
-
 CREATE TABLE IF NOT EXISTS SUPPLIER (
 	ID BIGINT NOT NULL auto_increment,
 	NAME VARCHAR(100) NOT NULL,

@@ -1,7 +1,5 @@
 package com.soft.business.util;
 
-
-import com.soft.business.dto.SupplierOrderDto;
 import com.soft.business.model.SupplierOrder;
 
 import java.util.Date;

@@ -1,19 +1,20 @@
 package com.soft.business.service;
 
 import com.soft.business.dto.SupplierOrderItemDto;
+import org.springframework.security.core.Authentication;
 
 import java.text.ParseException;
 import java.util.List;
 
 public interface SupplierOrderItemService {
 
-    List<SupplierOrderItemDto> findSupplierOrderItems(String supplierOrderUuid);
+    List<SupplierOrderItemDto> findSupplierOrderItems(Authentication authentication, String supplierOrderUuid);
 
-    SupplierOrderItemDto findSupplierOrderItemByUuid(String uuid);
+    SupplierOrderItemDto findSupplierOrderItemByUuid(Authentication authentication, String uuid);
 
-    void deleteSupplierOrderItemByUuid(String uuid);
+    void deleteSupplierOrderItemByUuid(Authentication authentication, String uuid);
 
-    SupplierOrderItemDto  createSupplierOrderItem(SupplierOrderItemDto supplierOrderItemDto) throws ParseException;
+    SupplierOrderItemDto  createSupplierOrderItem(Authentication authentication, SupplierOrderItemDto supplierOrderItemDto) throws ParseException;
 
-    SupplierOrderItemDto updateSupplierOrderItem(String uuid, SupplierOrderItemDto supplierOrderItemDto);
+    SupplierOrderItemDto updateSupplierOrderItem(Authentication authentication, String uuid, SupplierOrderItemDto supplierOrderItemDto);
 }

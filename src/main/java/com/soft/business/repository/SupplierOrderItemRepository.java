@@ -10,10 +10,12 @@ import java.util.Optional;
 @Repository
 public interface SupplierOrderItemRepository extends CrudRepository<SupplierOrderItem, Long> {
 
-    long deleteByUuid(String uuid);
-    Optional<SupplierOrderItem> findByUuid(String uuid);
-    List<SupplierOrderItem> findAll();
+    Optional<SupplierOrderItem> findByUuidAndOrgId(String uuid, int orgId);
 
-    List<SupplierOrderItem> findBySupplierOrder(SupplierOrder supplierOrder);
+    long deleteByUuidAndOrgId(String uuid, int orgId);
+
+    List<SupplierOrderItem> findByOrgId(int orgId);
+
+    List<SupplierOrderItem> findBySupplierOrderAndOrgId(SupplierOrder supplierOrder, int orgid);
 
 }

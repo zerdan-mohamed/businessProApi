@@ -4,10 +4,10 @@ import com.soft.business.dto.SupplierOrderDto;
 import com.soft.business.service.SupplierOrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -20,39 +20,47 @@ public class SupplierOrderController {
         this.supplierOrderService = supplierOrderService;
     }
 
-    // TODO: add organisation
     @GetMapping
-    public ResponseEntity<?> findSupplierOrders() {
-        List<SupplierOrderDto> supplierOrders = supplierOrderService.findSupplierOrders();
+    public ResponseEntity<?> findSupplierOrders(Authentication authentication) {
+        List<SupplierOrderDto> supplierOrders = supplierOrderService.findSupplierOrders(authentication);
 
         return new ResponseEntity<>(supplierOrders, HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<?> getSupplierOrderByUuid(@PathVariable("uuid") String uuid) {
-        SupplierOrderDto supplierOrder = supplierOrderService.findSupplierOrderByUuid(uuid);
+    public ResponseEntity<?> getSupplierOrderByUuid(
+            Authentication authentication, @PathVariable("uuid") String uuid
+    ) {
+        SupplierOrderDto supplierOrder = supplierOrderService.findSupplierOrderByUuid(authentication, uuid);
 
         return new ResponseEntity<>(supplierOrder, HttpStatus.OK);
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<?> deleteSupplierOrderByUuid(@PathVariable("uuid") String uuid) {
-        supplierOrderService.deleteSupplierOrderByUuid(uuid);
+    public ResponseEntity<?> deleteSupplierOrderByUuid(
+            Authentication authentication, @PathVariable("uuid") String uuid
+    ) {
+        supplierOrderService.deleteSupplierOrderByUuid(authentication, uuid);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> createSupplierOrder(@Valid @RequestBody SupplierOrderDto supplierOrderDto) throws ParseException {
-        supplierOrderService.createSupplierOrder(supplierOrderDto);
+    public ResponseEntity<?> createSupplierOrder(
+            Authentication authentication, @Valid @RequestBody SupplierOrderDto supplierOrderDto
+    ) {
+        supplierOrderService.createSupplierOrder(authentication, supplierOrderDto);
 
         return new ResponseEntity<>(supplierOrderDto, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{uuid}")
     public ResponseEntity<?> updateSupplierOrderByUuid(
-            @PathVariable("uuid") String uuid, @Valid @RequestBody SupplierOrderDto supplierOrderDto) {
-        supplierOrderService.updateSupplierOrder(uuid, supplierOrderDto);
+            Authentication authentication,
+            @PathVariable("uuid") String uuid,
+            @Valid @RequestBody SupplierOrderDto supplierOrderDto
+    ) {
+        supplierOrderService.updateSupplierOrder(authentication, uuid, supplierOrderDto);
 
         return new ResponseEntity<>(supplierOrderDto, HttpStatus.OK);
     }

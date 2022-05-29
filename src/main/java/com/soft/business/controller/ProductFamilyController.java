@@ -4,6 +4,7 @@ import com.soft.business.dto.ProductFamilyDto;
 import com.soft.business.service.ProductFamilyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,39 +21,46 @@ public class ProductFamilyController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findProductFamilies() {
-            List<ProductFamilyDto> productFamilies = productFamilyService.findProductFamilies();
+    public ResponseEntity<?> findProductFamilies(Authentication authentication) {
+            List<ProductFamilyDto> productFamilies = productFamilyService.findProductFamilies(authentication);
 
             return new ResponseEntity<>(productFamilies, HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<?> getProductFamilyByUuid(@PathVariable("uuid") String uuid) {
-        ProductFamilyDto productFamily = productFamilyService.findProductFamilyByUuid(uuid);
+    public ResponseEntity<?> getProductFamilyByUuid(
+            Authentication authentication, @PathVariable("uuid") String uuid
+    ) {
+        ProductFamilyDto productFamily = productFamilyService.findProductFamilyByUuid(authentication, uuid);
 
         return new ResponseEntity<>(productFamily, HttpStatus.OK);
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<?> deleteProductFamilyByUuid(@PathVariable("uuid") String uuid) {
-        productFamilyService.deleteProductFamilyByUuid(uuid);
+    public ResponseEntity<?> deleteProductFamilyByUuid(
+            Authentication authentication, @PathVariable("uuid") String uuid
+    ) {
+        productFamilyService.deleteProductFamilyByUuid(authentication, uuid);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> createProductFamily(@Valid @RequestBody ProductFamilyDto productFamilyDto) {
-        productFamilyService.createProductFamily(productFamilyDto);
+    public ResponseEntity<?> createProductFamily(
+            Authentication authentication, @Valid @RequestBody ProductFamilyDto productFamilyDto
+    ) {
+        productFamilyService.createProductFamily(authentication, productFamilyDto);
 
         return new ResponseEntity<>(productFamilyDto, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{uuid}")
     public ResponseEntity<?> updateProductFamilyByUuid(
+            Authentication authentication,
             @PathVariable("uuid") String uuid,
             @Valid @RequestBody ProductFamilyDto productFamilyDto
     ) {
-        productFamilyService.updateProductFamilyByUuid(uuid, productFamilyDto);
+        productFamilyService.updateProductFamilyByUuid(authentication, uuid, productFamilyDto);
 
         return new ResponseEntity<>(productFamilyDto, HttpStatus.OK);
     }
