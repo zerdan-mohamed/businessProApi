@@ -23,11 +23,11 @@ public class ProductMapper {
         this.productFamilyRepository = productFamilyRepository;
     }
 
-    public Product makeProductFromDto(int orgid, ProductDto productDto) throws ParseException {
+    public Product makeProductFromDto(int orgId, ProductDto productDto) throws ParseException {
         Product product = new Product();
 
         product.setUuid(UUID.randomUUID().toString());
-        product.setOrgId(orgid);
+        product.setOrgId(orgId);
         product.setName(productDto.getName());
         product.setMeasureUnite(productDto.getMeasureUnite());
         product.setVatRate(productDto.getVatRate());
@@ -46,8 +46,9 @@ public class ProductMapper {
             );
 
         if (productDto.getProductFamily() != null) {
-            Optional<ProductFamily> optionalProductFamily = productFamilyRepository.findByUuidAndOrgId(
-                    productDto.getProductFamily().getUuid(), 1);
+            Optional<ProductFamily> optionalProductFamily =
+                    productFamilyRepository.findByUuidAndOrgId(productDto.getProductFamily().getUuid(), orgId);
+
             if (optionalProductFamily.isPresent()) {
                 ProductFamily productFamily = optionalProductFamily.get();
                 product.setProductFamily(productFamily);
@@ -129,6 +130,13 @@ public class ProductMapper {
 
         if(productDto.getMinimalStock() != null) product.setMinimalStock(productDto.getMinimalStock());
         else product.setMinimalStock(productDb.getMinimalStock());
+
+        if(productDto.getCreationDate() != null) {
+            product.setCreationDate(
+                    new Date(Constantes.dateFormatter.format(productDto.getCreationDate()))
+            );
+        }
+        else product.setCreationDate(productDb.getCreationDate());
 
         if (productDto.getProductFamily() != null) {
             Optional<ProductFamily> productFamily = productFamilyRepository.findByUuidAndOrgId(productDto.getProductFamily().getUuid(), 1);

@@ -69,9 +69,9 @@ public class ProductServiceImpl implements ProductService {
             Authentication authentication, ProductDto productDto) throws ParseException {
         int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
         productValidator.createProductValidator(productDto);
-        productRepository.save(productMapper.makeProductFromDto(orgId, productDto));
+        Product savedProduct = productRepository.save(productMapper.makeProductFromDto(orgId, productDto));
 
-        return productDto;
+        return productMapper.makeDtoFromProduct(savedProduct);
     }
 
     @Override
@@ -83,8 +83,8 @@ public class ProductServiceImpl implements ProductService {
         if (optionalProduct.isEmpty()) throw new NoSuchElementException();
 
         Product product = productMapper.updateProduct(productDto, optionalProduct.get());
-        productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
 
-        return productDto;
+        return productMapper.makeDtoFromProduct(savedProduct);
     }
 }

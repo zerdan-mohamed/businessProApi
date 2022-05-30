@@ -20,6 +20,8 @@ public class ProductValidator {
             );
         }
 
+
+        // false when update
         if(!StringUtils.isEmpty(productDto.getInitialStockDate())) {
             try {
                 Constantes.dateFormatter.parse(productDto.getInitialStockDate());

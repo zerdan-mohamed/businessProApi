@@ -27,7 +27,6 @@ public class ProductDto implements Serializable {
     private static final String PRODUCT_MAXIMAL_STOCK = "maximal_stock";
     private static final String PRODUCT_CREATION_DATE = "creation_date";
     private static final String PRODUCT_FAMILY = "product_family";
-    private static final String ORG_ID = "org_id";
 
     @JsonProperty(PRODUCT_UUID)
     private String uuid;
@@ -67,9 +66,6 @@ public class ProductDto implements Serializable {
 
     @JsonProperty(PRODUCT_CREATION_DATE)
     private Date creationDate;
-
-    @JsonProperty(ORG_ID)
-    private int orgId;
 
     @JsonProperty(PRODUCT_FAMILY)
     private ProductFamilyDto productFamily;
