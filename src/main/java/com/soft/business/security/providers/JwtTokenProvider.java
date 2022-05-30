@@ -1,5 +1,6 @@
 package com.soft.business.security.providers;
 
+import com.soft.business.model.organization.Organization;
 import com.soft.business.security.userDetailsService.JpaUserDetails;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
@@ -30,8 +31,7 @@ public class JwtTokenProvider {
     public String generateToken(Authentication authentication) {
 
         JpaUserDetails userPrincipal = (JpaUserDetails) this.userDetailsService
-                                                    .loadUserByUsername(String.valueOf(authentication.getPrincipal()));;
-
+                                                    .loadUserByUsername(String.valueOf(authentication.getPrincipal()));
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 

@@ -71,10 +71,4 @@ public class Organization implements Serializable {
     @ManyToOne
     @JoinColumn(name = "ORG_ID_PARENT")
     private Organization parent;
-
-    public boolean isActive() {
-        Date today = new Date();
-        if(this.inactivationDate != null && this.inactivationDate.after(today)) return false;
-        return true;
-    }
 }

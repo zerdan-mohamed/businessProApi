@@ -1,5 +1,6 @@
 package com.soft.business.security.providers;
 
+import com.soft.business.model.organization.Organization;
 import com.soft.business.security.userDetailsService.JpaUserDetails;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -30,13 +31,17 @@ public class UsernameAndPasswordAuthenticationProvider implements Authentication
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        JpaUserDetails u = (JpaUserDetails) this.userDetailsService.loadUserByUsername(username);
+        JpaUserDetails userPrincipal = (JpaUserDetails) this.userDetailsService
+                .loadUserByUsername(username);
 
-        if(passwordEncoder.matches(password, u.getPassword())) {
+        Organization organization = userPrincipal.getUser().getOrganization();
+        if(!organization.isActive()) throw new BadCredentialsException(":/");
+
+        if(passwordEncoder.matches(password, userPrincipal.getPassword())) {
             return new UsernamePasswordAuthenticationToken(
                     username,
                     password,
-                    u.getAuthorities()
+                    userPrincipal.getAuthorities()
             );
         } else {
             throw new BadCredentialsException(":/");
