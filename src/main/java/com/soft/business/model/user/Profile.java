@@ -7,7 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter @Setter
@@ -33,5 +33,5 @@ public class Profile implements Serializable {
     @JoinTable(name = "PRO_ROLE",
                joinColumns = @JoinColumn(name = "PRO_ID"),
                inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-    private List<Role> roles;
+    private Set<Role> roles;
 }
