@@ -6,9 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Getter
 public class JpaUserDetails implements UserDetails {
@@ -21,11 +19,11 @@ public class JpaUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> functionalities = new ArrayList<>();
-        this.user.getProfile().getRoles().forEach(role -> {
+        Set<SimpleGrantedAuthority> functionalities = new HashSet<>();
+        this.user.getProfile().getRoles().forEach(role ->
             role.getFunctionalities()
-                    .forEach(f -> functionalities.add(new SimpleGrantedAuthority(f.getLabel())));
-        });
+                    .forEach(f -> functionalities.add(new SimpleGrantedAuthority(f.getLabel())))
+        );
 
         return functionalities;
     }

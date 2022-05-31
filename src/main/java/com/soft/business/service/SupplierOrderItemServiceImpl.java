@@ -7,7 +7,7 @@ import com.soft.business.model.SupplierOrderItem;
 import com.soft.business.model.SupplierOrderStatus;
 import com.soft.business.repository.SupplierOrderItemRepository;
 import com.soft.business.repository.SupplierOrderRepository;
-import com.soft.business.service.organization.OrganizationServiceImpl;
+import com.soft.business.service.organization.OrganizationService;
 import com.soft.business.util.validator.SupplierOrderItemValidator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
 
     @Override
     public List<SupplierOrderItemDto> findSupplierOrderItems(Authentication authentication, String supplierOrderUuid) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         List<SupplierOrderItemDto> supplierOrderItemsDto = new ArrayList<>();
 
         Optional<SupplierOrder> supplierOrder = supplierOrderRepository.findByUuidAndOrgId(supplierOrderUuid, orgId);
@@ -55,7 +55,7 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
 
     @Override
     public SupplierOrderItemDto findSupplierOrderItemByUuid(Authentication authentication, String uuid) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
         Optional<SupplierOrderItem> supplierOrderItem = supplierOrderItemRepository.findByUuidAndOrgId(uuid, orgId);
 
@@ -64,7 +64,7 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
 
     @Override
     public void deleteSupplierOrderItemByUuid(Authentication authentication, String uuid) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         SupplierOrderItemDto supplierOrderItem = findSupplierOrderItemByUuid(authentication, uuid);
 
         if (!supplierOrderItem.getSupplierOrder()
@@ -78,7 +78,7 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
     @Override
     public SupplierOrderItemDto createSupplierOrderItem(
             Authentication authentication, SupplierOrderItemDto supplierOrderItemDto) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         supplierOrderItemValidator.createSupplierOrderItemValidator(supplierOrderItemDto);
 
         supplierOrderItemRepository.save(
@@ -91,7 +91,7 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
     @Override
     public SupplierOrderItemDto updateSupplierOrderItem(
             Authentication authentication, String uuid, SupplierOrderItemDto supplierOrderItemDto) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
         Optional<SupplierOrderItem> supplierOrderItemDb = this.supplierOrderItemRepository.findByUuidAndOrgId(uuid, orgId);
 

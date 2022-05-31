@@ -5,7 +5,7 @@ import com.soft.business.mapper.SupplierOrderMapper;
 import com.soft.business.model.SupplierOrder;
 import com.soft.business.model.SupplierOrderStatus;
 import com.soft.business.repository.SupplierOrderRepository;
-import com.soft.business.service.organization.OrganizationServiceImpl;
+import com.soft.business.service.organization.OrganizationService;
 import com.soft.business.util.validator.SupplierOrderValidator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
 
     @Override
     public List<SupplierOrderDto> findSupplierOrders(Authentication authentication) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
         List<SupplierOrder> supplierOrders = supplierOrderRepository.findByOrgId(orgId);
         List<SupplierOrderDto> supplierOrdersDto = new ArrayList<>();
@@ -51,7 +51,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
 
     @Override
     public SupplierOrderDto findSupplierOrderByUuid(Authentication authentication, String uuid) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
         Optional<SupplierOrder> supplierOrder = supplierOrderRepository.findByUuidAndOrgId(uuid, orgId);
 
@@ -71,7 +71,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
     @Override
     public SupplierOrderDto createSupplierOrder(
             Authentication authentication, SupplierOrderDto supplierOrderDto) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
         supplierOrderValidator.createSupplierOrderValidator(supplierOrderDto);
         supplierOrderRepository
@@ -83,7 +83,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
     @Override
     public SupplierOrderDto updateSupplierOrder(
             Authentication authentication, String uuid, SupplierOrderDto supplierOrderDto) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
         Optional<SupplierOrder> supplierOrderDb = this.supplierOrderRepository.findByUuidAndOrgId(uuid, orgId);
 

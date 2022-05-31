@@ -4,7 +4,7 @@ import com.soft.business.dto.SupplierDto;
 import com.soft.business.mapper.SupplierMapper;
 import com.soft.business.model.Supplier;
 import com.soft.business.repository.SupplierRepository;
-import com.soft.business.service.organization.OrganizationServiceImpl;
+import com.soft.business.service.organization.OrganizationService;
 import com.soft.business.util.validator.SupplierValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public SupplierDto createSupplier(Authentication authentication,
                                       SupplierDto supplierDto) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         supplierValidator.createSupplierValidator(supplierDto);
         Supplier savedSupplier = supplierRepository.save(supplierMapper.makeSupplierFromDto(orgId, supplierDto));
         return supplierMapper.makeDtoFromSupplier(savedSupplier);
@@ -46,7 +46,7 @@ public class SupplierServiceImpl implements SupplierService {
     public SupplierDto updateSupplier(Authentication authentication,
                                       String uuid,
                                       SupplierDto supplierDto) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         Optional<Supplier> oSupplier = this.supplierRepository.findByUuidAndOrgId(uuid, orgId);
         if(oSupplier.isEmpty()) throw new NoSuchElementException();
 
@@ -59,7 +59,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Transactional
     public void deleteSupplierByUuid(Authentication authentication,
                                      String uuid) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         long isDeleted = this.supplierRepository.deleteByUuidAndOrgId(uuid, orgId);
         if(isDeleted == 0) throw new NoSuchElementException();
     }
@@ -67,7 +67,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public SupplierDto findSupplierByUuid(Authentication authentication,
                                           String uuid) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         Optional<Supplier> oSupplier = this.supplierRepository.findByUuidAndOrgId(uuid, orgId);
         Supplier supplier = oSupplier.get();
         return this.supplierMapper.makeDtoFromSupplier(supplier);
@@ -76,7 +76,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     @Transactional(readOnly = true)
     public List<SupplierDto> findAllSuppliers(Authentication authentication) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         List<Supplier> suppliers = this.supplierRepository.findByOrgId(orgId);
         List<SupplierDto> supplierDtos = new ArrayList<>();
         suppliers.forEach(supplier -> supplierDtos.add(this.supplierMapper.makeDtoFromSupplier(supplier)));

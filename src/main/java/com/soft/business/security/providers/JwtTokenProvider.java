@@ -1,6 +1,5 @@
 package com.soft.business.security.providers;
 
-import com.soft.business.model.organization.Organization;
 import com.soft.business.security.userDetailsService.JpaUserDetails;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;

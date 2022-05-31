@@ -4,7 +4,7 @@ import com.soft.business.dto.ProductDto;
 import com.soft.business.mapper.ProductMapper;
 import com.soft.business.model.Product;
 import com.soft.business.repository.ProductRepository;
-import com.soft.business.service.organization.OrganizationServiceImpl;
+import com.soft.business.service.organization.OrganizationService;
 import com.soft.business.util.validator.ProductValidator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> findProducts(Authentication authentication) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         List<Product> products = productRepository.findByOrgId(orgId);
         List<ProductDto> productsDto = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto findProductByUuid(Authentication authentication, String uuid) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         Optional<Product> product = productRepository.findByUuidAndOrgId(uuid, orgId);
 
         return productMapper.makeDtoFromProduct(product.get());
@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void deleteProductByUuid(Authentication authentication, String uuid) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         long isDeleted = productRepository.deleteByUuidAndOrgId(uuid, orgId);
         if(isDeleted == 0) throw new NoSuchElementException();
     }
@@ -67,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto createProduct(
             Authentication authentication, ProductDto productDto) throws ParseException {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         productValidator.createProductValidator(productDto);
         Product savedProduct = productRepository.save(productMapper.makeProductFromDto(orgId, productDto));
 
@@ -77,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto updateProductByUuid(
             Authentication authentication, String uuid, ProductDto productDto) {
-        int orgId = OrganizationServiceImpl.getOrgIdFromPrincipal(authentication);
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         Optional<Product> optionalProduct = this.productRepository.findByUuidAndOrgId(uuid, orgId);
 
         if (optionalProduct.isEmpty()) throw new NoSuchElementException();

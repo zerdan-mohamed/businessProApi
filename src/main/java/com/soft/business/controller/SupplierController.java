@@ -22,7 +22,7 @@ public class SupplierController {
 
     @GetMapping("/{uuid}")
     @PreAuthorize("hasAuthority('FUNC_SUPPLIER_RETRIEVE')")
-    public ResponseEntity<?> findSupplierByUuid(Authentication authentication,
+    public ResponseEntity<SupplierDto> findSupplierByUuid(Authentication authentication,
                                                 @PathVariable("uuid") String uuid) {
         SupplierDto supplierDto = this.supplierService.findSupplierByUuid(authentication, uuid);
         return ResponseEntity.ok(supplierDto);
@@ -30,21 +30,21 @@ public class SupplierController {
 
     @GetMapping()
     @PreAuthorize("hasAuthority('FUNC_SUPPLIER_RETRIEVE')")
-    public ResponseEntity<?> findAllSuppliers(Authentication authentication) {
+    public ResponseEntity<List<SupplierDto>> findAllSuppliers(Authentication authentication) {
         List<SupplierDto> suppliers = this.supplierService.findAllSuppliers(authentication);
         return new ResponseEntity<>(suppliers, HttpStatus.OK);
     }
 
     @PostMapping()
     @PreAuthorize("hasAuthority('FUNC_SUPPLIER_CREATE')")
-    public ResponseEntity<?> createSupplier(@Valid @RequestBody SupplierDto supplierDto,
+    public ResponseEntity<SupplierDto> createSupplier(@Valid @RequestBody SupplierDto supplierDto,
                                             Authentication authentication) {
         return new ResponseEntity<>(supplierService.createSupplier(authentication, supplierDto), HttpStatus.OK);
     }
 
     @PatchMapping("/{uuid}")
     @PreAuthorize("hasAuthority('FUNC_SUPPLIER_UPDATE')")
-    public ResponseEntity<?> updateSupplier(Authentication authentication,
+    public ResponseEntity<SupplierDto> updateSupplier(Authentication authentication,
                                             @PathVariable("uuid") String uuid,
                                             @Valid @RequestBody SupplierDto supplierDto) {
         return new ResponseEntity<>(supplierService.updateSupplier(authentication, uuid, supplierDto), HttpStatus.OK);
