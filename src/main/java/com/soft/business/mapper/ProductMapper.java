@@ -87,7 +87,7 @@ public class ProductMapper {
         return productDto;
     }
 
-    public Product updateProduct(ProductDto productDto, Product productDb) {
+    public Product updateProduct(ProductDto productDto, Product productDb, Integer orgId) {
         Product product = new Product();
 
         product.setIdProduct(productDb.getIdProduct());
@@ -139,7 +139,7 @@ public class ProductMapper {
         else product.setCreationDate(productDb.getCreationDate());
 
         if (productDto.getProductFamily() != null) {
-            Optional<ProductFamily> productFamily = productFamilyRepository.findByUuidAndOrgId(productDto.getProductFamily().getUuid(), 1);
+            Optional<ProductFamily> productFamily = productFamilyRepository.findByUuidAndOrgId(productDto.getProductFamily().getUuid(), orgId);
 
             if (productFamily.isPresent())
                 product.setProductFamily(productFamily.get());

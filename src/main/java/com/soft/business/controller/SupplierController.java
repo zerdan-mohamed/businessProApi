@@ -52,7 +52,7 @@ public class SupplierController {
 
     @DeleteMapping("/{uuid}")
     @PreAuthorize("hasAuthority('FUNC_SUPPLIER_DELETE')")
-    public ResponseEntity<?> deleteSupplierByUuid(Authentication authentication,
+    public ResponseEntity deleteSupplierByUuid(Authentication authentication,
                                                     @PathVariable("uuid") String uuid) {
         supplierService.deleteSupplierByUuid(authentication, uuid);
         return ResponseEntity.ok().build();

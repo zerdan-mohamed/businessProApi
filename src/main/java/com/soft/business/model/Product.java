@@ -58,7 +58,6 @@ public class Product implements Serializable {
     private Integer maximalStock;
 
     @Column(name = "CREATION_DATE")
-    @NotNull
     private Date creationDate;
 
     @JsonIgnore

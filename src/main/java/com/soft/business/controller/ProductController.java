@@ -22,14 +22,14 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findProducts(Authentication authentication) {
+    public ResponseEntity<List<ProductDto>> findProducts(Authentication authentication) {
         List<ProductDto> productsDto = productService.findProducts(authentication);
 
         return new ResponseEntity<>(productsDto, HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<?> getProductByUuid(
+    public ResponseEntity<ProductDto> getProductByUuid(
             Authentication authentication, @PathVariable("uuid") String uuid
     ) {
         ProductDto product = productService.findProductByUuid(authentication, uuid);
@@ -38,7 +38,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<?> deleteProductByUuid(
+    public ResponseEntity deleteProductByUuid(
             Authentication authentication, @PathVariable("uuid") String uuid
     ) {
         productService.deleteProductByUuid(authentication, uuid);
@@ -47,22 +47,17 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createProduct(
+    public ResponseEntity<ProductDto> createProduct(
             Authentication authentication, @Valid @RequestBody ProductDto productDto
     ) throws ParseException {
-        productService.createProduct(authentication, productDto);
-
-        return new ResponseEntity<>(productDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(productService.createProduct(authentication, productDto), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{uuid}")
-    public ResponseEntity<?> updateProductByUuid(
+    public ResponseEntity<ProductDto> updateProductByUuid(
             Authentication authentication,
             @PathVariable("uuid") String uuid,
             @Valid @RequestBody ProductDto productDto) {
-
-        productService.updateProductByUuid(authentication, uuid, productDto);
-
-        return new ResponseEntity<>(productDto, HttpStatus.OK);
+        return new ResponseEntity<>(productService.updateProductByUuid(authentication, uuid, productDto), HttpStatus.OK);
     }
 }

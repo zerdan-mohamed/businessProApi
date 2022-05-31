@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
 
         if (optionalProduct.isEmpty()) throw new NoSuchElementException();
 
-        Product product = productMapper.updateProduct(productDto, optionalProduct.get());
+        Product product = productMapper.updateProduct(productDto, optionalProduct.get(), orgId);
         Product savedProduct = productRepository.save(product);
 
         return productMapper.makeDtoFromProduct(savedProduct);
