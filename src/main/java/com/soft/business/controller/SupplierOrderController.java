@@ -46,12 +46,11 @@ public class SupplierOrderController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createSupplierOrder(
+    public ResponseEntity<SupplierOrderDto> createSupplierOrder(
             Authentication authentication, @Valid @RequestBody SupplierOrderDto supplierOrderDto
     ) {
-        supplierOrderService.createSupplierOrder(authentication, supplierOrderDto);
-
-        return new ResponseEntity<>(supplierOrderDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(supplierOrderService.createSupplierOrder(authentication, supplierOrderDto),
+                                    HttpStatus.CREATED);
     }
 
     @PatchMapping("/{uuid}")

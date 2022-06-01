@@ -1,10 +1,9 @@
 package com.soft.business.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity @Data
@@ -12,24 +11,15 @@ import java.io.Serializable;
 public class SupplierOrderParams implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_SUPPLIER_ORDER_PARAMS")
-    private Long idSupplierOrderParams;
-
-    @Column(name = "UUID")
-    @NotBlank
-    private String uuid;
-
-    @Column(name = "COUNTER")
-    @NotBlank
-    private Integer counter;
-
-    @Column(name = "PREFIX")
-    @NotBlank
-    private String prefix;
-
-    @JsonIgnore
-    @Column(name = "ORG_ID", updatable = false, insertable = true)
+    @Column(name = "ORG_ID", updatable = false, insertable = false)
+    @NotNull
     private int orgId;
 
+    @Column(name = "COUNTER", insertable = false)
+    @NotNull
+    private Integer counter;
+
+    @Column(name = "PREFIX", updatable = false, insertable = false)
+    @NotNull
+    private String prefix;
 }

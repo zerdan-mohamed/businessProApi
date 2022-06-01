@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,30 +21,27 @@ public class SupplierOrder implements Serializable {
     private Long idSupplierOrder;
 
     @Column(name = "UUID")
-    @NotBlank
+    @NotNull
     private String uuid;
 
     @Column(name = "COMMENT")
     private String comment;
 
     @Column(name = "SUPPLIER_ORDER_STATUS")
-    @Enumerated(EnumType.STRING)
-    private SupplierOrderStatus supplierOrderStatus;
+    private Integer supplierOrderStatus;
 
     @Column(name = "CREATION_DATE")
-    @NotNull
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
     @Column(name = "SUPPLIER_ORDER_NUMBER")
-    @NotBlank
-    private Integer supplierOrderNumber;
+    private String supplierOrderNumber;
 
-    @JsonIgnore
-    @Column(name = "ORG_ID", updatable = false, insertable = true)
+    @Column(name = "ORG_ID", updatable = false)
+    @NotNull
     private int orgId;
 
     @ManyToOne
-    @JoinColumn(name = "ID_SUPPLIER", nullable = true)
+    @JoinColumn(name = "ID_SUPPLIER")
     private Supplier supplier;
 
     @JsonIgnore

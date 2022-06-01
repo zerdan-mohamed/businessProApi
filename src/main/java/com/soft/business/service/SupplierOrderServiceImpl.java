@@ -11,27 +11,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class SupplierOrderServiceImpl implements SupplierOrderService{
 
-    private SupplierOrderRepository supplierOrderRepository;
+    private final SupplierOrderRepository supplierOrderRepository;
+    private final SupplierOrderValidator supplierOrderValidator;
+    private final SupplierOrderMapper supplierOrderMapper;
+    private final OrganizationService organizationService;
 
-    private SupplierOrderValidator supplierOrderValidator;
-
-    private SupplierOrderMapper supplierOrderMapper;
-
-    public SupplierOrderServiceImpl(
-            SupplierOrderRepository supplierOrderRepository,
-            SupplierOrderValidator supplierOrderValidator,
-            SupplierOrderMapper supplierOrderMapper) {
+    public SupplierOrderServiceImpl(SupplierOrderRepository supplierOrderRepository,
+                                    SupplierOrderValidator supplierOrderValidator,
+                                    SupplierOrderMapper supplierOrderMapper,
+                                    OrganizationService organizationService) {
         this.supplierOrderRepository = supplierOrderRepository;
         this.supplierOrderValidator = supplierOrderValidator;
         this.supplierOrderMapper = supplierOrderMapper;
+        this.organizationService = organizationService;
     }
 
     @Override
@@ -43,7 +40,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
 
         supplierOrders.forEach(
                 supplierOrder -> supplierOrdersDto
-                        .add(supplierOrderMapper.makeDtoFromSupplierOrder(orgId, supplierOrder))
+                        .add(supplierOrderMapper.makeDtoFromSupplierOrder(supplierOrder))
         );
 
         return supplierOrdersDto;
@@ -55,7 +52,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
 
         Optional<SupplierOrder> supplierOrder = supplierOrderRepository.findByUuidAndOrgId(uuid, orgId);
 
-        return supplierOrderMapper.makeDtoFromSupplierOrder(orgId, supplierOrder.get());
+        return supplierOrderMapper.makeDtoFromSupplierOrder(supplierOrder.get());
     }
 
     @Override
@@ -64,20 +61,22 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
         SupplierOrderDto supplierOrder = findSupplierOrderByUuid(authentication, uuid);
 
         if (!supplierOrder.getSupplierOrderStatus().equals(SupplierOrderStatus.CANCELED)) {
-            supplierOrder.setSupplierOrderStatus(SupplierOrderStatus.CANCELED);
+            //supplierOrder.setSupplierOrderStatus(SupplierOrderStatus.CANCELED);
         }
     }
 
     @Override
+    @Transactional
     public SupplierOrderDto createSupplierOrder(
-            Authentication authentication, SupplierOrderDto supplierOrderDto) {
+            Authentication authentication,
+            SupplierOrderDto supplierOrderDto) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
-
-        supplierOrderValidator.createSupplierOrderValidator(supplierOrderDto);
+        SupplierOrder supplierOrder = supplierOrderMapper.makeSupplierOrderFromDto(orgId, supplierOrderDto);
+        supplierOrderValidator.createSupplierOrderValidator(supplierOrder);
         supplierOrderRepository
-                .save(supplierOrderMapper.makeSupplierOrderFromDto(orgId, supplierOrderDto));
-
-        return supplierOrderDto;
+                .save(supplierOrder);
+        this.organizationService.incrementPrefix(orgId);
+        return supplierOrderMapper.makeDtoFromSupplierOrder(supplierOrder);
     }
 
     @Override

@@ -4,62 +4,40 @@ import com.soft.business.dto.SupplierDto;
 import com.soft.business.dto.SupplierOrderDto;
 import com.soft.business.model.Supplier;
 import com.soft.business.model.SupplierOrder;
-import com.soft.business.model.SupplierOrderParams;
-import com.soft.business.repository.SupplierOrderParamsRepository;
 import com.soft.business.repository.SupplierRepository;
-import static com.soft.business.util.StringUtils.generateOrderCode;
+import com.soft.business.service.organization.OrganizationService;
+import com.soft.business.util.SupplierOrderConstants;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
-
-
 
 @Service
 public class SupplierOrderMapper {
 
-    private SupplierRepository supplierRepository;
-    private SupplierOrderParamsRepository supplierOrderParamsRepository;
+    private final SupplierRepository supplierRepository;
+    private final OrganizationService organizationService;
 
-    public SupplierOrderMapper(SupplierRepository supplierRepository) {
+    public SupplierOrderMapper(SupplierRepository supplierRepository,
+                               OrganizationService organizationService) {
         this.supplierRepository = supplierRepository;
+        this.organizationService = organizationService;
     }
 
-    public SupplierOrderDto makeDtoFromSupplierOrder(int orgId, SupplierOrder supplierOrder) {
-        Date  creationDate = supplierOrder.getCreationDate();
+    public SupplierOrderDto makeDtoFromSupplierOrder(SupplierOrder supplierOrder) {
         SupplierOrderDto supplierOrderDto = new SupplierOrderDto();
 
         supplierOrderDto.setUuid(supplierOrder.getUuid());
         supplierOrderDto.setComment(supplierOrder.getComment());
         supplierOrderDto.setSupplierOrderStatus(supplierOrder.getSupplierOrderStatus());
+        LocalDateTime creationDate = supplierOrder.getCreationDate();
         supplierOrderDto.setCreationDate(creationDate.toString());
-
-        Optional<SupplierOrderParams> supplierOrderParams = supplierOrderParamsRepository.findSupplierOrderParamsByOrgId(orgId);
-        String prefix = supplierOrderParams.get().getPrefix();
-
-        String generateOrderCode = generateOrderCode(prefix, supplierOrder);
-
-        supplierOrderDto.setSupplierOrderNumber(generateOrderCode);
+        supplierOrderDto.setSupplierOrderNumber(supplierOrder.getSupplierOrderNumber());
 
         if (supplierOrder.getSupplier() != null) {
             SupplierDto supplierDto = new SupplierDto();
-            supplierDto.setName(supplierOrder.getSupplier().getName());
             supplierDto.setUuid(supplierOrder.getSupplier().getUuid());
-            supplierDto.setCity(supplierOrder.getSupplier().getCity());
-            supplierDto.setPhoneNumber(supplierOrder.getSupplier().getPhoneNumber());
-            supplierDto.setMobileNumber(supplierOrder.getSupplier().getMobileNumber());
-            supplierDto.setFaxNumber(supplierOrder.getSupplier().getFaxNumber());
-            supplierDto.setAddress(supplierOrder.getSupplier().getAddress());
-            supplierDto.setEmail(supplierOrder.getSupplier().getEmail());
-            supplierDto.setWebsite(supplierOrder.getSupplier().getWebsite());
-            supplierDto.setContact(supplierOrder.getSupplier().getContact());
-            supplierDto.setCappedBalance(supplierOrder.getSupplier().getCappedBalance());
-            supplierDto.setInitialBalance(supplierOrder.getSupplier().getInitialBalance());
-            supplierDto.setPatent(supplierOrder.getSupplier().getPatent());
-            supplierDto.setIce(supplierOrder.getSupplier().getIce());
-            supplierDto.setCreationDate(supplierOrder.getSupplier().getCreationDate().toString());
-
             supplierOrderDto.setSupplier(supplierDto);
         }
 
@@ -72,15 +50,8 @@ public class SupplierOrderMapper {
         supplierOrder.setOrgId(orgId);
         supplierOrder.setUuid(UUID.randomUUID().toString());
         supplierOrder.setComment(supplierOrderDto.getComment());
-        supplierOrder.setSupplierOrderStatus(supplierOrderDto.getSupplierOrderStatus());
-        supplierOrder.setCreationDate(new Date());
-
-        SupplierOrderParams supplierOrderParams =
-                supplierOrderParamsRepository.findSupplierOrderParamsByOrgId(orgId).get();
-        supplierOrder.setSupplierOrderNumber(supplierOrderParams.getCounter()+1);
-
-        supplierOrderParams.setCounter(supplierOrder.getSupplierOrderNumber());
-        supplierOrderParamsRepository.save(supplierOrderParams);
+        supplierOrder.setSupplierOrderStatus(SupplierOrderConstants.CREATED);
+        supplierOrder.setCreationDate(LocalDateTime.now());
 
         if (supplierOrderDto.getSupplier() != null) {
            Optional<Supplier> supplier = supplierRepository
@@ -88,6 +59,9 @@ public class SupplierOrderMapper {
 
             if (supplier.isPresent()) supplierOrder.setSupplier(supplier.get());
         }
+
+        String prefix = this.organizationService.makeSupplierOrderNumber(orgId, supplierOrder);
+        supplierOrder.setSupplierOrderNumber(prefix);
 
         return supplierOrder;
     }

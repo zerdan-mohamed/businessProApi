@@ -13,8 +13,6 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.soft.business.util.StringUtils.generateOrderCode;
-
 @Service
 public class SupplierOrderItemMapper {
 
@@ -42,16 +40,16 @@ public class SupplierOrderItemMapper {
         }
 
         if (supplierOrderItem.getSupplierOrder() != null) {
-            Date creationDate = supplierOrderItem.getSupplierOrder().getCreationDate();
+            //Date creationDate = supplierOrderItem.getSupplierOrder().getCreationDate();
             Optional<SupplierOrderParams> supplierOrderParams = supplierOrderParamsRepository.findSupplierOrderParamsByOrgId(orgId);
             String prefix = supplierOrderParams.get().getPrefix();
 
-            String generateOrderCode = generateOrderCode(prefix, supplierOrderItem.getSupplierOrder());
+            //String generateOrderCode = generateOrderCode(prefix, supplierOrderItem.getSupplierOrder());
 
             SupplierOrderDto supplierOrderDto = new SupplierOrderDto();
             supplierOrderDto.setUuid(supplierOrderItem.getSupplierOrder().getUuid());
-            supplierOrderDto.setCreationDate(creationDate.toString());
-            supplierOrderDto.setSupplierOrderNumber(generateOrderCode);
+            //supplierOrderDto.setCreationDate(creationDate.toString());
+            //supplierOrderDto.setSupplierOrderNumber(generateOrderCode);
 
             supplierOrderItemDto.setSupplierOrder(supplierOrderDto);
         }

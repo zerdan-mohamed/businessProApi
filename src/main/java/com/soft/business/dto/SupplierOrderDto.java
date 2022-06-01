@@ -3,10 +3,8 @@ package com.soft.business.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.soft.business.model.SupplierOrderStatus;
 import lombok.Data;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
@@ -28,8 +26,7 @@ public class SupplierOrderDto implements Serializable {
     private String comment;
 
     @JsonProperty(SUPPLIER_ORDER_STATUS)
-    @Enumerated(EnumType.STRING)
-    private SupplierOrderStatus supplierOrderStatus;
+    private Integer supplierOrderStatus;
 
     @JsonProperty(CREATION_DATE)
     private String creationDate;
