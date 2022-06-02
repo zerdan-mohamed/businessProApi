@@ -35,19 +35,15 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
     }
 
     @Override
-    public List<SupplierOrderItemDto> findSupplierOrderItems(Authentication authentication, String supplierOrderUuid) {
+    @Transactional
+    public Set<SupplierOrderItemDto> findSupplierOrderItems(Authentication authentication, String supplierOrderUuid) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
-        List<SupplierOrderItemDto> supplierOrderItemsDto = new ArrayList<>();
 
         Optional<SupplierOrder> supplierOrder = supplierOrderRepository.findByUuidAndOrgId(supplierOrderUuid, orgId);
         List<SupplierOrderItem> supplierOrderItems = supplierOrderItemRepository.findBySupplierOrderAndOrgId(supplierOrder.get(), orgId);
 
-        supplierOrderItems.forEach(
-                supplierOrderItem -> supplierOrderItemsDto
-                        .add(supplierOrderItemMapper.makeDtoFromSupplierOrderItem(orgId, supplierOrderItem))
-        );
-
-        return supplierOrderItemsDto;
+        return supplierOrderItems.stream().map(item -> this.supplierOrderItemMapper.makeDtoFromSupplierOrderItem(orgId, item))
+                .collect(Collectors.toSet());
     }
 
     @Override

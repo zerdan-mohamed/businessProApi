@@ -22,25 +22,25 @@ public class SupplierOrderItemController {
         this.supplierOrderItemService = supplierOrderItemService;
     }
 
-    @GetMapping
-    public ResponseEntity<?> findSupplierOrderItems(
+    @GetMapping("/{uuid}")
+    public ResponseEntity<Set<SupplierOrderItemDto>> findSupplierOrderItems(
             Authentication authentication,
             @PathVariable("uuid") String supplierOrderUuid
     ) {
-        List<SupplierOrderItemDto> supplierOrderItems = supplierOrderItemService.findSupplierOrderItems(authentication, supplierOrderUuid);
+        Set<SupplierOrderItemDto> supplierOrderItems = supplierOrderItemService.findSupplierOrderItems(authentication, supplierOrderUuid);
 
         return new ResponseEntity<>(supplierOrderItems, HttpStatus.OK);
     }
 
-    @GetMapping("/{uuid}")
-    public ResponseEntity<?> getSupplierOrderItemByUuid(
-            Authentication authentication,
-            @PathVariable("uuid") String uuid
-    ) {
-        SupplierOrderItemDto supplierOrderItem = supplierOrderItemService.findSupplierOrderItemByUuid(authentication, uuid);
+    //@GetMapping("/{uuid}")
+    //public ResponseEntity<?> getSupplierOrderItemByUuid(
+      //      Authentication authentication,
+        //    @PathVariable("uuid") String uuid
+    //) {
+      //  SupplierOrderItemDto supplierOrderItem = supplierOrderItemService.findSupplierOrderItemByUuid(authentication, uuid);
 
-        return new ResponseEntity<>(supplierOrderItem, HttpStatus.OK);
-    }
+        //return new ResponseEntity<>(supplierOrderItem, HttpStatus.OK);
+    //}
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<?> deleteSupplierOrderItemByUuid(

@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface SupplierOrderItemService {
 
-    List<SupplierOrderItemDto> findSupplierOrderItems(Authentication authentication, String supplierOrderUuid);
+    Set<SupplierOrderItemDto> findSupplierOrderItems(Authentication authentication, String supplierOrderUuid);
 
     SupplierOrderItemDto findSupplierOrderItemByUuid(Authentication authentication, String uuid);
 
