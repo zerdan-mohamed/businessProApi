@@ -5,6 +5,7 @@ import org.springframework.security.core.Authentication;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Set;
 
 public interface SupplierOrderItemService {
 
@@ -14,7 +15,7 @@ public interface SupplierOrderItemService {
 
     void deleteSupplierOrderItemByUuid(Authentication authentication, String uuid);
 
-    SupplierOrderItemDto  createSupplierOrderItem(Authentication authentication, SupplierOrderItemDto supplierOrderItemDto) throws ParseException;
+    Set<SupplierOrderItemDto>  createSupplierOrderItem(Authentication authentication, List<SupplierOrderItemDto> supplierOrderItemDto) throws ParseException;
 
     SupplierOrderItemDto updateSupplierOrderItem(Authentication authentication, String uuid, SupplierOrderItemDto supplierOrderItemDto);
 }

@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1/supplierOrderItems")
 public class SupplierOrderItemController {
 
-    private SupplierOrderItemService supplierOrderItemService;
+    private final SupplierOrderItemService supplierOrderItemService;
 
     public SupplierOrderItemController(SupplierOrderItemService supplierOrderItemService) {
         this.supplierOrderItemService = supplierOrderItemService;
@@ -51,16 +52,13 @@ public class SupplierOrderItemController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    // TODO:  add supplierOrderUuid param
     @PostMapping
-    public ResponseEntity<?> createSupplierOrderItem(
+    public ResponseEntity<Set<SupplierOrderItemDto>> createSupplierOrderItem(
             Authentication authentication,
-            @Valid @RequestBody SupplierOrderItemDto supplierOrderItemDto
+            @Valid @RequestBody List<SupplierOrderItemDto> supplierOrderItemDto
     ) throws ParseException {
-        supplierOrderItemService.createSupplierOrderItem(authentication, supplierOrderItemDto);
-
-        return new ResponseEntity<>(supplierOrderItemDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(supplierOrderItemService.createSupplierOrderItem(authentication, supplierOrderItemDto)
+                , HttpStatus.CREATED);
     }
 
     @PatchMapping("/{uuid}")

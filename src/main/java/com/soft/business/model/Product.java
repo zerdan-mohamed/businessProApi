@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity @Data
+@Entity @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Table(name = "PRODUCT")
 public class Product implements Serializable {
 
@@ -20,11 +19,11 @@ public class Product implements Serializable {
     private Long idProduct;
 
     @Column(name = "UUID")
-    @NotBlank
+    @NotNull
     private String uuid;
 
     @Column(name = "NAME")
-    @NotBlank
+    @NotNull
     private String name;
 
     @Column(name = "MEASURE_UNITE")
@@ -61,14 +60,13 @@ public class Product implements Serializable {
     private Date creationDate;
 
     @JsonIgnore
-    @Column(name = "ORG_ID", updatable = false, insertable = true)
+    @Column(name = "ORG_ID", updatable = false)
     private int orgId;
 
     @ManyToOne()
-    @JoinColumn(name = "ID_PRODUCT_FAMILY", nullable = true)
+    @JoinColumn(name = "ID_PRODUCT_FAMILY")
     private ProductFamily productFamily;
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private Set<SupplierOrderItem> orderItems = new HashSet<>();
 }

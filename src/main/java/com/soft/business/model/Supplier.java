@@ -1,7 +1,7 @@
 package com.soft.business.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity @Data
+@Entity @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Table(name = "SUPPLIER")
 public class Supplier implements Serializable {
 

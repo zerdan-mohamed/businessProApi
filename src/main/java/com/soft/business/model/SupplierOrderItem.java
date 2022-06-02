@@ -1,10 +1,9 @@
 package com.soft.business.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity @Data
@@ -17,7 +16,7 @@ public class SupplierOrderItem implements Serializable {
     private Long idSupplierOrderItem;
 
     @Column(name = "UUID")
-    @NotBlank
+    @NotNull
     private String uuid;
 
     @Column(name = "QUANTITY")
@@ -35,17 +34,17 @@ public class SupplierOrderItem implements Serializable {
     @Column(name = "DISCOUNT")
     private Double discount;
 
-    @JsonIgnore
-    @Column(name = "ORG_ID", updatable = false, insertable = true)
+    @Column(name = "ORG_ID", updatable = false)
+    @NotNull
     private int orgId;
 
     @ManyToOne
-    @NotBlank
+    @NotNull
     @JoinColumn(name = "ID_PRODUCT")
     private Product product;
 
     @ManyToOne
-    @NotBlank
+    @NotNull
     @JoinColumn(name = "ID_SUPPLIER_ORDER")
     private SupplierOrder supplierOrder;
 

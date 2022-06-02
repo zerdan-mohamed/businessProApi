@@ -10,16 +10,16 @@ import org.springframework.stereotype.Service;
 public class SupplierOrderItemValidator {
 
     public void createSupplierOrderItemValidator(SupplierOrderItemDto supplierOrderItemDto) {
-        if (StringUtils.isEmpty(supplierOrderItemDto.getProduct().getName())) {
+        if (StringUtils.isEmpty(supplierOrderItemDto.getProduct().getUuid())) {
             throw new EmptyInputException(
-                    ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_EMPTY_PRODUCT_NAME_EXCEPTION_CODE,
-                    ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_EMPTY_PRODUCT_NAME_EXCEPTION_MESSAGE
+                    ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_EMPTY_PRODUCT_UUID_EXCEPTION_CODE,
+                    ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_EMPTY_PRODUCT_UUID_EXCEPTION_MESSAGE
             );
         }
-        if (StringUtils.isEmpty(supplierOrderItemDto.getSupplierOrder().getSupplierOrderNumber())) {
+        if (StringUtils.isEmpty(supplierOrderItemDto.getSupplierOrder().getUuid())) {
             throw new EmptyInputException(
-                    ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_EMPTY_ORDER_NUMBER_EXCEPTION_CODE,
-                    ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_EMPTY_ORDER_NUMBER_EXCEPTION_MESSAGE
+                    ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_EMPTY_SUPPLIER_ORDER_UUID_EXCEPTION_CODE,
+                    ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_EMPTY_SUPPLIER_ORDER_UUID_EXCEPTION_MESSAGE
             );
         }
 

@@ -1,17 +1,15 @@
 package com.soft.business.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity @Data
+@Entity @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Table(name = "SUPPLIER_ORDER")
 public class SupplierOrder implements Serializable {
 
@@ -37,15 +35,12 @@ public class SupplierOrder implements Serializable {
     private String supplierOrderNumber;
 
     @Column(name = "ORG_ID", updatable = false)
-    @NotNull
     private int orgId;
 
     @ManyToOne
     @JoinColumn(name = "ID_SUPPLIER")
     private Supplier supplier;
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "supplierOrder")
     private Set<SupplierOrderItem> orderItems = new HashSet<>();
-
 }

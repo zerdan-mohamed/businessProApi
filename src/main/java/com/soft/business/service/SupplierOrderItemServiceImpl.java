@@ -11,28 +11,25 @@ import com.soft.business.service.organization.OrganizationService;
 import com.soft.business.util.validator.SupplierOrderItemValidator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
 
-    private SupplierOrderItemRepository supplierOrderItemRepository;
+    private final SupplierOrderItemRepository supplierOrderItemRepository;
+    private final SupplierOrderRepository supplierOrderRepository;
+    private final SupplierOrderItemValidator supplierOrderItemValidator;
+    private final SupplierOrderItemMapper supplierOrderItemMapper;
 
-    private SupplierOrderRepository supplierOrderRepository;
-
-    private SupplierOrderItemValidator supplierOrderItemValidator;
-
-    private SupplierOrderItemMapper supplierOrderItemMapper;
-
-    public SupplierOrderItemServiceImpl(
-            SupplierOrderItemRepository supplierOrderItemRepository,
-            SupplierOrderItemValidator supplierOrderItemValidator,
-            SupplierOrderItemMapper supplierOrderItemMapper) {
+    public SupplierOrderItemServiceImpl(SupplierOrderItemRepository supplierOrderItemRepository,
+                                        SupplierOrderRepository supplierOrderRepository,
+                                        SupplierOrderItemValidator supplierOrderItemValidator,
+                                        SupplierOrderItemMapper supplierOrderItemMapper) {
         this.supplierOrderItemRepository = supplierOrderItemRepository;
+        this.supplierOrderRepository = supplierOrderRepository;
         this.supplierOrderItemValidator = supplierOrderItemValidator;
         this.supplierOrderItemMapper = supplierOrderItemMapper;
     }
@@ -76,16 +73,25 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
     }
 
     @Override
-    public SupplierOrderItemDto createSupplierOrderItem(
-            Authentication authentication, SupplierOrderItemDto supplierOrderItemDto) {
+    @Transactional
+    public Set<SupplierOrderItemDto> createSupplierOrderItem(
+            Authentication authentication,
+            List<SupplierOrderItemDto> supplierOrderItemDto) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
-        supplierOrderItemValidator.createSupplierOrderItemValidator(supplierOrderItemDto);
+        supplierOrderItemDto.stream().forEach(item -> supplierOrderItemValidator.createSupplierOrderItemValidator(item));
 
-        supplierOrderItemRepository.save(
-                supplierOrderItemMapper.makeSupplierOrderItemFromDto(orgId, supplierOrderItemDto)
-        );
+        SupplierOrder supplierOrder = this.getSupplierOrder(
+                supplierOrderItemDto.get(0), orgId);
 
-        return supplierOrderItemDto;
+        Set<SupplierOrderItem> supplierOrderItem = supplierOrderItemDto.stream()
+                .map(item -> supplierOrderItemMapper.makeSupplierOrderItemFromDto(orgId, item, supplierOrder))
+                .collect(Collectors.toSet());
+
+        supplierOrderItemRepository.saveAll(supplierOrderItem);
+
+        return supplierOrderItem.stream()
+                .map(item -> this.supplierOrderItemMapper.makeDtoFromSupplierOrderItem(orgId, item))
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -102,5 +108,17 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
         supplierOrderItemRepository.save(supplierOrderItem);
 
         return supplierOrderItemDto;
+    }
+
+    private SupplierOrder getSupplierOrder(SupplierOrderItemDto supplierOrderItemDto, int orgId) {
+        if (supplierOrderItemDto.getSupplierOrder() != null) {
+            Optional<SupplierOrder> oSupplierOrder =
+                    this.supplierOrderRepository.findByUuidAndOrgId(
+                            supplierOrderItemDto.getSupplierOrder().getUuid(),
+                            orgId
+                    );
+            if (oSupplierOrder.isPresent()) return oSupplierOrder.get();
+        }
+        return null;
     }
 }

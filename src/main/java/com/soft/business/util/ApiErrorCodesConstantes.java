@@ -20,10 +20,10 @@ public interface ApiErrorCodesConstantes {
     // ### Supplier order error codes 3XXX ###
     public static final String SUPPLIER_ORDER_EMPTY_ORDER_CODE_EXCEPTION_CODE = "3000";
     public static final String SUPPLIER_ORDER_EMPTY_ORDER_CODE_EXCEPTION_MESSAGE = "supplier_order_number field is mandatory";
-    public static final String SUPPLIER_ORDER_ITEM_EMPTY_PRODUCT_NAME_EXCEPTION_CODE = "3001";
-    public static final String SUPPLIER_ORDER_ITEM_EMPTY_PRODUCT_NAME_EXCEPTION_MESSAGE = "ORDER ITEM NAME field is mandatory";
-    public static final String SUPPLIER_ORDER_ITEM_EMPTY_ORDER_NUMBER_EXCEPTION_CODE = "3002";
-    public static final String SUPPLIER_ORDER_ITEM_EMPTY_ORDER_NUMBER_EXCEPTION_MESSAGE = "ORDER ITEM NAME field is mandatory";
+    public static final String SUPPLIER_ORDER_ITEM_EMPTY_PRODUCT_UUID_EXCEPTION_CODE = "3001";
+    public static final String SUPPLIER_ORDER_ITEM_EMPTY_PRODUCT_UUID_EXCEPTION_MESSAGE = "product uuid field is mandatory";
+    public static final String SUPPLIER_ORDER_ITEM_EMPTY_SUPPLIER_ORDER_UUID_EXCEPTION_CODE = "3002";
+    public static final String SUPPLIER_ORDER_ITEM_EMPTY_SUPPLIER_ORDER_UUID_EXCEPTION_MESSAGE = "supplierOrder uuid field is mandatory";
 
 
 

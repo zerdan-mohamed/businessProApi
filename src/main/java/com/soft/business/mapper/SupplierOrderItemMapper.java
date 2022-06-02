@@ -5,20 +5,23 @@ import com.soft.business.dto.SupplierOrderDto;
 import com.soft.business.dto.SupplierOrderItemDto;
 import com.soft.business.model.*;
 import com.soft.business.repository.ProductRepository;
-import com.soft.business.repository.SupplierOrderParamsRepository;
 import com.soft.business.repository.SupplierOrderRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class SupplierOrderItemMapper {
 
-    private ProductRepository productRepository;
-    private SupplierOrderRepository supplierOrderRepository;
-    private SupplierOrderParamsRepository supplierOrderParamsRepository;
+    private final ProductRepository productRepository;
+    private final SupplierOrderRepository supplierOrderRepository;
+
+    public SupplierOrderItemMapper(ProductRepository productRepository,
+                                   SupplierOrderRepository supplierOrderRepository) {
+        this.productRepository = productRepository;
+        this.supplierOrderRepository = supplierOrderRepository;
+    }
 
     public SupplierOrderItemDto makeDtoFromSupplierOrderItem(int orgId, SupplierOrderItem supplierOrderItem) {
         SupplierOrderItemDto supplierOrderItemDto = new SupplierOrderItemDto();
@@ -34,22 +37,13 @@ public class SupplierOrderItemMapper {
             ProductDto productDto = new ProductDto();
             productDto.setUuid(supplierOrderItem.getProduct().getUuid());
             productDto.setName(supplierOrderItem.getProduct().getName());
-            productDto.setCreationDate(supplierOrderItem.getProduct().getCreationDate());
 
             supplierOrderItemDto.setProduct(productDto);
         }
 
         if (supplierOrderItem.getSupplierOrder() != null) {
-            //Date creationDate = supplierOrderItem.getSupplierOrder().getCreationDate();
-            Optional<SupplierOrderParams> supplierOrderParams = supplierOrderParamsRepository.findSupplierOrderParamsByOrgId(orgId);
-            String prefix = supplierOrderParams.get().getPrefix();
-
-            //String generateOrderCode = generateOrderCode(prefix, supplierOrderItem.getSupplierOrder());
-
             SupplierOrderDto supplierOrderDto = new SupplierOrderDto();
             supplierOrderDto.setUuid(supplierOrderItem.getSupplierOrder().getUuid());
-            //supplierOrderDto.setCreationDate(creationDate.toString());
-            //supplierOrderDto.setSupplierOrderNumber(generateOrderCode);
 
             supplierOrderItemDto.setSupplierOrder(supplierOrderDto);
         }
@@ -57,35 +51,27 @@ public class SupplierOrderItemMapper {
         return supplierOrderItemDto;
     }
 
-    public SupplierOrderItem makeSupplierOrderItemFromDto(int orgId, SupplierOrderItemDto supplierOrderItemDto) {
+    public SupplierOrderItem makeSupplierOrderItemFromDto(int orgId,
+                                                          SupplierOrderItemDto supplierOrderItemDto,
+                                                          SupplierOrder supplierOrder) {
         SupplierOrderItem supplierOrderItem = new SupplierOrderItem();
-
-        if (supplierOrderItemDto.getSupplierOrder() != null) {
-            Optional<SupplierOrder> optionalSupplierOrder =
-                    supplierOrderRepository.findByUuidAndOrgId(
-                            supplierOrderItemDto.getSupplierOrder().getUuid(),
-                            orgId
-                    );
-
-            if (optionalSupplierOrder.isPresent()) supplierOrderItem.setSupplierOrder(optionalSupplierOrder.get());
-        }
 
         supplierOrderItem.setUuid(UUID.randomUUID().toString());
         supplierOrderItem.setQuantity(supplierOrderItemDto.getQuantity());
         supplierOrderItem.setMeasureUnite(supplierOrderItemDto.getMeasureUnite());
         supplierOrderItem.setPriceHT(supplierOrderItemDto.getPriceHT());
-        supplierOrderItem.setVatRate(supplierOrderItem.getVatRate());
+        supplierOrderItem.setVatRate(supplierOrderItemDto.getVatRate());
         supplierOrderItem.setDiscount(supplierOrderItemDto.getDiscount());
-
+        supplierOrderItem.setOrgId(orgId);
+        supplierOrderItem.setSupplierOrder(supplierOrder);
         if (supplierOrderItemDto.getProduct() != null) {
             Optional<Product> optionalProduct =
                     productRepository.findByUuidAndOrgId(
                             supplierOrderItemDto.getProduct().getUuid(), orgId
                     );
 
-            if (optionalProduct.isPresent()) supplierOrderItem.setProduct(optionalProduct.get());
+            if (optionalProduct.isPresent()) supplierOrderItem.setProduct(optionalProduct.get());;
         }
-
         return supplierOrderItem;
     }
 
@@ -135,8 +121,4 @@ public class SupplierOrderItemMapper {
 
         return null;
     }
-
-
-
-
 }
