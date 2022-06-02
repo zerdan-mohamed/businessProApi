@@ -44,6 +44,7 @@ public class SupplierOrderItemMapper {
         if (supplierOrderItem.getSupplierOrder() != null) {
             SupplierOrderDto supplierOrderDto = new SupplierOrderDto();
             supplierOrderDto.setUuid(supplierOrderItem.getSupplierOrder().getUuid());
+            supplierOrderDto.setSupplierOrderStatus(supplierOrderItem.getSupplierOrder().getSupplierOrderStatus());
 
             supplierOrderItemDto.setSupplierOrder(supplierOrderDto);
         }

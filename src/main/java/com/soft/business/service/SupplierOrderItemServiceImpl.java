@@ -1,13 +1,15 @@
 package com.soft.business.service;
 
 import com.soft.business.dto.SupplierOrderItemDto;
+import com.soft.business.exception.FunctionalException;
 import com.soft.business.mapper.SupplierOrderItemMapper;
 import com.soft.business.model.SupplierOrder;
 import com.soft.business.model.SupplierOrderItem;
-import com.soft.business.model.SupplierOrderStatus;
 import com.soft.business.repository.SupplierOrderItemRepository;
 import com.soft.business.repository.SupplierOrderRepository;
 import com.soft.business.service.organization.OrganizationService;
+import com.soft.business.util.ApiErrorCodesConstantes;
+import com.soft.business.util.SupplierOrderConstants;
 import com.soft.business.util.validator.SupplierOrderItemValidator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -49,23 +51,22 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
     @Override
     public SupplierOrderItemDto findSupplierOrderItemByUuid(Authentication authentication, String uuid) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
-
         Optional<SupplierOrderItem> supplierOrderItem = supplierOrderItemRepository.findByUuidAndOrgId(uuid, orgId);
 
         return supplierOrderItemMapper.makeDtoFromSupplierOrderItem(orgId, supplierOrderItem.get());
     }
 
     @Override
+    @Transactional
     public void deleteSupplierOrderItemByUuid(Authentication authentication, String uuid) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         SupplierOrderItemDto supplierOrderItem = findSupplierOrderItemByUuid(authentication, uuid);
 
-        if (!supplierOrderItem.getSupplierOrder()
-                .getSupplierOrderStatus().equals(SupplierOrderStatus.PAID)) {
-
+        if (supplierOrderItem.getSupplierOrder()
+                .getSupplierOrderStatus() != SupplierOrderConstants.PAID) {
             long isDeleted = supplierOrderItemRepository.deleteByUuidAndOrgId(uuid, orgId);
-            if(isDeleted == 0) throw new NoSuchElementException();
-        }
+        } else throw new FunctionalException(ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_DELETE_STATUS_PAID_EXCEPTION_CODE,
+                                             ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_DELETE_STATUS_PAID_EXCEPTION_MESSAGE);
     }
 
     @Override

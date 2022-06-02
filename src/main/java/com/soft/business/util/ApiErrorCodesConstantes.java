@@ -24,6 +24,8 @@ public interface ApiErrorCodesConstantes {
     public static final String SUPPLIER_ORDER_ITEM_EMPTY_PRODUCT_UUID_EXCEPTION_MESSAGE = "product uuid field is mandatory";
     public static final String SUPPLIER_ORDER_ITEM_EMPTY_SUPPLIER_ORDER_UUID_EXCEPTION_CODE = "3002";
     public static final String SUPPLIER_ORDER_ITEM_EMPTY_SUPPLIER_ORDER_UUID_EXCEPTION_MESSAGE = "supplierOrder uuid field is mandatory";
+    public static final String SUPPLIER_ORDER_ITEM_DELETE_STATUS_PAID_EXCEPTION_CODE = "3003";
+    public static final String SUPPLIER_ORDER_ITEM_DELETE_STATUS_PAID_EXCEPTION_MESSAGE = "Can't delete a paid Item";
 
 
 

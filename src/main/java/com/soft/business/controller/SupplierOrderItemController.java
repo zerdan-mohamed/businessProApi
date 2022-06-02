@@ -43,7 +43,7 @@ public class SupplierOrderItemController {
     //}
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<?> deleteSupplierOrderItemByUuid(
+    public ResponseEntity deleteSupplierOrderItemByUuid(
             Authentication authentication,
             @PathVariable("uuid") String uuid
     ) {

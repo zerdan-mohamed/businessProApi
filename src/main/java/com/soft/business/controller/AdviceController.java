@@ -3,6 +3,7 @@ package com.soft.business.controller;
 import com.soft.business.dto.ErrorResponseDto;
 import com.soft.business.exception.DateFormatException;
 import com.soft.business.exception.EmptyInputException;
+import com.soft.business.exception.FunctionalException;
 import com.soft.business.util.ApiErrorCodesConstantes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,15 @@ public class AdviceController extends ResponseEntityExceptionHandler {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(ApiErrorCodesConstantes.CONSTRAINT_VIOLATION_EXCEPTION_CODE,
                 constraintViolationException.getConstraintViolations().stream().iterator().next().getPropertyPath() +" - "+
                 constraintViolationException.getConstraintViolations().stream().iterator().next().getMessage());
+
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FunctionalException.class)
+    public ResponseEntity<ErrorResponseDto> handleFunctionalException(FunctionalException functionalException) {
+
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(functionalException.getErrorCode(),
+                                                                functionalException.getErrorMessage());
 
         return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
     }
