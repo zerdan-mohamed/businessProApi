@@ -73,7 +73,11 @@ public class SupplierOrderMapper {
         supplierOrder.setIdSupplierOrder(supplierOrderDb.getIdSupplierOrder());
         supplierOrder.setUuid(supplierOrderDb.getUuid());
         supplierOrder.setCreationDate(supplierOrderDb.getCreationDate());
-        supplierOrder.setSupplierOrderNumber(supplierOrderDb.getSupplierOrderNumber());
+
+
+        if (supplierOrderDto.getSupplierOrderNumber() != null)
+            supplierOrder.setSupplierOrderNumber(supplierOrderDto.getSupplierOrderNumber());
+        else supplierOrder.setSupplierOrderNumber(supplierOrderDb.getSupplierOrderNumber());
 
         if (supplierOrderDto.getSupplierOrderStatus() != null)
             supplierOrder.setSupplierOrderStatus(supplierOrderDto.getSupplierOrderStatus());

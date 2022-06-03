@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -55,14 +54,16 @@ public class SupplierOrderController {
     }
 
     @PatchMapping("/{uuid}")
-    public ResponseEntity<?> updateSupplierOrderByUuid(
+    public ResponseEntity<SupplierOrderDto> updateSupplierOrderByUuid(
             Authentication authentication,
             @PathVariable("uuid") String uuid,
             @Valid @RequestBody SupplierOrderDto supplierOrderDto
     ) {
-        supplierOrderService.updateSupplierOrder(authentication, uuid, supplierOrderDto);
-
-        return new ResponseEntity<>(supplierOrderDto, HttpStatus.OK);
+        return new ResponseEntity<>(supplierOrderService.updateSupplierOrder(
+                                                                authentication,
+                                                                uuid,
+                                                                supplierOrderDto),
+                                    HttpStatus.OK);
     }
 
 }

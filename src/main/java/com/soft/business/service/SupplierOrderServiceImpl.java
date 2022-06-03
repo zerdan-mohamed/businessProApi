@@ -79,19 +79,18 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
     }
 
     @Override
+    @Transactional
     public SupplierOrderDto updateSupplierOrder(
             Authentication authentication, String uuid, SupplierOrderDto supplierOrderDto) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
         Optional<SupplierOrder> supplierOrderDb = this.supplierOrderRepository.findByUuidAndOrgId(uuid, orgId);
 
-        if (supplierOrderDb.isEmpty()) throw new NoSuchElementException();
-
         SupplierOrder supplierOrder = supplierOrderMapper.updateSupplierOrder(
                 orgId, supplierOrderDto, supplierOrderDb.get()
         );
         supplierOrderRepository.save(supplierOrder);
 
-        return supplierOrderDto;
+        return supplierOrderMapper.makeDtoFromSupplierOrder(supplierOrder);
     }
 }
