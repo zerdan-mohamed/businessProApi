@@ -37,7 +37,7 @@ public class SupplierOrderController {
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<?> deleteSupplierOrderByUuid(
+    public ResponseEntity deleteSupplierOrderByUuid(
             Authentication authentication, @PathVariable("uuid") String uuid
     ) {
         supplierOrderService.deleteSupplierOrderByUuid(authentication, uuid);

@@ -57,8 +57,8 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
     @Override
     @Transactional
     public void deleteSupplierOrderByUuid(Authentication authentication, String uuid) {
-        SupplierOrderDto supplierOrder = findSupplierOrderByUuid(authentication, uuid);
-
+        SupplierOrderDto supplierOrder = this.findSupplierOrderByUuid(authentication, uuid);
+        // TODO: For now we don't know what to do when deleting a supplierOrder
         if (!supplierOrder.getSupplierOrderStatus().equals(SupplierOrderStatus.CANCELED)) {
             //supplierOrder.setSupplierOrderStatus(SupplierOrderStatus.CANCELED);
         }
