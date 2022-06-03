@@ -4,9 +4,10 @@ import com.soft.business.dto.SupplierOrderDto;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
+import java.util.Set;
 
 public interface SupplierOrderService {
-    List<SupplierOrderDto> findSupplierOrders(Authentication authentication);
+    Set<SupplierOrderDto> findSupplierOrders(Authentication authentication);
 
     SupplierOrderDto findSupplierOrderByUuid(Authentication authentication, String uuid);
 

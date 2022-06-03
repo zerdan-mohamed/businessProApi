@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SupplierOrderServiceImpl implements SupplierOrderService{
@@ -32,21 +33,19 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
     }
 
     @Override
-    public List<SupplierOrderDto> findSupplierOrders(Authentication authentication) {
+    @Transactional
+    public Set<SupplierOrderDto> findSupplierOrders(Authentication authentication) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
-        List<SupplierOrder> supplierOrders = supplierOrderRepository.findByOrgId(orgId);
-        List<SupplierOrderDto> supplierOrdersDto = new ArrayList<>();
+        Set<SupplierOrder> supplierOrders = supplierOrderRepository.findByOrgId(orgId);
 
-        supplierOrders.forEach(
-                supplierOrder -> supplierOrdersDto
-                        .add(supplierOrderMapper.makeDtoFromSupplierOrder(supplierOrder))
-        );
-
-        return supplierOrdersDto;
+        return supplierOrders.stream()
+                .map(item -> supplierOrderMapper.makeDtoFromSupplierOrder(item))
+                .collect(Collectors.toSet());
     }
 
     @Override
+    @Transactional
     public SupplierOrderDto findSupplierOrderByUuid(Authentication authentication, String uuid) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1/supplierOrders")
@@ -21,14 +22,14 @@ public class SupplierOrderController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findSupplierOrders(Authentication authentication) {
-        List<SupplierOrderDto> supplierOrders = supplierOrderService.findSupplierOrders(authentication);
+    public ResponseEntity<Set<SupplierOrderDto>> findSupplierOrders(Authentication authentication) {
+        Set<SupplierOrderDto> supplierOrders = supplierOrderService.findSupplierOrders(authentication);
 
         return new ResponseEntity<>(supplierOrders, HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<?> getSupplierOrderByUuid(
+    public ResponseEntity<SupplierOrderDto> getSupplierOrderByUuid(
             Authentication authentication, @PathVariable("uuid") String uuid
     ) {
         SupplierOrderDto supplierOrder = supplierOrderService.findSupplierOrderByUuid(authentication, uuid);
