@@ -32,16 +32,6 @@ public class SupplierOrderItemController {
         return new ResponseEntity<>(supplierOrderItems, HttpStatus.OK);
     }
 
-    //@GetMapping("/{uuid}")
-    //public ResponseEntity<?> getSupplierOrderItemByUuid(
-      //      Authentication authentication,
-        //    @PathVariable("uuid") String uuid
-    //) {
-      //  SupplierOrderItemDto supplierOrderItem = supplierOrderItemService.findSupplierOrderItemByUuid(authentication, uuid);
-
-        //return new ResponseEntity<>(supplierOrderItem, HttpStatus.OK);
-    //}
-
     @DeleteMapping("/{uuid}")
     public ResponseEntity deleteSupplierOrderItemByUuid(
             Authentication authentication,
@@ -62,15 +52,15 @@ public class SupplierOrderItemController {
     }
 
     @PatchMapping("/{uuid}")
-    public ResponseEntity<?> updateSupplierOrderItemByUuid(
+    public ResponseEntity<SupplierOrderItemDto> updateSupplierOrderItemByUuid(
             Authentication authentication,
             @PathVariable("uuid") String uuid,
             @Valid @RequestBody SupplierOrderItemDto supplierOrderItemDto
     ) {
-        supplierOrderItemService.updateSupplierOrderItem(authentication, uuid, supplierOrderItemDto);
-
-        return new ResponseEntity<>(supplierOrderItemDto, HttpStatus.OK);
+        return new ResponseEntity<>(supplierOrderItemService.updateSupplierOrderItem(
+                                                                    authentication,
+                                                                    uuid,
+                                                                    supplierOrderItemDto),
+                                    HttpStatus.OK);
     }
-
-
 }

@@ -2,6 +2,7 @@ package com.soft.business.util.validator;
 
 import com.soft.business.dto.SupplierOrderItemDto;
 import com.soft.business.exception.EmptyInputException;
+import com.soft.business.exception.FunctionalException;
 import com.soft.business.util.ApiErrorCodesConstantes;
 import com.soft.business.util.StringUtils;
 import org.springframework.stereotype.Service;
@@ -24,5 +25,14 @@ public class SupplierOrderItemValidator {
         }
 
         // add validation for supplierOrderStatus not paid (done)
+    }
+
+    public void updateSupplierOrderItemValidator(SupplierOrderItemDto supplierOrderItemDto) {
+        if (supplierOrderItemDto.getSupplierOrder() != null) {
+            throw new FunctionalException(
+                    ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_SUPPLIER_ORDER_PROVIDED_EXCEPTION_CODE,
+                    ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_SUPPLIER_ORDER_PROVIDED_EXCEPTION_MESSAGE
+            );
+        }
     }
 }

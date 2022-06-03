@@ -80,9 +80,6 @@ public class SupplierOrderItemMapper {
             int orgId, SupplierOrderItemDto supplierOrderItemDto, SupplierOrderItem supplierOrderItemDb) {
         SupplierOrderItem supplierOrderItem = new SupplierOrderItem();
 
-        supplierOrderItem.setIdSupplierOrderItem(supplierOrderItemDb.getIdSupplierOrderItem());
-        supplierOrderItem.setUuid(supplierOrderItemDb.getUuid());
-
         if(supplierOrderItemDto.getQuantity() != null) supplierOrderItem.setQuantity(supplierOrderItemDto.getQuantity());
         else supplierOrderItem.setQuantity(supplierOrderItemDb.getQuantity());
 
@@ -109,17 +106,12 @@ public class SupplierOrderItemMapper {
             supplierOrderItem.setProduct(supplierOrderItemDb.getProduct());
         }
 
-        if (supplierOrderItemDto.getSupplierOrder() != null) {
-            Optional<SupplierOrder> supplierOrder =
-                    supplierOrderRepository.findByUuidAndOrgId(
-                        supplierOrderItemDto.getSupplierOrder().getUuid(), orgId
-                    );
-
-            if (supplierOrder.isPresent()) supplierOrderItem.setSupplierOrder(supplierOrder.get());
-        } else if (supplierOrderItemDb.getSupplierOrder() != null) {
+        if(supplierOrderItemDb.getSupplierOrder() != null)
             supplierOrderItem.setSupplierOrder(supplierOrderItemDb.getSupplierOrder());
-        }
 
-        return null;
+        supplierOrderItem.setIdSupplierOrderItem(supplierOrderItemDb.getIdSupplierOrderItem());
+        supplierOrderItem.setUuid(supplierOrderItemDb.getUuid());
+
+        return supplierOrderItem;
     }
 }

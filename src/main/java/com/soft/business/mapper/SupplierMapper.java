@@ -96,9 +96,7 @@ public class SupplierMapper {
         else supplier.setCappedBalance(dbSupplier.getCappedBalance());
 
         supplier.setUuid(dbSupplier.getUuid());
-
         supplier.setId(dbSupplier.getId());
-
         supplier.setCreationDate(dbSupplier.getCreationDate());
 
         return supplier;

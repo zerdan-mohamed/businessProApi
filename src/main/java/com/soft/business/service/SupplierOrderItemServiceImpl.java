@@ -92,9 +92,11 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
     }
 
     @Override
+    @Transactional
     public SupplierOrderItemDto updateSupplierOrderItem(
             Authentication authentication, String uuid, SupplierOrderItemDto supplierOrderItemDto) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
+        this.supplierOrderItemValidator.updateSupplierOrderItemValidator(supplierOrderItemDto);
 
         Optional<SupplierOrderItem> supplierOrderItemDb = this.supplierOrderItemRepository.findByUuidAndOrgId(uuid, orgId);
 
@@ -104,7 +106,7 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
                 );
         supplierOrderItemRepository.save(supplierOrderItem);
 
-        return supplierOrderItemDto;
+        return supplierOrderItemMapper.makeDtoFromSupplierOrderItem(orgId, supplierOrderItem);
     }
 
     private SupplierOrder getSupplierOrder(SupplierOrderItemDto supplierOrderItemDto, int orgId) {

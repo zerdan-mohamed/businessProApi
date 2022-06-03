@@ -44,7 +44,6 @@ public class SupplierOrderItem implements Serializable {
     private Product product;
 
     @ManyToOne
-    @NotNull
     @JoinColumn(name = "ID_SUPPLIER_ORDER")
     private SupplierOrder supplierOrder;
 

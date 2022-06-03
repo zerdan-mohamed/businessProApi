@@ -27,6 +27,9 @@ public interface ApiErrorCodesConstantes {
     public static final String SUPPLIER_ORDER_ITEM_DELETE_STATUS_PAID_EXCEPTION_CODE = "3003";
     public static final String SUPPLIER_ORDER_ITEM_DELETE_STATUS_PAID_EXCEPTION_MESSAGE = "Can't delete a paid Item";
 
+    public static final String SUPPLIER_ORDER_ITEM_SUPPLIER_ORDER_PROVIDED_EXCEPTION_CODE = "3004";
+    public static final String SUPPLIER_ORDER_ITEM_SUPPLIER_ORDER_PROVIDED_EXCEPTION_MESSAGE = "Can't update the supplier of an existing item";
+
 
 
 }
