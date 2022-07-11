@@ -2,10 +2,15 @@ USE pro_business_db;
 
 INSERT INTO MODULE (MOD_LABEL) VALUE ('SUPPLIER_ORDER');
 
-INSERT IGNORE INTO STATUS (NAME, MOD_ID) VALUES ('CREATED', 3),
-                                                ('CONFIRMED', 3),
-                                                ('SHIPPED', 3),
-                                                ('CANCELED', 3),
-                                                ('PAID', 3);
+INSERT IGNORE
+INTO STATUS (NAME, MODULE_ID)
+VALUES
+    ('CREATED', 3),
+    ('IN DELIVERY', 3),
+    ('DELIVERED', 3),
+    ('PAID', 3),
+    ('INVOICED', 3),
+    ('CANCELED', 3),
+    ('DELETED', 3);
 
 COMMIT;

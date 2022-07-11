@@ -6,6 +6,7 @@ import com.soft.business.model.Supplier;
 import com.soft.business.model.SupplierOrder;
 import com.soft.business.repository.SupplierRepository;
 import com.soft.business.service.organization.OrganizationService;
+import com.soft.business.util.FunctionalUtils;
 import com.soft.business.util.SupplierOrderConstants;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,7 @@ public class SupplierOrderMapper {
         return supplierOrderDto;
     }
 
+
     public SupplierOrder makeSupplierOrderFromDto(int orgId, SupplierOrderDto supplierOrderDto) {
         SupplierOrder supplierOrder = new SupplierOrder();
 
@@ -79,8 +81,12 @@ public class SupplierOrderMapper {
             supplierOrder.setSupplierOrderNumber(supplierOrderDto.getSupplierOrderNumber());
         else supplierOrder.setSupplierOrderNumber(supplierOrderDb.getSupplierOrderNumber());
 
-        if (supplierOrderDto.getSupplierOrderStatus() != null)
-            supplierOrder.setSupplierOrderStatus(supplierOrderDto.getSupplierOrderStatus());
+        Integer orderStatus = supplierOrderDto.getSupplierOrderStatus();
+        boolean StatusExists = FunctionalUtils.checkItemStatusExists(orderStatus);
+        boolean validOrderStatus = FunctionalUtils.checkValidOrderStatus(orderStatus);
+
+        if (orderStatus != null && StatusExists && validOrderStatus)
+            supplierOrder.setSupplierOrderStatus(orderStatus);
         else
             supplierOrder.setSupplierOrderStatus(supplierOrderDb.getSupplierOrderStatus());
 

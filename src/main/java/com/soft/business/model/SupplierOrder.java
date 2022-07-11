@@ -28,9 +28,11 @@ public class SupplierOrder implements Serializable {
     @Column(name = "SUPPLIER_ORDER_STATUS")
     private Integer supplierOrderStatus;
 
+    // TODO : creationDate will be not null
     @Column(name = "CREATION_DATE")
     private LocalDateTime creationDate;
 
+    // TODO : supplierOrderNumber will be not null
     @Column(name = "SUPPLIER_ORDER_NUMBER")
     private String supplierOrderNumber;
 

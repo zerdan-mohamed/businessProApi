@@ -6,6 +6,8 @@ import com.soft.business.model.SupplierOrder;
 import com.soft.business.model.SupplierOrderStatus;
 import com.soft.business.repository.SupplierOrderRepository;
 import com.soft.business.service.organization.OrganizationService;
+import com.soft.business.util.FunctionalUtils;
+import com.soft.business.util.SupplierOrderConstants;
 import com.soft.business.util.validator.SupplierOrderValidator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
         this.organizationService = organizationService;
     }
 
+    // TODO : handle hidden orderItem with another service
     @Override
     @Transactional
     public Set<SupplierOrderDto> findSupplierOrders(Authentication authentication) {
@@ -58,9 +61,11 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
     @Transactional
     public void deleteSupplierOrderByUuid(Authentication authentication, String uuid) {
         SupplierOrderDto supplierOrder = this.findSupplierOrderByUuid(authentication, uuid);
+
         // TODO: For now we don't know what to do when deleting a supplierOrder
-        if (!supplierOrder.getSupplierOrderStatus().equals(SupplierOrderStatus.CANCELED)) {
-            //supplierOrder.setSupplierOrderStatus(SupplierOrderStatus.CANCELED);
+        // TODO: create a separate function to handle canceled order !!
+        if (FunctionalUtils.checkItemStatusExists(supplierOrder.getSupplierOrderStatus())) {
+            supplierOrder.setSupplierOrderStatus(SupplierOrderConstants.DELETED);
         }
     }
 
@@ -84,7 +89,8 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
             Authentication authentication, String uuid, SupplierOrderDto supplierOrderDto) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
-        Optional<SupplierOrder> supplierOrderDb = this.supplierOrderRepository.findByUuidAndOrgId(uuid, orgId);
+        Optional<SupplierOrder> supplierOrderDb
+                        = this.supplierOrderRepository.findByUuidAndOrgId(uuid, orgId);
 
         SupplierOrder supplierOrder = supplierOrderMapper.updateSupplierOrder(
                 orgId, supplierOrderDto, supplierOrderDb.get()

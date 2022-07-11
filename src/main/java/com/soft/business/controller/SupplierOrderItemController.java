@@ -47,8 +47,10 @@ public class SupplierOrderItemController {
             Authentication authentication,
             @Valid @RequestBody List<SupplierOrderItemDto> supplierOrderItemDto
     ) throws ParseException {
-        return new ResponseEntity<>(supplierOrderItemService.createSupplierOrderItem(authentication, supplierOrderItemDto)
-                , HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                supplierOrderItemService.createSupplierOrderItem(authentication,supplierOrderItemDto),
+                HttpStatus.CREATED
+        );
     }
 
     @PatchMapping("/{uuid}")
@@ -57,10 +59,11 @@ public class SupplierOrderItemController {
             @PathVariable("uuid") String uuid,
             @Valid @RequestBody SupplierOrderItemDto supplierOrderItemDto
     ) {
-        return new ResponseEntity<>(supplierOrderItemService.updateSupplierOrderItem(
-                                                                    authentication,
-                                                                    uuid,
-                                                                    supplierOrderItemDto),
-                                    HttpStatus.OK);
+        return new ResponseEntity<>(
+                supplierOrderItemService.updateSupplierOrderItem(
+                    authentication, uuid, supplierOrderItemDto
+                ),
+                HttpStatus.OK
+        );
     }
 }

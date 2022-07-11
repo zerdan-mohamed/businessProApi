@@ -9,7 +9,7 @@ import com.soft.business.repository.SupplierOrderItemRepository;
 import com.soft.business.repository.SupplierOrderRepository;
 import com.soft.business.service.organization.OrganizationService;
 import com.soft.business.util.ApiErrorCodesConstantes;
-import com.soft.business.util.SupplierOrderConstants;
+import com.soft.business.util.FunctionalUtils;
 import com.soft.business.util.validator.SupplierOrderItemValidator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
+public class SupplierOrderItemServiceImpl implements SupplierOrderItemService {
 
     private final SupplierOrderItemRepository supplierOrderItemRepository;
     private final SupplierOrderRepository supplierOrderRepository;
@@ -38,20 +38,24 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
 
     @Override
     @Transactional
-    public Set<SupplierOrderItemDto> findSupplierOrderItems(Authentication authentication, String supplierOrderUuid) {
+    public Set<SupplierOrderItemDto> findSupplierOrderItems(
+            Authentication authentication, String supplierOrderUuid) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
         Optional<SupplierOrder> supplierOrder = supplierOrderRepository.findByUuidAndOrgId(supplierOrderUuid, orgId);
         List<SupplierOrderItem> supplierOrderItems = supplierOrderItemRepository.findBySupplierOrderAndOrgId(supplierOrder.get(), orgId);
 
-        return supplierOrderItems.stream().map(item -> this.supplierOrderItemMapper.makeDtoFromSupplierOrderItem(orgId, item))
+        return supplierOrderItems
+                .stream()
+                .map(item -> this.supplierOrderItemMapper.makeDtoFromSupplierOrderItem(orgId, item))
                 .collect(Collectors.toSet());
     }
 
     @Override
     public SupplierOrderItemDto findSupplierOrderItemByUuid(Authentication authentication, String uuid) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
-        Optional<SupplierOrderItem> supplierOrderItem = supplierOrderItemRepository.findByUuidAndOrgId(uuid, orgId);
+        Optional<SupplierOrderItem> supplierOrderItem
+                = supplierOrderItemRepository.findByUuidAndOrgId(uuid, orgId);
 
         return supplierOrderItemMapper.makeDtoFromSupplierOrderItem(orgId, supplierOrderItem.get());
     }
@@ -62,11 +66,16 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         SupplierOrderItemDto supplierOrderItem = findSupplierOrderItemByUuid(authentication, uuid);
 
-        if (supplierOrderItem.getSupplierOrder()
-                .getSupplierOrderStatus() != SupplierOrderConstants.PAID) {
+        // TODO : we need to write specification of delete related to reception
+        if (
+            FunctionalUtils.checkValidOrderStatus(supplierOrderItem.getSupplierOrder().getSupplierOrderStatus())
+            && FunctionalUtils.checkItemStatusExists(supplierOrderItem.getSupplierOrderItemStatus())
+        ) {
             long isDeleted = supplierOrderItemRepository.deleteByUuidAndOrgId(uuid, orgId);
-        } else throw new FunctionalException(ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_DELETE_STATUS_PAID_EXCEPTION_CODE,
-                                             ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_DELETE_STATUS_PAID_EXCEPTION_MESSAGE);
+        } else throw new FunctionalException(
+            ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_DELETE_STATUS_PAID_EXCEPTION_CODE,
+            ApiErrorCodesConstantes.SUPPLIER_ORDER_ITEM_DELETE_STATUS_PAID_EXCEPTION_MESSAGE
+        );
     }
 
     @Override
@@ -75,14 +84,20 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService{
             Authentication authentication,
             List<SupplierOrderItemDto> supplierOrderItemDto) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
-        supplierOrderItemDto.stream().forEach(item -> supplierOrderItemValidator.createSupplierOrderItemValidator(item));
+        supplierOrderItemDto.stream().forEach(
+            item -> supplierOrderItemValidator.createSupplierOrderItemValidator(item)
+        );
 
-        SupplierOrder supplierOrder = this.getSupplierOrder(
-                supplierOrderItemDto.get(0), orgId);
+        SupplierOrder supplierOrder = this.getSupplierOrder(supplierOrderItemDto.get(0), orgId);
 
-        Set<SupplierOrderItem> supplierOrderItem = supplierOrderItemDto.stream()
-                .map(item -> supplierOrderItemMapper.makeSupplierOrderItemFromDto(orgId, item, supplierOrder))
-                .collect(Collectors.toSet());
+        Set<SupplierOrderItem> supplierOrderItem =
+            supplierOrderItemDto
+                .stream()
+                .map(
+                    item -> supplierOrderItemMapper
+                            .makeSupplierOrderItemFromDto(orgId, item, supplierOrder))
+                            .collect(Collectors.toSet()
+                );
 
         supplierOrderItemRepository.saveAll(supplierOrderItem);
 

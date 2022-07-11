@@ -49,8 +49,10 @@ public class SupplierOrderController {
     public ResponseEntity<SupplierOrderDto> createSupplierOrder(
             Authentication authentication, @Valid @RequestBody SupplierOrderDto supplierOrderDto
     ) {
-        return new ResponseEntity<>(supplierOrderService.createSupplierOrder(authentication, supplierOrderDto),
-                                    HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                supplierOrderService.createSupplierOrder(authentication, supplierOrderDto),
+                HttpStatus.CREATED
+        );
     }
 
     @PatchMapping("/{uuid}")
@@ -59,11 +61,10 @@ public class SupplierOrderController {
             @PathVariable("uuid") String uuid,
             @Valid @RequestBody SupplierOrderDto supplierOrderDto
     ) {
-        return new ResponseEntity<>(supplierOrderService.updateSupplierOrder(
-                                                                authentication,
-                                                                uuid,
-                                                                supplierOrderDto),
-                                    HttpStatus.OK);
+        return new ResponseEntity<>(
+                supplierOrderService.updateSupplierOrder(authentication, uuid, supplierOrderDto),
+                HttpStatus.OK
+        );
     }
 
 }

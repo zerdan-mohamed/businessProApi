@@ -6,8 +6,12 @@ import com.soft.business.dto.SupplierOrderItemDto;
 import com.soft.business.model.*;
 import com.soft.business.repository.ProductRepository;
 import com.soft.business.repository.SupplierOrderRepository;
+import com.soft.business.util.FunctionalUtils;
+import com.soft.business.util.SupplierOrderConstants;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,6 +36,7 @@ public class SupplierOrderItemMapper {
         supplierOrderItemDto.setVatRate(supplierOrderItem.getVatRate());
         supplierOrderItemDto.setPriceHT(supplierOrderItem.getPriceHT());
         supplierOrderItemDto.setDiscount(supplierOrderItem.getDiscount());
+        supplierOrderItemDto.setSupplierOrderItemStatus(supplierOrderItem.getSupplierOrderItemStatus());
 
         if (supplierOrderItem.getProduct() != null) {
             ProductDto productDto = new ProductDto();
@@ -52,9 +57,8 @@ public class SupplierOrderItemMapper {
         return supplierOrderItemDto;
     }
 
-    public SupplierOrderItem makeSupplierOrderItemFromDto(int orgId,
-                                                          SupplierOrderItemDto supplierOrderItemDto,
-                                                          SupplierOrder supplierOrder) {
+    public SupplierOrderItem makeSupplierOrderItemFromDto(
+            int orgId, SupplierOrderItemDto supplierOrderItemDto, SupplierOrder supplierOrder) {
         SupplierOrderItem supplierOrderItem = new SupplierOrderItem();
 
         supplierOrderItem.setUuid(UUID.randomUUID().toString());
@@ -63,6 +67,7 @@ public class SupplierOrderItemMapper {
         supplierOrderItem.setPriceHT(supplierOrderItemDto.getPriceHT());
         supplierOrderItem.setVatRate(supplierOrderItemDto.getVatRate());
         supplierOrderItem.setDiscount(supplierOrderItemDto.getDiscount());
+        supplierOrderItem.setSupplierOrderItemStatus(SupplierOrderConstants.CREATED);
         supplierOrderItem.setOrgId(orgId);
         supplierOrderItem.setSupplierOrder(supplierOrder);
         if (supplierOrderItemDto.getProduct() != null) {
@@ -77,23 +82,46 @@ public class SupplierOrderItemMapper {
     }
 
     public SupplierOrderItem updateSupplierOrderItem(
-            int orgId, SupplierOrderItemDto supplierOrderItemDto, SupplierOrderItem supplierOrderItemDb) {
+            int orgId,
+            SupplierOrderItemDto supplierOrderItemDto,
+            SupplierOrderItem supplierOrderItemDb) {
         SupplierOrderItem supplierOrderItem = new SupplierOrderItem();
 
-        if(supplierOrderItemDto.getQuantity() != null) supplierOrderItem.setQuantity(supplierOrderItemDto.getQuantity());
-        else supplierOrderItem.setQuantity(supplierOrderItemDb.getQuantity());
+        Integer itemStatus = supplierOrderItemDto.getSupplierOrderItemStatus();
+        Integer orderStatus = supplierOrderItemDto.getSupplierOrder().getSupplierOrderStatus();
+        boolean StatusExists = FunctionalUtils.checkItemStatusExists(itemStatus);
+        boolean validOrderStatus = FunctionalUtils.checkValidOrderStatus(orderStatus);
 
-        if(supplierOrderItemDto.getPriceHT() != null) supplierOrderItem.setPriceHT(supplierOrderItemDto.getPriceHT());
-        else supplierOrderItem.setPriceHT(supplierOrderItemDb.getPriceHT());
+        if(supplierOrderItemDto.getQuantity() != null)
+            supplierOrderItem.setQuantity(supplierOrderItemDto.getQuantity());
+        else
+            supplierOrderItem.setQuantity(supplierOrderItemDb.getQuantity());
 
-        if(supplierOrderItemDto.getMeasureUnite() != null) supplierOrderItem.setMeasureUnite(supplierOrderItemDto.getMeasureUnite());
-        else supplierOrderItem.setMeasureUnite(supplierOrderItemDb.getMeasureUnite());
+        if(supplierOrderItemDto.getPriceHT() != null)
+            supplierOrderItem.setPriceHT(supplierOrderItemDto.getPriceHT());
+        else
+            supplierOrderItem.setPriceHT(supplierOrderItemDb.getPriceHT());
 
-        if(supplierOrderItemDto.getVatRate() != null) supplierOrderItem.setVatRate(supplierOrderItemDto.getVatRate());
-        else supplierOrderItem.setVatRate(supplierOrderItemDb.getVatRate());
+        if(supplierOrderItemDto.getMeasureUnite() != null)
+            supplierOrderItem.setMeasureUnite(supplierOrderItemDto.getMeasureUnite());
+        else
+            supplierOrderItem.setMeasureUnite(supplierOrderItemDb.getMeasureUnite());
 
-        if(supplierOrderItemDto.getDiscount() != null) supplierOrderItem.setDiscount(supplierOrderItemDto.getDiscount());
-        else supplierOrderItem.setDiscount(supplierOrderItemDb.getDiscount());
+        if(supplierOrderItemDto.getVatRate() != null)
+            supplierOrderItem.setVatRate(supplierOrderItemDto.getVatRate());
+        else
+            supplierOrderItem.setVatRate(supplierOrderItemDb.getVatRate());
+
+        if(supplierOrderItemDto.getDiscount() != null)
+            supplierOrderItem.setDiscount(supplierOrderItemDto.getDiscount());
+        else
+            supplierOrderItem.setDiscount(supplierOrderItemDb.getDiscount());
+
+        // TODO:  check is item related to a reception (receipt form)
+        if (itemStatus != null && StatusExists && validOrderStatus)
+            supplierOrderItem.setSupplierOrderItemStatus(itemStatus);
+        else
+            supplierOrderItem.setSupplierOrderItemStatus(supplierOrderItemDb.getSupplierOrderItemStatus());
 
         if (supplierOrderItemDto.getProduct() != null) {
             Optional<Product> product =

@@ -34,6 +34,9 @@ public class SupplierOrderItem implements Serializable {
     @Column(name = "DISCOUNT")
     private Double discount;
 
+    @Column(name = "SUPPLIER_ORDER_ITEM_STATUS")
+    private Integer supplierOrderItemStatus;
+
     @Column(name = "ORG_ID", updatable = false)
     @NotNull
     private int orgId;

@@ -43,9 +43,8 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public SupplierDto updateSupplier(Authentication authentication,
-                                      String uuid,
-                                      SupplierDto supplierDto) {
+    public SupplierDto updateSupplier(
+            Authentication authentication, String uuid, SupplierDto supplierDto) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         Optional<Supplier> oSupplier = this.supplierRepository.findByUuidAndOrgId(uuid, orgId);
         if(oSupplier.isEmpty()) throw new NoSuchElementException();
@@ -57,8 +56,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     @Transactional
-    public void deleteSupplierByUuid(Authentication authentication,
-                                     String uuid) {
+    public void deleteSupplierByUuid(Authentication authentication, String uuid) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         long isDeleted = this.supplierRepository.deleteByUuidAndOrgId(uuid, orgId);
         if(isDeleted == 0) throw new NoSuchElementException();
