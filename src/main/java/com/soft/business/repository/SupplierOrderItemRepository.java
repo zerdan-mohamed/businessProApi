@@ -12,6 +12,8 @@ public interface SupplierOrderItemRepository extends CrudRepository<SupplierOrde
 
     Optional<SupplierOrderItem> findByUuidAndOrgId(String uuid, int orgId);
 
+    Optional<SupplierOrderItem> findByIdSupplierOrderItemAndOrgId(Long idSupplierOrderItem, int orgId);
+
     long deleteByUuidAndOrgId(String uuid, int orgId);
 
     List<SupplierOrderItem> findByOrgId(int orgId);

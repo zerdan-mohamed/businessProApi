@@ -32,6 +32,7 @@ public class SupplierOrderItemMapper {
 
         supplierOrderItemDto.setUuid(supplierOrderItem.getUuid());
         supplierOrderItemDto.setQuantity(supplierOrderItem.getQuantity());
+        supplierOrderItemDto.setRemainingQuantity(supplierOrderItem.getRemainingQuantity());
         supplierOrderItemDto.setMeasureUnite(supplierOrderItem.getMeasureUnite());
         supplierOrderItemDto.setVatRate(supplierOrderItem.getVatRate());
         supplierOrderItemDto.setPriceHT(supplierOrderItem.getPriceHT());
@@ -63,6 +64,7 @@ public class SupplierOrderItemMapper {
 
         supplierOrderItem.setUuid(UUID.randomUUID().toString());
         supplierOrderItem.setQuantity(supplierOrderItemDto.getQuantity());
+        supplierOrderItem.setRemainingQuantity(supplierOrderItemDto.getQuantity());
         supplierOrderItem.setMeasureUnite(supplierOrderItemDto.getMeasureUnite());
         supplierOrderItem.setPriceHT(supplierOrderItemDto.getPriceHT());
         supplierOrderItem.setVatRate(supplierOrderItemDto.getVatRate());
@@ -88,7 +90,9 @@ public class SupplierOrderItemMapper {
         SupplierOrderItem supplierOrderItem = new SupplierOrderItem();
 
         Integer itemStatus = supplierOrderItemDto.getSupplierOrderItemStatus();
-        Integer orderStatus = supplierOrderItemDto.getSupplierOrder().getSupplierOrderStatus();
+
+        // FIXME : re-analyse
+        Integer orderStatus = supplierOrderItemDb.getSupplierOrder().getSupplierOrderStatus();
         boolean StatusExists = FunctionalUtils.checkItemStatusExists(itemStatus);
         boolean validOrderStatus = FunctionalUtils.checkValidOrderStatus(orderStatus);
 
@@ -96,6 +100,11 @@ public class SupplierOrderItemMapper {
             supplierOrderItem.setQuantity(supplierOrderItemDto.getQuantity());
         else
             supplierOrderItem.setQuantity(supplierOrderItemDb.getQuantity());
+
+        if(supplierOrderItemDto.getRemainingQuantity() != null)
+            supplierOrderItem.setRemainingQuantity(supplierOrderItemDto.getRemainingQuantity());
+        else
+            supplierOrderItem.setRemainingQuantity(supplierOrderItemDb.getRemainingQuantity());
 
         if(supplierOrderItemDto.getPriceHT() != null)
             supplierOrderItem.setPriceHT(supplierOrderItemDto.getPriceHT());

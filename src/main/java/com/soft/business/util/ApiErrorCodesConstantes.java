@@ -31,5 +31,11 @@ public interface ApiErrorCodesConstantes {
     public static final String SUPPLIER_ORDER_ITEM_SUPPLIER_ORDER_PROVIDED_EXCEPTION_MESSAGE = "Can't update the supplier of an existing item";
 
 
+    // ### reception error codes 4XXX ###
+    public static final String RECEPTION_EMPTY_ORDER_CODE_EXCEPTION_CODE = "4000";
+    public static final String RECEPTION_EMPTY_ORDER_CODE_EXCEPTION_MESSAGE = "reception uuid field is mandatory";
+    public static final String RECEPTION_ITEM_EMPTY_ORDER_CODE_EXCEPTION_CODE = "4001";
+    public static final String RECEPTION_ITEM_EMPTY_ORDER_CODE_EXCEPTION_MESSAGE = "reception item is mandatory to create reception";
+
 
 }

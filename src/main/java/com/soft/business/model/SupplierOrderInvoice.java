@@ -1,3 +1,4 @@
+/*
 package com.soft.business.model;
 
 import lombok.Data;
@@ -19,3 +20,4 @@ public class SupplierOrderInvoice implements Serializable {
     @NotBlank
     private String uuid;
 }
+*/

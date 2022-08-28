@@ -14,6 +14,7 @@ public class SupplierOrderItemDto implements Serializable {
 
     private static final String SUPPLIER_ORDER_ITEM_UUID = "uuid";
     private static final String QUANTITY = "quantity";
+    private static final String REMAINING_QUANTITY = "remainingQuantity";
     private static final String MEASURE_UNITE = "measure_unite";
     private static final String PRICE_HT = "price_ht";
     private static final String VAT_RATE = "vat_rate";
@@ -27,6 +28,9 @@ public class SupplierOrderItemDto implements Serializable {
 
     @JsonProperty(QUANTITY)
     private Double quantity;
+
+    @JsonProperty(REMAINING_QUANTITY)
+    private Double remainingQuantity;
 
     @JsonProperty(MEASURE_UNITE)
     private String measureUnite;

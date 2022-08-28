@@ -31,6 +31,8 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
+
+        // TODO :  return some other information as roles, token type...
         return ResponseEntity.ok(new JwtAuthResponse(jwt));
     }
 }

@@ -22,6 +22,9 @@ public class SupplierOrderItem implements Serializable {
     @Column(name = "QUANTITY")
     private Double quantity;
 
+    @Column(name = "REMAINING_QUANTITY")
+    private Double remainingQuantity;
+
     @Column(name = "MEASURE_UNITE")
     private String measureUnite;
 

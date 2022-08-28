@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.Set;
 
 @RestController
-@RequestMapping("api/v1/supplierOrders")
+@RequestMapping("api/supplierOrders")
 public class SupplierOrderController {
 
     private SupplierOrderService supplierOrderService;

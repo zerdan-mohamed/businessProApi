@@ -3,7 +3,6 @@ package com.soft.business.service;
 import com.soft.business.dto.SupplierOrderDto;
 import com.soft.business.mapper.SupplierOrderMapper;
 import com.soft.business.model.SupplierOrder;
-import com.soft.business.model.SupplierOrderStatus;
 import com.soft.business.repository.SupplierOrderRepository;
 import com.soft.business.service.organization.OrganizationService;
 import com.soft.business.util.FunctionalUtils;
@@ -75,11 +74,12 @@ public class SupplierOrderServiceImpl implements SupplierOrderService{
             Authentication authentication,
             SupplierOrderDto supplierOrderDto) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
+
         SupplierOrder supplierOrder = supplierOrderMapper.makeSupplierOrderFromDto(orgId, supplierOrderDto);
         supplierOrderValidator.createSupplierOrderValidator(supplierOrder);
-        supplierOrderRepository
-                .save(supplierOrder);
+        supplierOrderRepository.save(supplierOrder);
         this.organizationService.incrementPrefix(orgId);
+
         return supplierOrderMapper.makeDtoFromSupplierOrder(supplierOrder);
     }
 
