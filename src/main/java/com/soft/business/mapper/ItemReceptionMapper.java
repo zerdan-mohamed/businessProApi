@@ -33,7 +33,13 @@ public class ItemReceptionMapper {
 
     public ItemReceptionDto makeDtoFromItemReception(ItemReception itemReception) {
 
-        return null;
+        ItemReceptionDto itemReceptionDto = new ItemReceptionDto();
+
+        itemReceptionDto.setUuid(itemReception.getUuid());
+        itemReceptionDto.setDate(itemReception.getDate().toString());
+        itemReceptionDto.setQuantity(itemReception.getQuantity());
+
+        return itemReceptionDto;
     }
 
     public ItemReception updateItemReception(

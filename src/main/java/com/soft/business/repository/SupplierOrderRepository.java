@@ -16,10 +16,7 @@ public interface SupplierOrderRepository extends CrudRepository<SupplierOrder, L
     Optional<SupplierOrder> findByUuidAndOrgId(String uuid, int orgId);
 
     @Query("select so from SupplierOrder so where so.orgId = ?1 and so.idSupplierOrder in ?2")
-    Set<SupplierOrder> findByOrgIdAndIdSupplierOrder(int orgId, List<Long> idSupplierOrder);
-
-
-    // Set<SupplierOrder> findByIdSupplierOrderAndOrgId(int orgId, List<Long> idSupplierOrder);
+    List<SupplierOrder> findByOrgIdAndIdSupplierOrder(int orgId, List<Long> idSupplierOrder);
 
     Optional<SupplierOrder> findByIdSupplierOrderAndOrgId(Long idSupplierOrder, int orgId);
 

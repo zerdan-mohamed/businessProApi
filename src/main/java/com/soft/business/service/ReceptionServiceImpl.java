@@ -61,17 +61,22 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Override
     @Transactional
     public Set<ReceptionDto> findReceptions(Authentication authentication) {
-        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
+        int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         Set<Reception> receptions = receptionRepository.findByOrgId(orgId);
         Set<ReceptionDto> receptionsDto = new HashSet<>();
 
         for (Reception reception : receptions) {
-            Set<ItemReception> itemReceptions = itemReceptionRepository.findAllByReceptionIdAndOrgId(reception.getReceptionId(), orgId);
+            Set<ItemReception> itemReceptions = itemReceptionRepository.findAllByReceptionIdAndOrgId(
+                    reception.getReceptionId(), orgId
+            );
 
-            // TODO : itemReceptions mapping
+            Set<ItemReceptionDto> itemsReceptionDto =
+                itemReceptions
+                    .stream()
+                    .map(itemReceptionMapper::makeDtoFromItemReception).collect(Collectors.toSet());
 
-            ReceptionDto receptionDto = receptionMapper.makeDtoFromReception(reception, itemReceptions);
+            ReceptionDto receptionDto = receptionMapper.makeDtoFromReception(reception, itemsReceptionDto);
             receptionsDto.add(receptionDto);
         }
 
@@ -86,7 +91,12 @@ public class ReceptionServiceImpl implements ReceptionService {
         Reception reception = receptionRepository.findByUuidAndOrgId(uuid, orgId).get();
         Set<ItemReception> itemReceptions = itemReceptionRepository.findAllByReceptionIdAndOrgId(reception.getReceptionId(), orgId);
 
-        return receptionMapper.makeDtoFromReception(reception, itemReceptions);
+        Set<ItemReceptionDto> itemsReceptionDto =
+                itemReceptions
+                        .stream()
+                        .map(itemReceptionMapper::makeDtoFromItemReception).collect(Collectors.toSet());
+
+        return receptionMapper.makeDtoFromReception(reception, itemsReceptionDto);
     }
 
     @Override
@@ -117,22 +127,21 @@ public class ReceptionServiceImpl implements ReceptionService {
         Long receptionId = savedReception.getReceptionId();
 
         // TODO: handle exception
-        Set<ItemReception> itemReceptions = null;
+        Set<ItemReceptionDto> savedItems = null;
         if (savedReception != null)
-            itemReceptions = createItemsReception(itemsReceptionDto, orgId, receptionId);
+            savedItems = createItemsReception(itemsReceptionDto, orgId, receptionId);
 
-        return receptionMapper.makeDtoFromReception(savedReception, itemReceptions);
+        return receptionMapper.makeDtoFromReception(savedReception, savedItems);
     }
 
-    Set<ItemReception> createItemsReception(
+    Set<ItemReceptionDto> createItemsReception(
             Set<ItemReceptionDto> itemReceptionsDto, int orgId, Long receptionId
     ) {
         List<Long> orderIds = new ArrayList<>();
         Set<ItemReception> itemsReception = new HashSet<>();
         
         for (ItemReceptionDto item : itemReceptionsDto) {
-            // item.setReceptionId(receptionId);
-            item.setReceptionId(1L);
+            item.setReceptionId(receptionId);
             ItemReception itemReception = itemReceptionMapper.makeItemReceptionFromDto(orgId, item);
 
             _logger.info("itemReception :  " + itemReception.getReceptionId());
@@ -149,7 +158,9 @@ public class ReceptionServiceImpl implements ReceptionService {
 
         updateSupplierOrderStatus(orderIds, orgId);
 
-        return itemsReception;
+        return itemsReception
+                .stream()
+                .map(itemReceptionMapper::makeDtoFromItemReception).collect(Collectors.toSet());
     }
 
     void updateSupplierOrderItem(ItemReception item) {
@@ -195,21 +206,24 @@ public class ReceptionServiceImpl implements ReceptionService {
         return supplierOrderItemDto;
     }
 
-    void updateSupplierOrderStatus(List<Long> ids, int orgId) {
+    void updateSupplierOrderStatus(List<Long> orderIds, int orgId) {
 
-        // 5 times == 10
-        Set<SupplierOrder> supplierOrders = supplierOrderRepository.findByOrgIdAndIdSupplierOrder(orgId, ids);
+        // FIXME :  - 5 times == 10 query
+        List<SupplierOrder> supplierOrders = supplierOrderRepository.findByOrgIdAndIdSupplierOrder(orgId, orderIds);
 
         _logger.info("#### query* size is :  " + supplierOrders.size());
 
-        for (Long orderId : ids) {
-            // 1 query
-            Optional<SupplierOrder> oSupplierOrder = supplierOrderRepository.findByIdSupplierOrderAndOrgId(orderId, orgId);
-            SupplierOrder supplierOrder = oSupplierOrder.get();
+        for (int i = 0; i < orderIds.size(); i++) {
+            // Optional<SupplierOrder> oSupplierOrder = supplierOrderRepository.findByIdSupplierOrderAndOrgId(orderId, orgId);
+            // SupplierOrder supplierOrder = oSupplierOrder.get();
 
-            // 1 query
-            List<SupplierOrderItem> supplierOrderItems = supplierOrderItemRepository
-                                                            .findBySupplierOrderAndOrgId(supplierOrder, orgId);
+
+            // FIXME : fetch supplierOrders by loop index
+            Set<SupplierOrderItem> supplierOrderItems =
+                    supplierOrderItemRepository.findBySupplierOrderAndOrgId(
+                            supplierOrders.get(i),
+                            orgId
+                    );
 
             Map<Integer, Integer> itemsStatus = new HashMap<>();
 
@@ -225,12 +239,12 @@ public class ReceptionServiceImpl implements ReceptionService {
                 }
             }
 
-            if(itemsStatus.get(1) == supplierOrderItems.size())
-                supplierOrderRepository.updateSupplierOrderStatus(orderId, 1, orgId);
+           /* if(itemsStatus.get(1) == supplierOrderItems.size())
+                supplierOrderRepository.updateSupplierOrderStatus(orderIds[i], 1, orgId);
             else if (itemsStatus.get(3) == supplierOrderItems.size())
-                supplierOrderRepository.updateSupplierOrderStatus(orderId, 2, orgId);
+                supplierOrderRepository.updateSupplierOrderStatus(orderIds[i], 2, orgId);
             else
-                supplierOrderRepository.updateSupplierOrderStatus(orderId, 3, orgId);
+                supplierOrderRepository.updateSupplierOrderStatus(orderIds[i], 3, orgId);*/
         }
     }
 
@@ -251,8 +265,13 @@ public class ReceptionServiceImpl implements ReceptionService {
         // to delete
         Set<ItemReception> itemReceptions = itemReceptionRepository.findAllByReceptionIdAndOrgId(reception.getReceptionId(), orgId);
 
+        Set<ItemReceptionDto> itemsReceptionDto =
+                itemReceptions
+                        .stream()
+                        .map(itemReceptionMapper::makeDtoFromItemReception).collect(Collectors.toSet());
+
         // TODO : change order and order item status.
 
-        return receptionMapper.makeDtoFromReception(reception, itemReceptions);
+        return receptionMapper.makeDtoFromReception(reception, itemsReceptionDto);
     }
 }

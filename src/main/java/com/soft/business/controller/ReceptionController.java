@@ -28,7 +28,10 @@ public class ReceptionController {
             @Valid @RequestBody ReceptionDto receptionDto,
             Authentication authentication
     ) throws ParseException {
-        return new ResponseEntity<>(receptionService.createReception(authentication, receptionDto), HttpStatus.OK);
+        return new ResponseEntity<>(
+                receptionService.createReception(authentication, receptionDto),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping()

@@ -43,7 +43,7 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
         Optional<SupplierOrder> supplierOrder = supplierOrderRepository.findByUuidAndOrgId(supplierOrderUuid, orgId);
-        List<SupplierOrderItem> supplierOrderItems = supplierOrderItemRepository.findBySupplierOrderAndOrgId(supplierOrder.get(), orgId);
+        Set<SupplierOrderItem> supplierOrderItems = supplierOrderItemRepository.findBySupplierOrderAndOrgId(supplierOrder.get(), orgId);
 
         return supplierOrderItems
                 .stream()

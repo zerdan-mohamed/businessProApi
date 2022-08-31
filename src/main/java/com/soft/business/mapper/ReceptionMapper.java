@@ -1,8 +1,7 @@
 package com.soft.business.mapper;
 
-import com.soft.business.dto.ProductDto;
+import com.soft.business.dto.ItemReceptionDto;
 import com.soft.business.dto.ReceptionDto;
-import com.soft.business.model.ItemReception;
 import com.soft.business.model.Reception;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ public class ReceptionMapper {
         return  reception;
     }
 
-    public ReceptionDto makeDtoFromReception(Reception reception, Set<ItemReception> itemReception) {
+    public ReceptionDto makeDtoFromReception(Reception reception, Set<ItemReceptionDto> itemsReceptionDto) {
 
         ReceptionDto receptionDto = new ReceptionDto();
 
@@ -33,7 +32,8 @@ public class ReceptionMapper {
         receptionDto.setDescription(reception.getDescription());
         receptionDto.setCreationDate(reception.getCreationDate().toString());
         receptionDto.setSupplierId(reception.getSupplierId());
-        // receptionDto.setReceptionItems(itemReception);
+
+        receptionDto.setReceptionItems(itemsReceptionDto);
 
         return receptionDto;
     }
