@@ -3,6 +3,7 @@ package com.soft.business.service;
 import com.soft.business.dto.ItemReceptionDto;
 import com.soft.business.dto.ReceptionDto;
 import com.soft.business.dto.SupplierOrderItemDto;
+import com.soft.business.exception.FunctionalException;
 import com.soft.business.mapper.ItemReceptionMapper;
 import com.soft.business.mapper.ReceptionMapper;
 import com.soft.business.mapper.SupplierOrderItemMapper;
@@ -15,6 +16,7 @@ import com.soft.business.repository.ReceptionRepository;
 import com.soft.business.repository.SupplierOrderItemRepository;
 import com.soft.business.repository.SupplierOrderRepository;
 import com.soft.business.service.organization.OrganizationService;
+import com.soft.business.util.ApiErrorCodesConstantes;
 import com.soft.business.util.FunctionalUtils;
 import com.soft.business.util.validator.ReceptionValidator;
 import org.springframework.security.core.Authentication;
@@ -126,14 +128,14 @@ public class ReceptionServiceImpl implements ReceptionService {
         Reception savedReception = receptionRepository.save(reception);
         Long receptionId = savedReception.getReceptionId();
 
-        // TODO: handle exception
-        Set<ItemReceptionDto> savedItems = null;
-        if (savedReception != null)
+        Set<ItemReceptionDto> savedItems = new HashSet<>();
+        if (savedReception.getReceptionId() != null)
             savedItems = createItemsReception(itemsReceptionDto, orgId, receptionId);
 
         return receptionMapper.makeDtoFromReception(savedReception, savedItems);
     }
 
+    // TODO : create reception util class
     Set<ItemReceptionDto> createItemsReception(
             Set<ItemReceptionDto> itemReceptionsDto, int orgId, Long receptionId
     ) {
@@ -142,9 +144,25 @@ public class ReceptionServiceImpl implements ReceptionService {
         
         for (ItemReceptionDto item : itemReceptionsDto) {
             item.setReceptionId(receptionId);
-            ItemReception itemReception = itemReceptionMapper.makeItemReceptionFromDto(orgId, item);
 
-            _logger.info("itemReception :  " + itemReception.getReceptionId());
+            SupplierOrderItem relatedOrderItem  = supplierOrderItemRepository
+                    .findByIdSupplierOrderItemAndOrgId(
+                            item.getSupplierOrderItemId(),
+                            orgId
+                    );
+
+            _logger.info(
+                "receipted quantity :  " + item.getQuantity()
+                    + "remaining quantity" +relatedOrderItem.getRemainingQuantity()
+            );
+
+            if(item.getQuantity() > relatedOrderItem.getRemainingQuantity())
+                throw new FunctionalException(
+                    ApiErrorCodesConstantes.RECEPTION_ITEM_WRONG_QUANTITY_EXCEPTION_CODE,
+                    ApiErrorCodesConstantes.RECEPTION_ITEM_WRONG_QUANTITY_EXCEPTION_MESSAGE
+                );
+
+            ItemReception itemReception = itemReceptionMapper.makeItemReceptionFromDto(orgId, item);
 
             // TODO : saveAll
             itemReceptionRepository.save(itemReception);
@@ -168,7 +186,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         int orgId = item.getOrgId();
 
         SupplierOrderItem supplierOrderItemDb =
-                supplierOrderItemRepository.findByIdSupplierOrderItemAndOrgId(orderItemId, orgId).get();
+                supplierOrderItemRepository.findByIdSupplierOrderItemAndOrgId(orderItemId, orgId);
 
         SupplierOrderItemDto supplierOrderItemDto = changeRemainingQuantity(supplierOrderItemDb, item);
 
@@ -183,6 +201,7 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     SupplierOrderItemDto changeRemainingQuantity(SupplierOrderItem supplierOrderItemDb, ItemReception item) {
         SupplierOrderItemDto supplierOrderItemDto = new SupplierOrderItemDto();
+
         Double quantity = supplierOrderItemDb.getQuantity();
         Double remainingQuantity = supplierOrderItemDb.getRemainingQuantity() - item.getQuantity();
         supplierOrderItemDto.setRemainingQuantity(remainingQuantity);
@@ -211,14 +230,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         // FIXME :  - 5 times == 10 query
         List<SupplierOrder> supplierOrders = supplierOrderRepository.findByOrgIdAndIdSupplierOrder(orgId, orderIds);
 
-        _logger.info("#### query* size is :  " + supplierOrders.size());
-
         for (int i = 0; i < orderIds.size(); i++) {
-            // Optional<SupplierOrder> oSupplierOrder = supplierOrderRepository.findByIdSupplierOrderAndOrgId(orderId, orgId);
-            // SupplierOrder supplierOrder = oSupplierOrder.get();
-
-
-            // FIXME : fetch supplierOrders by loop index
             Set<SupplierOrderItem> supplierOrderItems =
                     supplierOrderItemRepository.findBySupplierOrderAndOrgId(
                             supplierOrders.get(i),
@@ -239,15 +251,17 @@ public class ReceptionServiceImpl implements ReceptionService {
                 }
             }
 
-           /* if(itemsStatus.get(1) == supplierOrderItems.size())
-                supplierOrderRepository.updateSupplierOrderStatus(orderIds[i], 1, orgId);
+           // TODO : FIX update updateSupplierOrderStatus
+           /*
+           if(itemsStatus.get(i) == supplierOrderItems.size())
+                supplierOrderRepository.updateSupplierOrderStatus(supplierOrders.get(i).getIdSupplierOrder(), 1, orgId);
             else if (itemsStatus.get(3) == supplierOrderItems.size())
-                supplierOrderRepository.updateSupplierOrderStatus(orderIds[i], 2, orgId);
+                supplierOrderRepository.updateSupplierOrderStatus(supplierOrders.get(i).getIdSupplierOrder(), 2, orgId);
             else
-                supplierOrderRepository.updateSupplierOrderStatus(orderIds[i], 3, orgId);*/
+                supplierOrderRepository.updateSupplierOrderStatus(supplierOrders.get(i).getIdSupplierOrder(), 3, orgId);
+            */
         }
     }
-
 
     @Override
     @Transactional
@@ -262,7 +276,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         Reception reception = receptionMapper.updateReception(orgId, receptionDto, receptionDb.get());
         receptionRepository.save(reception);
 
-        // to delete
+        // FIXME : to delete !!
         Set<ItemReception> itemReceptions = itemReceptionRepository.findAllByReceptionIdAndOrgId(reception.getReceptionId(), orgId);
 
         Set<ItemReceptionDto> itemsReceptionDto =

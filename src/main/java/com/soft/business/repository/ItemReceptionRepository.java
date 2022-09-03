@@ -2,7 +2,6 @@ package com.soft.business.repository;
 
 import com.soft.business.model.ItemReception;
 import com.soft.business.model.ItemReceptionId;
-import com.soft.business.model.Reception;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

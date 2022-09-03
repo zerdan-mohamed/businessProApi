@@ -10,8 +10,6 @@ import com.soft.business.util.FunctionalUtils;
 import com.soft.business.util.SupplierOrderConstants;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -127,7 +125,7 @@ public class SupplierOrderItemMapper {
             supplierOrderItem.setDiscount(supplierOrderItemDb.getDiscount());
 
         // TODO:  check is item related to a reception (receipt form)
-        if (itemStatus != null && StatusExists && validOrderStatus)
+        if (itemStatus != null && StatusExists)
             supplierOrderItem.setSupplierOrderItemStatus(itemStatus);
         else
             supplierOrderItem.setSupplierOrderItemStatus(supplierOrderItemDb.getSupplierOrderItemStatus());

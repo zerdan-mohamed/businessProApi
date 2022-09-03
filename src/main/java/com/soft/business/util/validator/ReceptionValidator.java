@@ -1,9 +1,7 @@
 package com.soft.business.util.validator;
 
 import com.soft.business.dto.ItemReceptionDto;
-import com.soft.business.dto.ReceptionDto;
 import com.soft.business.exception.EmptyInputException;
-import com.soft.business.model.ItemReception;
 import com.soft.business.model.Reception;
 import com.soft.business.util.ApiErrorCodesConstantes;
 import com.soft.business.util.StringUtils;

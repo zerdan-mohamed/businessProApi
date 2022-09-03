@@ -36,6 +36,8 @@ public interface ApiErrorCodesConstantes {
     public static final String RECEPTION_EMPTY_ORDER_CODE_EXCEPTION_MESSAGE = "reception uuid field is mandatory";
     public static final String RECEPTION_ITEM_EMPTY_ORDER_CODE_EXCEPTION_CODE = "4001";
     public static final String RECEPTION_ITEM_EMPTY_ORDER_CODE_EXCEPTION_MESSAGE = "reception item is mandatory to create reception";
+    public static final String RECEPTION_ITEM_WRONG_QUANTITY_EXCEPTION_CODE = "4002";
+    public static final String RECEPTION_ITEM_WRONG_QUANTITY_EXCEPTION_MESSAGE = "cannot create reception item that has quantity larger of the remaining item";
 
 
 }

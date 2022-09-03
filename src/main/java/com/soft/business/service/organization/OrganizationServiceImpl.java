@@ -26,8 +26,10 @@ public class OrganizationServiceImpl implements OrganizationService {
         LocalDateTime creationDate = supplierOrder.getCreationDate();
         if(oSupplierOrderParams.isPresent()) {
             supplierOrderParams = oSupplierOrderParams.get();
-            String prefix = supplierOrderParams.getPrefix()+"_"+creationDate.getYear()+"_"+supplierOrderParams.getCounter();
-            return prefix;
+
+            return supplierOrderParams.getPrefix()
+                    +"_"+creationDate.getYear()
+                    +"_"+supplierOrderParams.getCounter();
         }
         throw new NoSuchElementException();
     }

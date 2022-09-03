@@ -20,10 +20,11 @@ import java.util.Optional;
 @Service
 public class SupplierServiceImpl implements SupplierService {
 
+    private static final Logger _logger = LoggerFactory.getLogger(SupplierServiceImpl.class);
+
     private SupplierMapper supplierMapper;
     private SupplierRepository supplierRepository;
     private SupplierValidator supplierValidator;
-    private static final Logger logger = LoggerFactory.getLogger(SupplierServiceImpl.class);
 
     public SupplierServiceImpl(SupplierMapper supplierMapper,
                                SupplierRepository supplierRepository,
