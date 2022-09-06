@@ -227,10 +227,11 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     void updateSupplierOrderStatus(List<Long> orderIds, int orgId) {
 
-        // FIXME :  - 5 times == 10 query
+        // TODO : get supplierOrderItem also
         List<SupplierOrder> supplierOrders = supplierOrderRepository.findByOrgIdAndIdSupplierOrder(orgId, orderIds);
 
         for (int i = 0; i < orderIds.size(); i++) {
+            // FIXME : database optimization
             Set<SupplierOrderItem> supplierOrderItems =
                     supplierOrderItemRepository.findBySupplierOrderAndOrgId(
                             supplierOrders.get(i),
@@ -251,15 +252,21 @@ public class ReceptionServiceImpl implements ReceptionService {
                 }
             }
 
-           // TODO : FIX update updateSupplierOrderStatus
-           /*
-           if(itemsStatus.get(i) == supplierOrderItems.size())
-                supplierOrderRepository.updateSupplierOrderStatus(supplierOrders.get(i).getIdSupplierOrder(), 1, orgId);
-            else if (itemsStatus.get(3) == supplierOrderItems.size())
-                supplierOrderRepository.updateSupplierOrderStatus(supplierOrders.get(i).getIdSupplierOrder(), 2, orgId);
-            else
-                supplierOrderRepository.updateSupplierOrderStatus(supplierOrders.get(i).getIdSupplierOrder(), 3, orgId);
-            */
+            Integer supplierOrder = supplierOrders.get(i).getSupplierOrderStatus();
+
+            // if (itemsStatus.get(supplierOrder) != itemsStatus.size()) {
+                for (Map.Entry<Integer, Integer> entry : itemsStatus.entrySet()) {
+                    System.out.println(entry.getKey() + ":" + entry.getValue());
+
+                    if (itemsStatus.get(entry.getKey()) == itemsStatus.size()) {
+                        supplierOrderRepository.updateSupplierOrderStatus(
+                                supplierOrders.get(i).getIdSupplierOrder(),
+                                entry.getKey(),
+                                orgId
+                        );
+                    }
+
+                }
         }
     }
 
