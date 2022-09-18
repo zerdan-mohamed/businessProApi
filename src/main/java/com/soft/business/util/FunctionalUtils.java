@@ -2,26 +2,24 @@ package com.soft.business.util;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class FunctionalUtils {
 
-    // TODO : get itemStatus from status table
-    public static boolean checkValidOrderStatus(Integer ItemStatus) {
-        // TODO: get arrayList value from dto
-        List<Integer> status = Arrays.asList(1, 2, 3);
+    public static boolean isValidStatus(Set<Integer> moduleStatus, Integer itemStatus) {
 
-        return !status.contains(ItemStatus);
+        return moduleStatus.contains(itemStatus);
     }
 
-    // TODO : get itemStatus from status table
+    // @Deprecated
     public static boolean checkItemStatusExists(Integer itemStatus) {
         List<Integer> status = Arrays.asList(1, 2, 3, 4, 5, 6, 7);
 
         return status.contains(itemStatus);
     }
 
+    // TODO : [sprint3] Check invoice status
     public static boolean checkReceptionDeleteRules(String params) {
-        // TODO : sprint3 | check invoice status
 
         return true;
     }

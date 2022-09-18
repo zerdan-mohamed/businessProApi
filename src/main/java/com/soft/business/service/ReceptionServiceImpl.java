@@ -90,7 +90,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     public ReceptionDto findReceptionByUuid(Authentication authentication, String uuid) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
-        Reception reception = receptionRepository.findByUuidAndOrgId(uuid, orgId).get();
+        Reception reception = receptionRepository.findByUuidAndOrgId(uuid, orgId);
         Set<ItemReception> itemReceptions = itemReceptionRepository.findAllByReceptionIdAndOrgId(reception.getReceptionId(), orgId);
 
         Set<ItemReceptionDto> itemsReceptionDto =
@@ -101,6 +101,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         return receptionMapper.makeDtoFromReception(reception, itemsReceptionDto);
     }
 
+    // ## This service has not been completed
     @Override
     @Transactional
     public void deleteReceptionByUuid(Authentication authentication, String uuid) {
@@ -136,6 +137,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     }
 
     // TODO : create reception util class
+    // TODO : DB trick : use view
     Set<ItemReceptionDto> createItemsReception(
             Set<ItemReceptionDto> itemReceptionsDto, int orgId, Long receptionId
     ) {
@@ -145,16 +147,12 @@ public class ReceptionServiceImpl implements ReceptionService {
         for (ItemReceptionDto item : itemReceptionsDto) {
             item.setReceptionId(receptionId);
 
+            // FIXME : Db query !!!
             SupplierOrderItem relatedOrderItem  = supplierOrderItemRepository
                     .findByIdSupplierOrderItemAndOrgId(
                             item.getSupplierOrderItemId(),
                             orgId
                     );
-
-            _logger.info(
-                "receipted quantity :  " + item.getQuantity()
-                    + "remaining quantity" +relatedOrderItem.getRemainingQuantity()
-            );
 
             if(item.getQuantity() > relatedOrderItem.getRemainingQuantity())
                 throw new FunctionalException(
@@ -164,15 +162,15 @@ public class ReceptionServiceImpl implements ReceptionService {
 
             ItemReception itemReception = itemReceptionMapper.makeItemReceptionFromDto(orgId, item);
 
-            // TODO : saveAll
-            itemReceptionRepository.save(itemReception);
-
             itemsReception.add(itemReception);
             updateSupplierOrderItem(itemReception);
 
             if (!orderIds.contains(itemReception.getSupplierOrderId()))
                 orderIds.add(itemReception.getSupplierOrderId());
         }
+
+        // FIXME : Db query !!!
+        itemReceptionRepository.saveAll(itemsReception);
 
         updateSupplierOrderStatus(orderIds, orgId);
 
@@ -185,17 +183,18 @@ public class ReceptionServiceImpl implements ReceptionService {
         Long orderItemId = item.getSupplierOrderItemId();
         int orgId = item.getOrgId();
 
+        // !! Db query
         SupplierOrderItem supplierOrderItemDb =
                 supplierOrderItemRepository.findByIdSupplierOrderItemAndOrgId(orderItemId, orgId);
 
         SupplierOrderItemDto supplierOrderItemDto = changeRemainingQuantity(supplierOrderItemDb, item);
 
-        // FIXME : error
         SupplierOrderItem supplierOrderItem =
                 supplierOrderItemMapper.updateSupplierOrderItem(
                         item.getOrgId(), supplierOrderItemDto, supplierOrderItemDb
                 );
 
+        // !! Db query
         supplierOrderItemRepository.save(supplierOrderItem);
     }
 
@@ -228,10 +227,11 @@ public class ReceptionServiceImpl implements ReceptionService {
     void updateSupplierOrderStatus(List<Long> orderIds, int orgId) {
 
         // TODO : get supplierOrderItem also
+        // FIXME : Db query !!!
         List<SupplierOrder> supplierOrders = supplierOrderRepository.findByOrgIdAndIdSupplierOrder(orgId, orderIds);
 
         for (int i = 0; i < orderIds.size(); i++) {
-            // FIXME : database optimization
+            // FIXME : Db query !!!
             Set<SupplierOrderItem> supplierOrderItems =
                     supplierOrderItemRepository.findBySupplierOrderAndOrgId(
                             supplierOrders.get(i),
@@ -259,6 +259,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                     System.out.println(entry.getKey() + ":" + entry.getValue());
 
                     if (itemsStatus.get(entry.getKey()) == itemsStatus.size()) {
+                        // FIXME : Db query !!!
                         supplierOrderRepository.updateSupplierOrderStatus(
                                 supplierOrders.get(i).getIdSupplierOrder(),
                                 entry.getKey(),
@@ -270,6 +271,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         }
     }
 
+    // ## This service has not been completed
     @Override
     @Transactional
     public ReceptionDto updateReceptionByUuid(
@@ -279,8 +281,8 @@ public class ReceptionServiceImpl implements ReceptionService {
 
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
 
-        Optional<Reception> receptionDb = receptionRepository.findByUuidAndOrgId(uuid, orgId);
-        Reception reception = receptionMapper.updateReception(orgId, receptionDto, receptionDb.get());
+        Reception receptionDb = receptionRepository.findByUuidAndOrgId(uuid, orgId);
+        Reception reception = receptionMapper.updateReception(orgId, receptionDto, receptionDb);
         receptionRepository.save(reception);
 
         // FIXME : to delete !!

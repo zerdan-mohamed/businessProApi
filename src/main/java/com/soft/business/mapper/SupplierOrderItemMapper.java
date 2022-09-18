@@ -90,9 +90,9 @@ public class SupplierOrderItemMapper {
         Integer itemStatus = supplierOrderItemDto.getSupplierOrderItemStatus();
 
         // FIXME : re-analyse
-        Integer orderStatus = supplierOrderItemDb.getSupplierOrder().getSupplierOrderStatus();
+        //  - 1 : get possible status related to reception module
+
         boolean StatusExists = FunctionalUtils.checkItemStatusExists(itemStatus);
-        boolean validOrderStatus = FunctionalUtils.checkValidOrderStatus(orderStatus);
 
         if(supplierOrderItemDto.getQuantity() != null)
             supplierOrderItem.setQuantity(supplierOrderItemDto.getQuantity());

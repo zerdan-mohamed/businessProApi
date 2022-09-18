@@ -83,9 +83,8 @@ public class SupplierOrderMapper {
 
         Integer orderStatus = supplierOrderDto.getSupplierOrderStatus();
         boolean StatusExists = FunctionalUtils.checkItemStatusExists(orderStatus);
-        boolean validOrderStatus = FunctionalUtils.checkValidOrderStatus(orderStatus);
 
-        if (orderStatus != null && StatusExists && validOrderStatus)
+        if (orderStatus != null && StatusExists)
             supplierOrder.setSupplierOrderStatus(orderStatus);
         else
             supplierOrder.setSupplierOrderStatus(supplierOrderDb.getSupplierOrderStatus());

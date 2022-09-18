@@ -67,9 +67,11 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService {
         SupplierOrderItemDto supplierOrderItem = findSupplierOrderItemByUuid(authentication, uuid);
 
         // TODO : we need to write specification of delete related to reception
+        //  - replace checkItemStatusExists with isValidStatus
+        //  - optimization : use view | create some interface to handle status group
+        //  - check ram use during delete SOI
         if (
-            FunctionalUtils.checkValidOrderStatus(supplierOrderItem.getSupplierOrder().getSupplierOrderStatus())
-            && FunctionalUtils.checkItemStatusExists(supplierOrderItem.getSupplierOrderItemStatus())
+            FunctionalUtils.checkItemStatusExists(supplierOrderItem.getSupplierOrderItemStatus())
         ) {
             long isDeleted = supplierOrderItemRepository.deleteByUuidAndOrgId(uuid, orgId);
         } else throw new FunctionalException(
@@ -90,7 +92,8 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService {
 
         SupplierOrder supplierOrder = this.getSupplierOrder(supplierOrderItemDto.get(0), orgId);
 
-        Set<SupplierOrderItem> supplierOrderItem =
+        // TODO: name supplierOrderItem
+        Set<SupplierOrderItem> supplierOrderItems =
             supplierOrderItemDto
                 .stream()
                 .map(
@@ -99,9 +102,9 @@ public class SupplierOrderItemServiceImpl implements SupplierOrderItemService {
                             .collect(Collectors.toSet()
                 );
 
-        supplierOrderItemRepository.saveAll(supplierOrderItem);
+        supplierOrderItemRepository.saveAll(supplierOrderItems);
 
-        return supplierOrderItem.stream()
+        return supplierOrderItems.stream()
                 .map(item -> this.supplierOrderItemMapper.makeDtoFromSupplierOrderItem(orgId, item))
                 .collect(Collectors.toSet());
     }

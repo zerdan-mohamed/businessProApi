@@ -29,6 +29,7 @@ public class ReceptionDto implements Serializable {
     @JsonProperty(DESCRIPTION)
     private String description;
 
+    // FIXME : use uuid instead of id
     @JsonProperty(SUPPLIER_ID)
     private Long supplierId;
 

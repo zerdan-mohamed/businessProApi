@@ -10,7 +10,7 @@ import java.util.Set;
 @Repository
 public interface ReceptionRepository extends CrudRepository<Reception, Long> {
 
-    Optional<Reception> findByUuidAndOrgId(String uuid, int orgId);
+    Reception findByUuidAndOrgId(String uuid, int orgId);
 
     Set<Reception> findByOrgId(int orgId);
 
