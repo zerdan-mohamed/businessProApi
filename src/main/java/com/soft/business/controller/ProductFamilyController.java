@@ -2,6 +2,7 @@ package com.soft.business.controller;
 
 import com.soft.business.dto.ProductFamilyDto;
 import com.soft.business.service.ProductFamilyService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,18 +13,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/productsFamilies")
+@AllArgsConstructor
 public class ProductFamilyController {
-
-    private ProductFamilyService productFamilyService;
-
-    public ProductFamilyController(ProductFamilyService productFamilyService) {
-        this.productFamilyService = productFamilyService;
-    }
+    private final ProductFamilyService productFamilyService;
 
     @GetMapping
     public ResponseEntity<?> findProductFamilies(Authentication authentication) {
             List<ProductFamilyDto> productFamilies = productFamilyService.findProductFamilies(authentication);
-
             return new ResponseEntity<>(productFamilies, HttpStatus.OK);
     }
 
@@ -32,7 +28,6 @@ public class ProductFamilyController {
             Authentication authentication, @PathVariable("uuid") String uuid
     ) {
         ProductFamilyDto productFamily = productFamilyService.findProductFamilyByUuid(authentication, uuid);
-
         return new ResponseEntity<>(productFamily, HttpStatus.OK);
     }
 
@@ -41,7 +36,6 @@ public class ProductFamilyController {
             Authentication authentication, @PathVariable("uuid") String uuid
     ) {
         productFamilyService.deleteProductFamilyByUuid(authentication, uuid);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -49,9 +43,8 @@ public class ProductFamilyController {
     public ResponseEntity<?> createProductFamily(
             Authentication authentication, @Valid @RequestBody ProductFamilyDto productFamilyDto
     ) {
-        productFamilyService.createProductFamily(authentication, productFamilyDto);
-
-        return new ResponseEntity<>(productFamilyDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(productFamilyService.createProductFamily(authentication, productFamilyDto),
+                                    HttpStatus.CREATED);
     }
 
     @PatchMapping("/{uuid}")
@@ -60,9 +53,8 @@ public class ProductFamilyController {
             @PathVariable("uuid") String uuid,
             @Valid @RequestBody ProductFamilyDto productFamilyDto
     ) {
-        productFamilyService.updateProductFamilyByUuid(authentication, uuid, productFamilyDto);
-
-        return new ResponseEntity<>(productFamilyDto, HttpStatus.OK);
+        return new ResponseEntity<>(productFamilyService.updateProductFamilyByUuid(authentication, uuid, productFamilyDto),
+                HttpStatus.OK);
     }
 
 }

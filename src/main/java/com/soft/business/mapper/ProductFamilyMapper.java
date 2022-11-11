@@ -2,37 +2,20 @@ package com.soft.business.mapper;
 
 import com.soft.business.dto.ProductFamilyDto;
 import com.soft.business.model.ProductFamily;
-import org.springframework.stereotype.Service;
-
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 import java.util.UUID;
 
-@Service
-public class ProductFamilyMapper {
+@Mapper(componentModel = "spring", imports = {UUID.class})
+public interface ProductFamilyMapper {
+    ProductFamilyMapper instance = Mappers.getMapper(ProductFamilyMapper.class);
 
-    public ProductFamily makeProductFamilyFromDto(int orgId, ProductFamilyDto productFamilyDto) {
-        ProductFamily productFamily = new ProductFamily();
-        productFamily.setUuid(UUID.randomUUID().toString());
-        productFamily.setName(productFamilyDto.getName());
-        productFamily.setOrgId(orgId);
-        return productFamily;
-    }
+    @Mapping(target = "uuid", expression = "java(UUID.randomUUID().toString())")
+    @Mapping(target = "orgId", source = "orgId")
+    ProductFamily dtoToModelCreate(ProductFamilyDto productFamilyDto, int orgId);
 
-    public ProductFamilyDto makeDtoFromProductFamily(ProductFamily productFamily) {
-        ProductFamilyDto productFamilyDto = new ProductFamilyDto();
-        productFamilyDto.setUuid(productFamily.getUuid());
-        productFamilyDto.setName(productFamily.getName());
-        return productFamilyDto;
-    }
-
-    public ProductFamily updateProductFamily(ProductFamilyDto productFamilyDto, ProductFamily productFamilyDb) {
-        ProductFamily productFamily = new ProductFamily();
-
-        productFamily.setIdProductFamily(productFamilyDb.getIdProductFamily());
-        productFamily.setUuid(productFamilyDb.getUuid());
-
-        if(productFamilyDto.getName() != null) productFamily.setName(productFamilyDto.getName());
-        else productFamily.setName(productFamilyDb.getName());
-
-        return productFamily;
-    }
+    ProductFamilyDto modelToDto(ProductFamily productFamily);
+    @Mapping(target = "orgId", source = "orgId")
+    ProductFamily dtoToModelUpdate(ProductFamilyDto productFamilyDto, int orgId);
 }

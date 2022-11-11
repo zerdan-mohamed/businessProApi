@@ -5,43 +5,26 @@ import com.soft.business.mapper.ProductFamilyMapper;
 import com.soft.business.model.ProductFamily;
 import com.soft.business.repository.ProductFamilyRepository;
 import com.soft.business.service.organization.OrganizationService;
-import com.soft.business.util.validator.ProductFamilyValidator;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@AllArgsConstructor
 public class ProductFamilyServiceImpl implements ProductFamilyService {
 
-    private ProductFamilyRepository productFamilyRepository;
-
-    private ProductFamilyMapper productFamilyMapper;
-
-    private ProductFamilyValidator productFamilyValidator;
-
-    public ProductFamilyServiceImpl(
-            ProductFamilyRepository productFamilyRepository,
-            ProductFamilyMapper productFamilyMapper,
-            ProductFamilyValidator productFamilyValidator
-    ) {
-        this.productFamilyRepository = productFamilyRepository;
-        this.productFamilyMapper = productFamilyMapper;
-        this.productFamilyValidator = productFamilyValidator;
-    }
+    private final ProductFamilyRepository productFamilyRepository;
+    private final ProductFamilyMapper productFamilyMapper;
 
     @Override
     public List<ProductFamilyDto> findProductFamilies(Authentication authentication) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         List<ProductFamily> productFamilies = productFamilyRepository.findByOrgId(orgId);
 
-        List<ProductFamilyDto> productFamiliesDto = new ArrayList<>();
-        productFamilies.forEach(
-                product -> productFamiliesDto.add(productFamilyMapper.makeDtoFromProductFamily(product))
-        );
-
-        return productFamiliesDto;
+        return productFamilies.stream().map(productFamily -> productFamilyMapper.modelToDto(productFamily))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -49,15 +32,13 @@ public class ProductFamilyServiceImpl implements ProductFamilyService {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
         Optional<ProductFamily>  productFamily = productFamilyRepository.findByUuidAndOrgId(uuid, orgId);
 
-        return productFamilyMapper.makeDtoFromProductFamily(productFamily.get());
+        return productFamilyMapper.modelToDto(productFamily.get());
     }
 
     @Override
-    @Transactional
     public void deleteProductFamilyByUuid(Authentication authentication, String uuid) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
-        long isDeleted = productFamilyRepository.deleteByUuidAndOrgId(uuid, orgId);
-        if(isDeleted == 0) throw new NoSuchElementException();
+        productFamilyRepository.deleteByUuidAndOrgId(uuid, orgId);
     }
 
     @Override
@@ -65,11 +46,9 @@ public class ProductFamilyServiceImpl implements ProductFamilyService {
             Authentication authentication, ProductFamilyDto productFamilyDto
     ) {
         int orgId = OrganizationService.getOrgIdFromPrincipal(authentication);
-        productFamilyValidator.createProductFamilyValidator (productFamilyDto);
+        ProductFamily productFamily = productFamilyRepository.save(productFamilyMapper.dtoToModelCreate(productFamilyDto, orgId));
 
-        productFamilyRepository.save(productFamilyMapper.makeProductFamilyFromDto(orgId, productFamilyDto));
-
-        return productFamilyDto;
+        return productFamilyMapper.modelToDto(productFamily);
     }
 
     @Override
@@ -80,9 +59,9 @@ public class ProductFamilyServiceImpl implements ProductFamilyService {
 
         if (productFamilyDb.isEmpty()) throw new NoSuchElementException();
 
-        ProductFamily productFamily = productFamilyMapper.updateProductFamily(productFamilyDto, productFamilyDb.get());
-        productFamilyRepository.save(productFamily);
+        productFamilyDb.get().setName(productFamilyDto.getName());
+        productFamilyRepository.save(productFamilyDb.get());
 
-        return productFamilyDto;
+        return productFamilyMapper.modelToDto(productFamilyDb.get());
     }
 }

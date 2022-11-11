@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -18,6 +19,7 @@ public class JpaUserDetails implements UserDetails {
     }
 
     @Override
+    @Transactional
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<SimpleGrantedAuthority> functionalities = new HashSet<>();
         this.user.getProfile().getRoles().forEach(role ->

@@ -3,11 +3,12 @@ package com.soft.business.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
-@Data
+@AllArgsConstructor @NoArgsConstructor @Getter @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductFamilyDto implements Serializable {
@@ -19,5 +20,6 @@ public class ProductFamilyDto implements Serializable {
     private String uuid;
 
     @JsonProperty(PRODUCT_FAMILY_NAME)
+    @NotBlank(message = "Product Family should not be blank.")
     private String name;
 }

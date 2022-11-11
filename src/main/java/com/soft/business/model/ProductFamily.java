@@ -18,7 +18,7 @@ public class ProductFamily implements Serializable {
     @Column(name = "ID_PRODUCT_FAMILY")
     private Long idProductFamily;
 
-    @Column(name = "UUID")
+    @Column(name = "UUID", updatable = false)
     @NotBlank
     private String uuid;
 

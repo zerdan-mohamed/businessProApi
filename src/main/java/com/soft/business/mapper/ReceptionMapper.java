@@ -21,7 +21,7 @@ public class ReceptionMapper {
         reception.setDescription(receptionDto.getDescription());
         reception.setSupplierId(receptionDto.getSupplierId());
 
-        return  reception;
+        return reception;
     }
 
     public ReceptionDto makeDtoFromReception(Reception reception, Set<ItemReceptionDto> itemsReceptionDto) {
